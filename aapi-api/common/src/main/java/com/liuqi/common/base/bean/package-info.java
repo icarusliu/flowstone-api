@@ -1,0 +1,1 @@
+package com.liuqi.common.base.bean;

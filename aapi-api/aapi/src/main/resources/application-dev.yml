@@ -1,0 +1,6 @@
+mysql:
+  host: localhost
+  port: 3306
+  db: acode_api
+  user: root
+  pwd: mysql12345

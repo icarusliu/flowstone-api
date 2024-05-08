@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="init-user" author="test">
+        <sql>
+            create table base_user(
+            id varchar(64) not null primary key,
+            username varchar(64),
+            password varchar(255),
+            phone varchar(32),
+            email varchar(64),
+            status int(1) default 1,
+            photo varchar(255),
+            metadata text,
+            ext1 varchar(255),
+            ext2 varchar(255),
+            ext3 varchar(255),
+            is_super_admin int(1) default 0,
+            tenant_id varchar(32),
+            create_user varchar(64),
+            create_time timestamp default current_timestamp,
+            update_user varchar(64),
+            update_time timestamp default current_timestamp on update current_timestamp,
+            deleted int(1) default 0
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="init-role" author="test">
+        <sql>
+            create table base_role(
+            id varchar(64) not null primary key,
+            code varchar(64) not null,
+            name varchar(255) not null,
+            tenant_id varchar(32),
+            create_user varchar(64),
+            create_time timestamp default current_timestamp,
+            update_user varchar(64),
+            update_time timestamp default current_timestamp on update current_timestamp,
+            deleted int(1) default 0
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

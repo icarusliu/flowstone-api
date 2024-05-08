@@ -1,0 +1,7 @@
+name: $T$AddReq
+dir: bean/req
+comment: "新增对象"
+imports:
+  - lombok.Data
+template: "@Data
+public class $T$AddReq {}"

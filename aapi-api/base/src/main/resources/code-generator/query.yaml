@@ -1,0 +1,8 @@
+name: $T$Query
+dir: bean/query
+comment: "查询对象"
+imports:
+  - com.liuqi.common.base.bean.query.BaseQuery
+  - lombok.Data
+template: "@Data
+public class $T$Query extends BaseQuery{}"
