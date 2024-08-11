@@ -1,0 +1,85 @@
+name: $T$Controller
+dir: web
+comment: "控制器"
+imports:
+  - $T$AddReq
+  - $T$UpdateReq
+  - $T$DTO
+  - $T$Query
+  - $T$Service
+  - io.swagger.v3.oas.annotations.Operation
+  - io.swagger.v3.oas.annotations.tags.Tag
+  - lombok.extern.slf4j.Slf4j
+  - org.springframework.beans.BeanUtils
+  - org.springframework.beans.factory.annotation.Autowired
+  - org.springframework.web.bind.annotation.RequestMapping
+  - org.springframework.web.bind.annotation.GetMapping
+  - org.springframework.web.bind.annotation.PostMapping
+  - org.springframework.web.bind.annotation.PutMapping
+  - org.springframework.web.bind.annotation.DeleteMapping
+  - org.springframework.web.bind.annotation.RequestBody
+  - org.springframework.web.bind.annotation.PathVariable
+  - org.springframework.web.bind.annotation.RestController
+  - reactor.core.publisher.Mono
+  - org.springframework.validation.annotation.Validated
+  - com.baomidou.mybatisplus.core.metadata.IPage
+  - com.liuqi.common.base.bean.query.DynamicQuery
+  - java.util.List
+template: "@RestController
+@RequestMapping(\"/base/$PATH$\")
+  @Slf4j
+  @Tag(name = \"控制器\")
+  public class $T$Controller {
+  @Autowired
+  private $T$Service service;
+  
+  @PostMapping(\"add\")
+  @Operation(summary = \"新增\")
+  public Mono<Void> add(@RequestBody @Validated $T$AddReq req) {
+  $T$DTO dto = new $T$DTO();
+  BeanUtils.copyProperties(req, dto);
+  service.insert(dto);
+  return Mono.empty();
+  }
+  
+  @PutMapping(\"update\")
+  @Operation(summary = \"更新\")
+  public Mono<Void> update(@RequestBody @Validated $T$UpdateReq req) {
+  $T$DTO dto = new $T$DTO();
+  BeanUtils.copyProperties(req, dto);
+  service.update(dto);
+  return Mono.empty();
+  }
+  
+  @DeleteMapping(\"delete/{id}\")
+  @Operation(summary = \"删除\")
+  public Mono<Void> delete(@PathVariable(\"id\") String id) {
+  service.delete(id);
+  return Mono.empty();
+  }
+  
+  @GetMapping(\"detail/{id}\")
+  @Operation(summary = \"根据id查找记录\")
+  public Mono<$T$DTO> findById(@PathVariable(\"id\") String id) {
+    return Mono.justOrEmpty(service.findById(id).orElse(null));
+  }
+  
+  
+  @PostMapping(\"page-query\")
+  @Operation(summary = \"查询-分页\")
+  public IPage<$T$DTO> pageQuery(@RequestBody $T$Query query) {
+  return service.pageQuery(query);
+  }
+  
+  @PostMapping(\"filter\")
+  @Operation(summary = \"查询-动态\")
+  public IPage<$T$DTO> pageQuery(@RequestBody DynamicQuery query) {
+  return service.dynamicQuery(query);
+  }
+  
+  @PostMapping(\"query\")
+  @Operation(summary = \"查询-不分页\")
+  public List<$T$DTO> query(@RequestBody $T$Query query) {
+  return service.query(query);
+  }
+}"

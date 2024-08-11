@@ -1,0 +1,27 @@
+@import url('element-plus/dist/index.css');
+@import url("./themes/variables.scss");
+@import url('./element-cover.scss');
+@import url('./common.scss');
+@import url('./iconfont/iconfont.css');
+
+
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    width: 100vw;
+    min-width: 320px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('/bg.png');
+    background-attachment: fixed;
+}
+
+html,
+body {
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+}

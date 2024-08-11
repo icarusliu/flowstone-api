@@ -1,9 +1,0 @@
-name: $T$DTO
-dir: bean/dto
-comment: "数据实体"
-like: $T$Entity
-imports:
-  - com.liuqi.common.base.bean.dto.BaseDTO
-  - lombok.Data
-template: "@Data
-public class $T$DTO extends BaseDTO{}"

@@ -1,0 +1,45 @@
+<script setup>
+import LeftNav from '../components/left-menu.vue';
+import TopNav from '../components/TopNav.vue';
+import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+
+const router = useRouter();
+const type = computed(() => {
+  return router.currentRoute.value.params.type;
+});
+
+</script>
+
+<template>
+  <div class="d-flex h-100">
+    <div class="left-nav">
+      <LeftNav class="h-100" :type="type"></LeftNav>
+    </div>
+
+    <div class="right-panel flex-auto h-100">
+      <TopNav />
+      <div class="right-content b-box bg-white br-1 m-4 p-4 flex-auto">
+        <RouterView />
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.left-nav {
+  width: 240px;
+  min-width: 240px;
+}
+
+.right-panel {
+  overflow: hidden;
+  background-color: #efefef;
+
+  .right-content {
+    position: relative;
+    height: calc(100% - 80px);
+  }
+}
+
+</style>

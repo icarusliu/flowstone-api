@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.liuqi</groupId>
+        <artifactId>aapi-service-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>base-service</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
+        <!--        DAG执行器-->
+        <dependency>
+            <groupId>com.github.dexecutor</groupId>
+            <artifactId>dexecutor-core</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.liuqi</groupId>
+            <artifactId>common-web</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+
+<!--        基于简单模式的认证与鉴权 -->
+<!--        <dependency>-->
+<!--            <groupId>com.liuqi</groupId>-->
+<!--            <artifactId>base-auth-simple</artifactId>-->
+<!--            <version>${parent.version}</version>-->
+<!--        </dependency>-->
+
+<!--        基于OAuth模式的认证与鉴权-->
+<!--        <dependency>-->
+<!--            <groupId>com.liuqi</groupId>-->
+<!--            <artifactId>oauth-server</artifactId>-->
+<!--            <version>${parent.version}</version>-->
+<!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.liuqi</groupId>-->
+        <!--            <artifactId>auth-rcs-server</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>20.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>20.2.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

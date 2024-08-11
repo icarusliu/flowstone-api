@@ -1,0 +1,51 @@
+{
+  "id": "4649727",
+  "name": "acode",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "431554",
+      "name": "节点-SQL",
+      "font_class": "jiediansql",
+      "unicode": "e6f5",
+      "unicode_decimal": 59125
+    },
+    {
+      "icon_id": "837249",
+      "name": "table",
+      "font_class": "table",
+      "unicode": "e823",
+      "unicode_decimal": 59427
+    },
+    {
+      "icon_id": "981325",
+      "name": "Kafka",
+      "font_class": "Kafka",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "5703782",
+      "name": "http-1",
+      "font_class": "http-",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "15162743",
+      "name": "js",
+      "font_class": "js",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "26233926",
+      "name": "icon_Groovy",
+      "font_class": "icon_Groovy",
+      "unicode": "e6d2",
+      "unicode_decimal": 59090
+    }
+  ]
+}

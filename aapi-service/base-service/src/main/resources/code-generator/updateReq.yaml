@@ -1,0 +1,10 @@
+name: $T$UpdateReq
+dir: bean/req
+comment: "更新对象"
+like: $T$Entity
+imports:
+  - lombok.Data
+template: "@Data
+public class $T$UpdateReq {
+      private String id;
+}"

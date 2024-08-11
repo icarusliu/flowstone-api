@@ -1,0 +1,50 @@
+#app {
+    .el-table {
+        font-size: 13px;
+
+        th.el-table__cell {
+            --el-table-header-bg-color: #f4f4f5;
+        }
+
+        thead {
+            --el-table-header-text-color: var(--main_font_color);
+        }
+
+        .el-link {
+            font-size: 13px;
+        }
+    }
+
+    .el-empty {
+        --el-empty-image-width: 100px;
+    }
+
+    .el-tabs__nav-wrap::after {
+        height: 1px;
+    }
+}
+
+.el-input.line {
+    .el-input__wrapper {
+        box-shadow: none;
+        border-bottom: 1px solid var(--main_border_color);
+        border-radius: 0;
+
+
+    }
+}
+
+.el-form-item.is-error {
+    .el-input.line {
+        .el-input__wrapper {
+            box-shadow: none;
+            border-color: red;
+        }
+    }
+}
+
+.el-tabs {
+    .el-tabs__nav-wrap:after {
+        height: 1px;
+    }
+}

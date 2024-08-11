@@ -1,0 +1,85 @@
+server:
+  port: 8080
+
+application:
+  security:
+    domain: ngq.com
+    ignored-urls: /favicon.ico,/test,/test/**/*,/doc.html,/webjars/**/*,/v3/api-docs/**/*,/v3/api-docs,/swagger-ui.html
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    dynamic:
+      master: master
+      strict: false
+      druid:
+        showSql: true
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        exceptionSorter: true
+        testOnReturn: false
+        poolPreparedStatements: true
+        filters: stat,slf4j
+        maxPoolPreparedStatementPerConnectionSize: 20
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+        useGlobalDataSourceStat: true
+        filter:
+          wall:
+            config:
+              multi-statement-allow: true
+              none-base-statement-allow: true
+      datasource:
+        master:
+          url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.db}?useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull
+          username: ${mysql.user}
+          password: ${mysql.pwd}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080
+      authorizationserver:
+        client:
+          oidc-client:
+            registration:
+              client-id: "test"
+              client-secret: "{noop}test"
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+              redirect-uris:
+                - "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
+              post-logout-redirect-uris:
+                - "http://127.0.0.1:8080/"
+              scopes:
+                - "openid"
+                - "test"
+                - "message.read"
+                - "message.write"
+            require-authorization-consent: true
+
+knife4j:
+  enable: true
+  openapi:
+    title: 模板项目
+    description: "模板项目"
+    email: xiaoymin@foxmail.com
+    url: https://docs.ngq.com
+    version: v4.0
+
+logging:
+  level:
+    org.springframework.security: trace
