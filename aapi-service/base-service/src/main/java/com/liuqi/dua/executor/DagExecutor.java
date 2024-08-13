@@ -16,7 +16,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -36,7 +41,7 @@ import java.util.stream.Collectors;
  **/
 @Component
 @Slf4j
-public class DagExecutor {
+public class DagExecutor implements ApplicationContextAware {
     private static final ExecutorService executionService = Executors.newFixedThreadPool(10);
 
     @Autowired(required = false)
@@ -44,6 +49,7 @@ public class DagExecutor {
 
     @Autowired(required = false)
     private HttpServletResponse response;
+    private ApplicationContext applicationContext;
 
     /**
      * 执行接口任务
@@ -72,17 +78,17 @@ public class DagExecutor {
         context.setApiInfo(api);
         context.setNodes(nodeInfoList);
         context.setRequestParams(requestParams);
+        context.setApplicationContext(applicationContext);
 
         // 转换成任务输入对象
         List<NodeInput> nodes = nodeInfoList.stream().map(node -> {
             NodeInput nodeInput = new NodeInput();
             nodeInput.setNodeInfo(node);
-            nodeInput.setContext(context);
             return nodeInput;
         }).collect(Collectors.toList());
 
         DagExecutionListener listener = new DagExecutionListener();
-        DexecutorConfig<NodeInput, Object> config = new DexecutorConfig<>(executionService, new DagTaskProvider(), listener);
+        DexecutorConfig<NodeInput, Object> config = new DexecutorConfig<>(executionService, new DagTaskProvider(context), listener);
         DefaultDexecutor<NodeInput, Object> executor = new DefaultDexecutor<>(config);
 
         // 构建依赖
@@ -146,5 +152,10 @@ public class DagExecutor {
                 }
             });
         });
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

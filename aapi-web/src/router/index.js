@@ -1,16 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Index from '../views/index.vue';
-import ApiIndex from '../views/apis/index.vue';
-import Type from '../views/apis/type.vue';
-import Ds from '../views/apis/ds.vue';
+import ApiIndex from '../views/api/index.vue';
+import Type from '../views/manager/type.vue';
+import Ds from '../views/manager/ds.vue';
 import LogIndex from '../views/logs/Index.vue';
 
 const routes = [
     {
         path: '/',
-        redirect: () => '/apis'
-    }, {
-        path: '/apis',
         component: Index,
         children: [
             {
@@ -19,20 +16,26 @@ const routes = [
             },
             {
                 path: '/apis/editor',
-                component: () => import('../views/apis/editor/index.vue')
+                component: () => import('../views/api/editor.vue')
             },
             {
-                path: '/apis/type',
+                path: '/manager/type',
                 component: Type
-            },{
-                path: '/apis/ds',
+            }, {
+                path: '/manager/ds',
                 component: Ds
             }, {
-                path: '/apis/run',
-                component: LogIndex
+                path: '/manager/supplier',
+                component: () => import('../views/manager/supplier.vue')
+            },
+            {
+                path: '/logs',
+                children: [
+                    { path: '/logs/run', component: LogIndex }
+                ]
             }
         ]
-    }
+    },
 ]
 
 const router = createRouter({

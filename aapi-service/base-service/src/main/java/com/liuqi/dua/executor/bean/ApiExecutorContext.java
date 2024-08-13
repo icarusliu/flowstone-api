@@ -4,6 +4,7 @@ import com.liuqi.dua.bean.dto.ApiDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
+import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
 
 import java.util.Enumeration;
@@ -44,6 +45,9 @@ public class ApiExecutorContext {
     // 执行结果
     private Map<String, Object> nodeOutputs = new ConcurrentHashMap<>(16);
 
+    // Spring运行上下文
+    private ApplicationContext applicationContext;
+
     public void setRequest(@Nullable HttpServletRequest request) {
         this.request = request;
 
@@ -58,5 +62,13 @@ public class ApiExecutorContext {
             String value = request.getHeader(key);
             this.requestHeaders.put(key, value);
         }
+    }
+
+    public void putOutput(String code, Object result) {
+        if (null == result) {
+            return;
+        }
+
+        this.nodeOutputs.put(code, result);
     }
 }

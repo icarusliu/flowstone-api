@@ -1,8 +1,11 @@
 <template>
+    <!-- 实体类管理 -->
     <div class="mb-2" v-if="withNew != false">
         <el-button type="primary" @click="newItem()">新增</el-button>
     </div>
     <base-table :fields="fields" :dataSupplier="dataSupplier" :pageable="!tree" ref="tableRef"/>
+
+    <!-- 新增或编辑界面 -->
     <el-drawer v-model="visible" :title="title" :close-on-click-modal="false" :close-on-press-escape="false">
         <base-form :fields="newFields" v-model="formModel" labelPosition="top" ref="formRef" />
 
@@ -36,7 +39,8 @@ onMounted(() => {
         return
     }
     props.fields.forEach(field => {
-        if (field.needNew != false && field.type != 'operations') {
+        if (field.needNew != false && field.type != 'operations' && !field.system) {
+            // field.system表示是否是系统字段
             newFields.push(field);
         } else if (field.type == 'operations') {
             hasOperation = true
@@ -65,7 +69,7 @@ onMounted(() => {
             label: '操作',
             type: 'operations',
             buttons,
-            width: props.operationsWidth || '200px',
+            width: props.operationsWidth || '120px',
             fixed: 'right'
         })
         hasOperation = true

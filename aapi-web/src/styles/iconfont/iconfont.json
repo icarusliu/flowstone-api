@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7938021",
+      "name": "流水线-流水线26x26",
+      "font_class": "liushuixian-liushuixianx",
+      "unicode": "e73b",
+      "unicode_decimal": 59195
+    },
+    {
       "icon_id": "431554",
       "name": "节点-SQL",
       "font_class": "jiediansql",

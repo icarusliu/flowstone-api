@@ -1,13 +1,16 @@
 <!-- 标题栏 -->
 <template>
     <div class="space-between v-center mb-2">
-        <div class="page-title">{{ title }}</div>
+        <div class="page-title">
+            <span>{{ title }}</span>
+            <span class="color-remark font-sm ml-4 font-normal">{{ remark }}</span>
+        </div>
         <slot name="right"></slot>
     </div>
 </template>
 
 <script setup>
-defineProps(["title"])
+defineProps(["title", "remark"])
 </script>
 
 <style lang="scss" scoped>

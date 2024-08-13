@@ -30,3 +30,8 @@ export function testApi(method, path, params) {
         return https.post('/dua-test/' + path, params)
     }
 }
+
+// 查询接入方列表
+export function getSuppliers() {
+    return https.post('/base/supplier/query')
+}

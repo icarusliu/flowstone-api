@@ -50,7 +50,9 @@ public enum ErrorCodes implements BaseErrorCodes {
     API_CALL_ERROR("D01004", "接口调用异常"),
     API_PATH_DUPLIATED("D01005", "接口路径重复"),
     API_NOT_EXISTS("D01006", "接口不存在"),
-    DS_TABLE_NOT_EXISTS("D01002", "表不存在");
+    DS_TABLE_NOT_EXISTS("D01007", "表不存在"),
+
+    API_SUPPLIER_NOT_EXISTS("D01008", "接入方不存在");
 
     private final String code;
     private final String msg;

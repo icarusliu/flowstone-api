@@ -71,7 +71,6 @@ export function createDag(dom, popMenuRef) {
 
                 // 位置同时需要考虑butterfly-wrapper的位置
                 let parent = dom.parentElement
-                console.log(e, node, parent.style)
 
                 $(popMenuRef.value)
                     .css('left', e.offsetX + node.left + parseInt(parent.style.left || 0))
@@ -127,12 +126,13 @@ export function createDag(dom, popMenuRef) {
                     { id: 'right', orientation: [1, 0] },
                     { id: 'left', orientation: [-1, 0] },
                 ],
+                config: baseInfo.default || {}
             }
             // 添加新节点
             canvas.addNode(nodeInfo)
         },
 
-        getConfig() {
+        getNodes() {
             // 组装节点内容
             let { edges, nodes } = canvas.getDataMap()
             let resultNodes = []
@@ -162,20 +162,10 @@ export function createDag(dom, popMenuRef) {
                 nodeMap[target.id].parentIds.push(source.id)
             })
 
-            return {
-                nodes: resultNodes
-            }
+            return resultNodes
         },
 
-        loadConfig(config) {
-            if (!config) {
-                nodeSelected()
-                return
-            }
-
-            // 加载节点配置
-            let { nodes } = JSON.parse(config)
-
+        loadNodes(nodes) {
             if (!nodes) {
                 nodeSelected()
                 return
@@ -196,14 +186,13 @@ export function createDag(dom, popMenuRef) {
                     left: node.left,
                     Class: BaseNode,
                     endpoints: [
-                        { id: 'right', orientation: [1, 0] },
-                        { id: 'left', orientation: [-1, 0] },
+                        { id: 'right', orientation: [1, 0], type: 'source' },
+                        { id: 'left', orientation: [-1, 0], type: 'target' },
                     ],
                     config: node.config || {}
                 }
 
                 resultNode.config.filters = resultNode.config.filters || []
-
                 resultNodes.push(resultNode)
 
                 nodeMap[node.id] = resultNode
@@ -235,7 +224,6 @@ export function createDag(dom, popMenuRef) {
                     reselectNode(currentNode.value.id)
                 }
             })
-
         },
 
         removeNode(id) {
@@ -246,11 +234,6 @@ export function createDag(dom, popMenuRef) {
             canvas.removeNode(currentNode.value.id)
         },
         
-        // 获取节点列表
-        getNodes() {
-            return canvas.getDataMap().nodes
-        },
-
         // 获取当前节点的上级节点列表
         getCurrentUpNodes() {
             if (!currentNode.value) {
@@ -276,7 +259,17 @@ export function createDag(dom, popMenuRef) {
             let parentNodes = []
             findUp(currentNode.value.id, nodeMap, parentIds, parentNodes)
             return parentNodes
-        }
+        },
+
+        // 获取原始的节点、连线等数据
+        getOriginDataMap() {
+            return canvas.getDataMap()
+        },
+
+        // 设置当前选中的节点
+        selectNode(node) {
+            nodeSelected(node)
+        },
     }
 }
 

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4649727 */
-  src: url('iconfont.woff2?t=1723278211464') format('woff2'),
-       url('iconfont.woff?t=1723278211464') format('woff'),
-       url('iconfont.ttf?t=1723278211464') format('truetype');
+  src: url('iconfont.woff2?t=1723464283259') format('woff2'),
+       url('iconfont.woff?t=1723464283259') format('woff'),
+       url('iconfont.ttf?t=1723464283259') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-liushuixian-liushuixianx:before {
+  content: "\e73b";
 }
 
 .icon-jiediansql:before {

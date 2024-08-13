@@ -12,9 +12,11 @@ import lombok.Data;
 @Data
 public class NodeParam {
     private String key;
+
+    // 比较操作符，只在表类型条件时有效
     private FilterOp op;
 
-    // 参数类型，const/request/node，后续再扩展js、groovy
+    // 参数类型，const/request/node/js/groovy
     private String type;
 
     // 引用参数的节点编码

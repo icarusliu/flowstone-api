@@ -76,72 +76,89 @@
     <changeSet id="create-table-d_api" author="codeGenerator">
         <sql>
             create table d_api(
-                id varchar(64) not null primary key comment '主键',
-                type_id varchar(64) not null comment '分类id',
-                `content` text not null comment '接口配置',
-                name varchar(255) not null comment '接口名称',
-                remark varchar(255) comment '接口备注',
-                path varchar(255) not null comment '接口路径',
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time timestamp default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time timestamp on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            type_id varchar(64) not null comment '分类id',
+            `content` text not null comment '接口配置',
+            name varchar(255) not null comment '接口名称',
+            remark varchar(255) comment '接口备注',
+            path varchar(255) not null comment '接口路径',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             )
         </sql>
     </changeSet>
     <changeSet id="create-table-d_api_draft" author="codeGenerator">
         <sql>
             create table d_api_draft(
-                id varchar(64) not null primary key comment '主键',
-                type_id varchar(64) not null comment '分类id',
-                `content` text not null comment '接口配置',
-                name varchar(255) not null comment '接口名称',
-                remark varchar(255) comment '接口备注',
-                path varchar(255) not null comment '接口路径',
-                status int not null default 0 comment '发布状态，0：未发布； 1：已发布; 2：已修改未发布； 3：已下线',
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            type_id varchar(64) not null comment '分类id',
+            `content` text not null comment '接口配置',
+            name varchar(255) not null comment '接口名称',
+            remark varchar(255) comment '接口备注',
+            path varchar(255) not null comment '接口路径',
+            status int not null default 0 comment '发布状态，0：未发布； 1：已发布; 2：已修改未发布； 3：已下线',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             )
         </sql>
     </changeSet>
     <changeSet id="create-table-d_ds" author="codeGenerator">
         <sql>
             create table d_ds(
-                id varchar(64) not null primary key comment '主键',
-                code varchar(64) not null comment '数据源编码',
-                name varchar(128) not null comment '数据源名称',
-                type varchar(32) not null default 'mysql' comment '数据源类型',
-                url varchar(255) not null comment '数据源地址',
-                username varchar(64) not null comment '用户名',
-                password varchar(64) not null comment '密码',
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time timestamp default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time timestamp on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            code varchar(64) not null comment '数据源编码',
+            name varchar(128) not null comment '数据源名称',
+            type varchar(32) not null default 'mysql' comment '数据源类型',
+            url varchar(255) not null comment '数据源地址',
+            username varchar(64) not null comment '用户名',
+            password varchar(64) not null comment '密码',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             )
         </sql>
     </changeSet>
     <changeSet id="create-table-d_api_type" author="codeGenerator">
         <sql>
             create table d_api_type(
-                id varchar(64) not null primary key comment '主键',
-                name varchar(255) not null comment '名称',
-                sort integer default 0 comment '排序',
-                parent_id varchar(255),
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time timestamp default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time timestamp on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            name varchar(255) not null comment '名称',
+            sort integer default 0 comment '排序',
+            parent_id varchar(255),
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            )
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-d_api_supplier" author="codeGenerator">
+        <sql>
+            create table d_api_supplier(
+            id varchar(64) not null primary key comment '主键',
+            name varchar(255) not null comment '名称',
+            url varchar(255) not null comment '路径',
+            remark varchar(255) comment '备注',
+            auth_config text comment '鉴权配置',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             )
         </sql>
     </changeSet>

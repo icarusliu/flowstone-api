@@ -23,7 +23,7 @@ public class DuaController {
 
     @RequestMapping(value = "**", method = {RequestMethod.GET, RequestMethod.DELETE})
     public Object execute(
-            Map<String, Object> params
+            @RequestParam Map<String, Object> params
     ) {
         String key = request.getRequestURI().substring(5);
         return duaService.execute(key, params);

@@ -4,7 +4,7 @@ export const useSysStore = defineStore('sysStore', {
     state: () => {
         return {
             userInfo: {},
-            unReadMsgCount: 0
+            menuFolded: false
         }
     },
 
@@ -17,12 +17,13 @@ export const useSysStore = defineStore('sysStore', {
             return this.userInfo
         },
 
-        setUnReadMsgCount(c) {
-            this.unReadMsgCount = c
+        // 折叠菜单
+        reverseMenuFold() {
+            this.menuFolded = !this.menuFolded
         },
 
-        getUnReadMsgCount() {
-            return this.unReadMsgCount
+        getMenuFolded() {
+            return this.menuFolded
         }
     }
 })

@@ -18,7 +18,7 @@ class BaseNode extends Node {
             node.css('left', `${obj.left}px`);
         }
         node.attr("title", options.name);
-        node.html(options.name);
+        node.html(`<span><label>${options.name}</label><label>${options.code}</label></span>`);
         node.attr("class", "flow-node iconfont " + options.icon)
         return node[0];
     }

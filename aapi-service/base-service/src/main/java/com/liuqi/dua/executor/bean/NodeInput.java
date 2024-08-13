@@ -14,9 +14,4 @@ public class NodeInput {
      * 任务配置信息
      */
     private NodeInfo nodeInfo;
-
-    /**
-     * 运行上下文
-     */
-    private ApiExecutorContext context;
 }
