@@ -68,7 +68,7 @@ function doChange(field, val, row, idx) {
         return
     }
 
-    field.change(val, row, props.fields, idx)
+    field.change(val, row, { fields: props.fields, idx})
 }
 
 </script>

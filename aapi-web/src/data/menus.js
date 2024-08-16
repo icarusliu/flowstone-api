@@ -36,6 +36,9 @@ export default [
             path: '/base/user',
             name: '用户管理',
         },{
+            path: '/manager/schedule-task',
+            name: '定时任务',
+        },{
             path: '/logs/run',
             name: '运行日志',
         },

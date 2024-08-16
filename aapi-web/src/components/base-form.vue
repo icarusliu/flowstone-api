@@ -7,8 +7,8 @@
             <el-form-item v-for="field in fields" :label="field.label" :required="field.required"
                 v-show="field.type != 'operations'" :prop="field.prop">
                 <!-- 下拉 -->
-                <base-select v-if="field.type == 'select'" v-model="form[field.prop]"
-                    :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)"
+                <base-select v-if="field.type == 'select'" v-model="form[field.prop]" :value-key="field.valueKey"
+                    :disabled="field.editable == false || readonly" @change="(val, item) => onFieldChange(field, val, item)"
                     :options="field.options">
                 </base-select>
 
@@ -37,10 +37,13 @@
                 </template>
 
                 <!-- testarea -->
-                <el-input v-else-if="field.type == 'textarea'" type="textarea" :rows="field.rows"
-                    v-model="form[field.prop]" :disabled="field.editable == false || readonly"
-                    @change="val => onFieldChange(field, val)">
+                <el-input v-else-if="field.type == 'textarea'" type="textarea" :rows="field.rows" v-model="form[field.prop]"
+                    :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
                 </el-input>
+
+                <!-- Cron表达式编辑 -->
+                <cron-editor v-else-if="field.type == 'cron'" v-model="form[field.prop]"
+                  :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)"/>
 
                 <!-- 其它情况 -->
                 <el-input v-else v-model="form[field.prop]" :disabled="field.editable == false || readonly"
@@ -71,6 +74,7 @@ import { ref, watch, onMounted } from 'vue';
 import * as _ from 'lodash';
 import BaseSelect from './base-select.vue'
 import baseTreeSelect from './base-tree-select.vue'
+import CronEditor from './cron-editor.vue';
 
 const form = defineModel();
 const rules = ref({});
@@ -219,9 +223,12 @@ function getFormDefaultModel(fields) {
 }
 
 // 字段值变化事件 
-function onFieldChange(field, val) {
+function onFieldChange(field, val, item) {
     if (field.change) {
-        field.change(val, form.value, props.fields)
+        field.change(val, form.value, {
+            fields: props.fields,
+            item
+        })
     }
 }
 

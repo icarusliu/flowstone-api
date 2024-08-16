@@ -36,6 +36,9 @@ const routes = [
             }, {
                 path: '/base/user',
                 component: () => import('../views/base/user-manager.vue')
+            }, {
+                path: '/manager/schedule-task',
+                component: () => import('../views/manager/schedule-task.vue')
             }
         ]
     },

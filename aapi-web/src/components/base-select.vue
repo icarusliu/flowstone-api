@@ -11,11 +11,11 @@
 import { defineProps, defineEmits, ref, onMounted } from 'vue'
 import * as _ from 'lodash'
 
-const props = defineProps(["options"])
+const props = defineProps(["options", "valueKey"])
 const model = defineModel()
 const emits = defineEmits(["change"])
 const finalOptions = ref([])
-const valueKey = ref()
+const valueKey = ref(props.valueKey)
 
 onMounted(() => {
     loadOptions().then(resp => {
@@ -62,7 +62,10 @@ function loadOptions() {
     }
 }
 
-function doChanged() {
-    emits('change', ...arguments)
+function doChanged(val) {
+    // 需要匹配到整个对象，作为第二个参数
+    let item = _.find(finalOptions.value, item => item.value||item.id == val)
+
+    emits('change', val, item)
 }
 </script>

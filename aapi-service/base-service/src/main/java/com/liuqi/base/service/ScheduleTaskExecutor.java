@@ -7,6 +7,7 @@ import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.service.ApiService;
 import com.liuqi.dua.service.DuaService;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -33,6 +34,7 @@ import java.util.regex.Pattern;
  * @version V1.0
  **/
 @Component
+@Slf4j
 public class ScheduleTaskExecutor {
     @Autowired
     private ScheduleTaskService taskService;
@@ -71,6 +73,7 @@ public class ScheduleTaskExecutor {
     public void stopTask(String id) {
         Optional.ofNullable(scheduledFutureMap.get(id)).ifPresent(future -> future.cancel(true));
         taskService.updateStarted(id, false);
+        log.info("任务停止成功");
     }
 
     /**
@@ -107,6 +110,8 @@ public class ScheduleTaskExecutor {
         CronTask cronTask = new CronTask(createRunnable(api, taskInfo.getParams()), taskInfo.getCron());
         ScheduledFuture<?> future = threadPoolTaskScheduler.schedule(cronTask.getRunnable(), cronTask.getTrigger());
         scheduledFutureMap.put(id, future);
+
+        log.info("任务启动成功");
     }
 
     /**

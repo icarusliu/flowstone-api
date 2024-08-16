@@ -7,10 +7,18 @@
         <template #append>
             <el-table-column label="操作" :width="operationsWidth || '130px'">
                 <template #default="{ row, $index }">
+                    <slot name="prefixButtons" :row="row" :index="$index">
+                        <!-- 附加按钮 -->
+                    </slot>
+
+                    <!-- 操作按钮 -->
                     <slot name="rowButtons" :row="row" :index="$index">
                         <entity-manager-row-buttons :row="row" :index="$index" :tree="tree" :withEdit="withEdit"
                             :withDelete="withDelete" @addSub="addSub" @goEdit="goEdit" @doDelete="doDelete">
                         </entity-manager-row-buttons>
+                    </slot>
+                    <slot name="appendButtons" :row="row" :index="$index">
+                        <!-- 附加按钮 -->
                     </slot>
                 </template>
             </el-table-column>

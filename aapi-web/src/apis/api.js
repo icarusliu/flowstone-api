@@ -35,3 +35,12 @@ export function testApi(method, path, params) {
 export function getSuppliers() {
     return https.post('/base/supplier/query')
 }
+
+// 下拉使用的接口列表
+export function selectApi(params = {}) {
+    params.pageSize = 10
+    params.pageNo = 1
+    return https.post('/base/api/page-query', params).then(resp => {
+        return resp.records;
+    })
+}

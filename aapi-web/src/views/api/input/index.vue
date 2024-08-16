@@ -37,7 +37,7 @@ const fields = ref([
             { label: '小数', value: 'float' },
             { label: '数组', value: 'array' },
             { label: '对象', value: 'object' }
-        ], change: (val, row, fields, idx) => {
+        ], change: (val, row) => {
             // 非对象、数组类型时需要清空children
             if (val == 'array') {
                 row.children = [{ code: '*', name: '存储对象类型', type: 'string', readonly: true }]

@@ -229,8 +229,9 @@
             create table base_schedule_task(
                 id varchar(64) not null primary key comment '主键',
                 name varchar(255) not null comment '任务名称',
-                config varchar(512) not null comment '任务执行配置',
+                cron varchar(512) not null comment '任务执行配置',
                 api_id varchar(64) not null comment '调用接口',
+                api_name varchar(255) comment '接口名称',
                 remark varchar(255) comment '备注',
                 params varchar(1024) comment '任务调用参数',
                 status integer not null default 1 comment '任务状态，0: 停用；1：启用',

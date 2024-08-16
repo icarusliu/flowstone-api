@@ -63,11 +63,32 @@ public class ScheduleTaskController {
         ScheduleTaskDTO dto = new ScheduleTaskDTO();
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
+
+        executor.restartTask(req.getId());
+    }
+
+    @GetMapping("invalid/{id}")
+    public void setInvalid(@PathVariable("id") String id) {
+        executor.stopTask(id);
+        ScheduleTaskDTO dto = new ScheduleTaskDTO();
+        dto.setId(id);
+        dto.setStatus(0);
+        service.update(dto);
+    }
+
+    @GetMapping("valid/{id}")
+    public void setValid(@PathVariable("id") String id) {
+        ScheduleTaskDTO dto = new ScheduleTaskDTO();
+        dto.setId(id);
+        dto.setStatus(1);
+        service.update(dto);
+        executor.startTask(id);
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
     public void delete(@PathVariable("id") String id) {
+        executor.stopTask(id);
         service.delete(id);
     }
 

@@ -15,6 +15,7 @@ public class ScheduleTaskUpdateReq {
     private String name;
     private String cron;
     private String apiId;
+    private String apiName;
     private String remark;
     private Map<String, Object> params;
     private Integer status;
