@@ -18,7 +18,7 @@ export default ({ mode }) => {
       }
     },
     server: {
-      host: 'ui.sei.com.cn',
+      host: 'ui.ngq.com',
       port: 3000,
       proxy: {
         '/api/': {

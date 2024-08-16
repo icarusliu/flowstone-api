@@ -28,27 +28,28 @@ export default [
             // }
         ]
     },
-    // {
-    //     name: '系统管理',
-    //     path: '/setting',
-    //     icon: markRaw(Setting),
-    //     children: [{
-    //         path: '/logs/run',
-    //         name: '运行日志',
-    //     },{
-    //         path: '/logs/run',
-    //         name: '操作日志',
-    //     },{
-    //         path: '/logs/run',
-    //         name: '异常日志',
-    //     },
-    //     {
-    //         path: '/logs/run',
-    //         name: '接口导出',
-    //     }, {
-    //         path: '/logs/run',
-    //         name: '接口导入',
-    //     }
-    //     ]
-    // }
+    {
+        name: '系统管理',
+        path: '/setting',
+        icon: markRaw(Setting),
+        children: [{
+            path: '/base/user',
+            name: '用户管理',
+        },{
+            path: '/logs/run',
+            name: '运行日志',
+        },
+            // {
+            //     path: '/logs/operations',
+            //     name: '操作日志',
+            // },
+            // {
+            //     path: '/manager/export',
+            //     name: '接口导出',
+            // }, {
+            //     path: '/manager/import',
+            //     name: '接口导入',
+            // }
+        ]
+    }
 ]

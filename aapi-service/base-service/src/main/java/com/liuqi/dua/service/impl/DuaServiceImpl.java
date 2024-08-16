@@ -39,7 +39,7 @@ public class DuaServiceImpl implements DuaService {
         q.setKey(key);
         ApiDTO api = apiService.findOne(q).orElseThrow(MethodNotFoundException::new);
 
-        return dagExecutor.execute(api, params);
+        return dagExecutor.execute(api, params, false);
     }
 
     /**
@@ -59,6 +59,6 @@ public class DuaServiceImpl implements DuaService {
         ApiDTO apiDTO = new ApiDTO();
         BeanUtils.copyProperties(api, apiDTO);
 
-        return dagExecutor.execute(apiDTO, params);
+        return dagExecutor.execute(apiDTO, params, true);
     }
 }

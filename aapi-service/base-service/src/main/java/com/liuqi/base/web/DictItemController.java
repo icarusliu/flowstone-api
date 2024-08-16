@@ -13,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -27,27 +26,27 @@ public class DictItemController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
-    public Mono<Void> add(@RequestBody @Validated DictItemAddReq req) {
+    public void add(@RequestBody @Validated DictItemAddReq req) {
         DictItemDTO dto = new DictItemDTO();
         BeanUtils.copyProperties(req, dto);
         dictItemService.insert(dto);
-        return Mono.empty();
+       
     }
 
     @PutMapping("update")
     @Operation(summary = "更新")
-    public Mono<Void> update(@RequestBody DictItemUpdateReq req) {
+    public void update(@RequestBody DictItemUpdateReq req) {
         DictItemDTO dto = new DictItemDTO();
         BeanUtils.copyProperties(req, dto);
         dictItemService.update(dto);
-        return Mono.empty();
+       
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) {
         dictItemService.delete(id);
-        return Mono.empty();
+       
     }
 
     @PostMapping("page-query")

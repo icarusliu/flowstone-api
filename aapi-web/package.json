@@ -13,6 +13,7 @@
     "butterfly-dag": "^5.1.0-beta.38",
     "element-plus": "^2.7.2",
     "jquery": "^3.7.1",
+    "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.50.0",
     "pinia": "^2.1.7",

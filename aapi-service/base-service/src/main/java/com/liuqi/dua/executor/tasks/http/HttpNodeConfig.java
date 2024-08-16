@@ -34,4 +34,7 @@ public class HttpNodeConfig {
 
     // 请求头
     private List<NodeParam> headers;
+
+    // 是否启用批量处理
+    private Boolean batch;
 }

@@ -4,6 +4,7 @@ import {
 } from "element-plus";
 import router from '../router';
 import { useSysStore } from '../store'
+import * as tokenUtils from './token'
 
 axios.defaults.timeout = 20000; //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; //配置请求头
@@ -22,7 +23,7 @@ axios.interceptors.request.use((config) => {
         let url = config.url;
         if (config.params && !(config.params instanceof FormData)) {
             url += '?'
-            for(var k in config.params) {
+            for (var k in config.params) {
                 url += k + '=' + encodeURIComponent(config.params[k]) + '&'
             }
             url = url.substring(0, url.length - 1)

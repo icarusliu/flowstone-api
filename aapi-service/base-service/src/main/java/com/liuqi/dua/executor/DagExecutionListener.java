@@ -2,9 +2,12 @@ package com.liuqi.dua.executor;
 
 import com.github.dexecutor.core.ExecutionListener;
 import com.github.dexecutor.core.task.Task;
+import com.liuqi.common.utils.ExceptionUtils;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,6 +23,12 @@ public class DagExecutionListener implements ExecutionListener<NodeInput, Object
     private final AtomicInteger successCount = new AtomicInteger(0);
     private final AtomicInteger errorCount = new AtomicInteger(0);
     private final List<Exception> exceptions = new ArrayList<>(16);
+
+    private final ApiExecutorContext executorContext;
+
+    public DagExecutionListener(ApiExecutorContext executorContext) {
+        this.executorContext = executorContext;
+    }
 
     /**
      * Called on successful node execution
@@ -39,6 +48,7 @@ public class DagExecutionListener implements ExecutionListener<NodeInput, Object
      */
     @Override
     public void onError(Task<NodeInput, Object> task, Exception exception) {
+        executorContext.error("【" + task.getId().getNodeInfo().getCode() + "】节点执行异常：", ExceptionUtils.asString(exception));
         errorCount.incrementAndGet();
         exceptions.add(exception);
     }

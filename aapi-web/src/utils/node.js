@@ -1,13 +1,100 @@
 import { ElMessage } from 'element-plus'
+import * as _ from 'lodash'
 
 // 节点类型
 export const nodeTypes = [
-    { label: '表查询', code: 'table', icon: 'icon-table', default: {filters: []} },
-    { label: 'SQL', code: 'sql', icon: 'icon-jiediansql' },
-    { label: 'Http', code: 'http', icon: 'icon-http-', default: {method: 'get', params: [], body: [], headers: [], result: {type: '', converter: ''} }},
+    { label: '表查询', code: 'table', icon: 'icon-table', default: { params: [] } },
+    { label: 'SQL', code: 'sql', icon: 'icon-jiediansql', default: { params: [] } },
+    {
+        label: 'Http', code: 'http', icon: 'icon-http-', default: {
+            method: 'get',
+            params: [],
+            body: [],
+            headers: [],
+            result: { type: '', converter: '' },
+            batch: false
+        }
+    },
     { label: 'js', code: 'js', icon: 'icon-js' },
     { label: 'groovy', code: 'groovy', icon: 'icon-icon_Groovy' }
 ]
+
+// 加载通用的节点配置参数（使用NodeParam组件配置的参数）
+function loadCommonRequestParams(params, result = []) {
+    if (!params) {
+        return result
+    }
+
+    params.forEach(param => {
+        if (param.type == 'js') {
+            loadScriptRequestParams(param.value, result)
+            loadScriptRequestParams(param.value1, result)
+        } else if (param.type == 'request') {
+            param.value && result.push(param.value)
+            param.value1 && result.push(param.value1)
+        }
+    })
+
+    return result
+}
+
+/**
+ * 获取脚本中的请求参数引用
+ * @param {*} script 脚本内容
+ * @param {*} result 请求参数引用列表
+ * @returns 命中列表
+ */
+function loadScriptRequestParams(script, result = []) {
+    if (!script) {
+        return result
+    }
+
+    let arr = script.match(/(?<=[/. ]request.)[a-zA-Z0-9_]+/g)
+    arr && result.push(...arr)
+
+    return result
+}
+
+// 支持的节点集合
+const nodeMap = {
+    sql: {
+        validate: validateSqlNode,
+        loadParams: ({ config }, result) => loadCommonRequestParams(config.params, result)
+    },
+    table: {
+        validate: validateTableNode,
+        loadParams: ({ config }, result) => loadCommonRequestParams(config.params, result)
+    },
+    http: {
+        validate: validateHttpNode,
+        loadParams: ({ config }, result = []) => {
+            loadCommonRequestParams(config.params, result)
+            loadCommonRequestParams(config.headers, result)
+            loadCommonRequestParams(config.body, result)
+            loadCommonRequestParams(config.pathVariables, result)
+
+            return result
+        }
+    },
+    js: {
+        validate: validateJsNode,
+        loadParams: ({ config }, result = []) => {
+            return loadScriptRequestParams(config.js, result)
+        }
+    },
+    groovy: {
+        valdiate: validateGroovyNode,
+        loadParams: ({ config }, result = []) => {
+            return loadScriptRequestParams(config.groovy, result)
+        }
+    },
+    kafka: {
+        validate: validateKafkaNode,
+        loadParams: ({ config }, result) => {
+            return result
+        }
+    }
+}
 
 // 节点校验
 export function validateNodes(dag, callback) {
@@ -26,10 +113,10 @@ export function validateNodes(dag, callback) {
     for (var i in nodes) {
         let node = nodes[i]
         let options = node.options
-        
+
         if (!options.name) {
             return error(node, '节点名称不能为空')
-        } 
+        }
 
         if (!options.code) {
             return error(node, "节点编码不能为空")
@@ -40,43 +127,73 @@ export function validateNodes(dag, callback) {
         }
 
         // 根据不同类型检查节点参数
-        let validate
-        switch(options.type) {
-            case "sql": 
-                validate = validateSqlNode
-                break
-            case "table": 
-                validate = validateTableNode
-                break
-            case "http":
-                validate = validateHttpNode
-                break
-            case "kafka":
-                validate = validateKafkaNode
-                break
-            case "js":
-                validate = validateJsNode
-                break
-            case "groovy":
-                validate = validateGroovyNode
-                break
-            default:
-                console.error("未支持的节点类型")
-                return callback(true)
-        }
+        let validate = nodeMap[options.type]?.validate
 
         if (validate) {
-            if (!validate(options.config, options)) {
+            if (!validate(options)) {
                 return error(node)
-            } 
+            }
         }
     }
 
     return callback(true)
 }
 
+/**
+ * 从节点中加载请求参数，自动添加到测试数据中 
+ * @param {*} dag 流程节点信息
+ * @param {*} testData 测试数据
+ * @returns 
+ */
+export function loadParams(method, nodes, testData) {
+    if (!nodes) {
+        ElMessage.error("流程配置为空")
+        return callback(false)
+    }
+
+    let params = []
+    nodes.forEach(node => {
+        // 根据节点类型进行处理
+        const type = node.type
+        const nodeFunc = nodeMap[type]
+        if (nodeFunc && nodeFunc.loadParams) {
+            nodeFunc.loadParams(node, params)
+        }
+    })
+
+    if (!params || !params.length) {
+        return
+    }
+
+    if (method == 'get') {
+        // 加载已存在的参数值
+        let paramValue = {}
+        testData.params.forEach(param => {
+            paramValue[param.code] = param.value
+        })
+
+        testData.params = params.map(item => {
+            return {
+                code: item,
+                value: paramValue[item]
+            }
+        })
+    } else {
+        let oldBody = JSON.parse(testData.body || '{}')
+        if (!_.isObject(oldBody)) {
+            return
+        }
+
+        let body = {}
+        params.forEach(param => {
+            body[param] = oldBody[param]
+        })
+        testData.body = JSON.stringify(body)
+    }
+}
+
 // SQL节点校验
-function validateSqlNode(config, {name}) {
+function validateSqlNode({config, name}) {
     if (!config.ds) {
         return error(name, '未选择数据源')
     }
@@ -89,7 +206,7 @@ function validateSqlNode(config, {name}) {
 }
 
 // table节点校验
-function validateTableNode(config, {name}) {
+function validateTableNode({config, name}) {
     if (!config.ds) {
         return error(name, '未选择数据源')
     }
@@ -99,13 +216,13 @@ function validateTableNode(config, {name}) {
     }
 
     // 查询条件校验
-    let filters = config.filters
-    if (!filters) {
+    let params = config.params
+    if (!params) {
         return true
     }
 
-    for (var i in filters) {
-        let filter = filters[i]
+    for (var i in params) {
+        let filter = params[i]
         if (!filter.key) {
             return error(name, '查询条件中存在字段为空的记录')
         }
@@ -129,7 +246,7 @@ function validateTableNode(config, {name}) {
 }
 
 // JS节点校验
-function validateJsNode(config, {name}) {
+function validateJsNode({ config, name }) {
     if (!config.js) {
         return error(name, '脚本内容为空')
     }
@@ -138,7 +255,7 @@ function validateJsNode(config, {name}) {
 }
 
 // Groovy节点校验
-function validateGroovyNode(config, {name}) {
+function validateGroovyNode({ config, name }) {
     if (!config.groovy) {
         return error(name, '脚本内容为空')
     }
@@ -147,7 +264,7 @@ function validateGroovyNode(config, {name}) {
 }
 
 // http节点校验
-function validateHttpNode(config, {name}) {
+function validateHttpNode({ config, name }) {
     if (!config.supplier) {
         return error(name, '接入方不能为空')
     }
@@ -181,7 +298,7 @@ function validateHttpNode(config, {name}) {
 }
 
 // 参数校验
-function validateParams(params, name) {
+function validateParams({ config, name }) {
     if (!params || !params.length) {
         return true
     }
@@ -190,7 +307,7 @@ function validateParams(params, name) {
         const param = params[i]
         if (!param.value && param.value != 0) {
             return error(name, '路径参数值不能为空')
-        } 
+        }
 
         if (param.type == 'node' && !param.nodeCode) {
             // 来源是节点时，节点编码不能为空
@@ -211,6 +328,7 @@ function error(name, msg) {
 }
 
 // kafka节点校验
-function validateKafkaNode(config, {name}) {
+function validateKafkaNode({ config, name }) {
     return true
 }
+

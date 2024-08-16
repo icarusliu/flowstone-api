@@ -14,5 +14,6 @@ public class ApiUpdateReq {
     private String name;
     private String remark;
     private String path;
+    private String method;
     private String typeId;
 }

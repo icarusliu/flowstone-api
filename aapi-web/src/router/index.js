@@ -33,9 +33,16 @@ const routes = [
                 children: [
                     { path: '/logs/run', component: LogIndex }
                 ]
+            }, {
+                path: '/base/user',
+                component: () => import('../views/base/user-manager.vue')
             }
         ]
     },
+    {
+        path: '/login',
+        component: () => import('../views/base/login.vue')
+    }
 ]
 
 const router = createRouter({

@@ -54,6 +54,11 @@
     @extend .color-remark, .p-2, .br-1;
     background-color: #fafafa;
     border: 1px dashed #e8e8e8;
+    font-size: 13px;
+
+    .title {
+        color: var(--main_font_color);
+    }
 }
 
 // 应用内容面板
@@ -274,7 +279,7 @@
 }
 
 .text-normal {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 // 颜色

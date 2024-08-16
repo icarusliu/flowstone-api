@@ -35,21 +35,21 @@ const fields = ref([
     { label: '名称', prop: 'name', width: '200px' },
     { label: '路径', prop: 'path', width: '300px', converter: val => '/dua/' + val },
     {
-        label: '状态', prop: 'status', width: '120px', converter: val => {
+        label: '状态', prop: 'status', width: '100px', converter: val => {
             switch (val) {
                 case 0: return '未发布';
                 case 1: return '已发布';
-                case 2: return '已修改未发布';
+                case 2: return '已修改';
                 case 3: return '已下线';
                 default: return '未知'
             }
         }
     },
     { label: '备注', prop: 'remark' },
-    {label: '添加时间', prop: 'createTime', width: '120px', system: true}, 
-    {label: '修改时间', prop: 'updateTIme', width: '120px', system: true}, 
+    {label: '添加时间', prop: 'createTime', width: '150px', system: true}, 
+    {label: '修改时间', prop: 'updateTime', width: '150px', system: true}, 
     {
-        label: '操作', type: 'operations', width: '200px', buttons: [
+        label: '操作', type: 'operations', width: '130px', buttons: [
             { label: '详情', type: 'primary', action: goEdit },
             { label: '下线', type: 'danger', action: doOffline, visible: row => row.status == 1 || row.status == 2 },
             { label: '发布', type: 'success', action: doPublish, visible: row => row.status != 1 },

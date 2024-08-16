@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <config-panel class="config-panel" :dag="dag" v-if="dag" :editing="editing" />
+        <config-panel class="config-panel" :dag="dag" :inputParams="inputParams" v-if="dag" :editing="editing" />
     </div>
 </template>
 
@@ -36,7 +36,7 @@ import * as nodeUtils from '@/utils/node.js'
 
 const nodeTypes = ref(nodeUtils.nodeTypes)
 const canvasRef = ref()
-const props = defineProps(["editing"])
+const props = defineProps(["editing", "inputParams"])
 const dag = ref({})
 const popMenuRef = ref()
 const nodes = defineModel()

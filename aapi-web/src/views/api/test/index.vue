@@ -1,19 +1,12 @@
 <template>
     <!-- 接口测试 -->
     <el-form labelWidth="120px">
-        <el-form-item label="请求类型">
-            <el-radio-group v-model="formModel.method">
-                <el-radio label="GET" value="get" />
-                <el-radio label="POST" value="post" />
-            </el-radio-group>
+        <el-form-item label="查询参数" v-if="apiInfo.method == 'get'">
+            <QueryParams v-model="formModel.params" />
         </el-form-item>
 
-        <el-form-item label="查询参数" v-if="formModel.method == 'get'">
-            <QueryParams v-model="formModel.queryParams"/>
-        </el-form-item>
-
-        <el-form-item label="请求体" v-if="formModel.method == 'post'">
-            <MonacoEditor height="200px" v-model="formModel.body" language="json"/>
+        <el-form-item label="请求体" v-if="apiInfo.method == 'post'">
+            <MonacoEditor height="200px" v-model="formModel.body" language="json" />
         </el-form-item>
 
         <!-- <el-form-item label="请求头">
@@ -24,16 +17,30 @@
             <el-button type="primary" @click="doTest">测试</el-button>
         </div>
 
-        <template v-if="testResult">
-            <el-form-item label="测试结果">
-                <div v-if="testFailed">失败</div>
-                <div v-else>成功</div>
-            </el-form-item>
+        <div v-if="testResult" class="result mt-8 mb-8">
+            <div class="page-title mt-4">处理结果</div>
+            <div v-if="testFailed">失败</div>
+            <div v-else>成功</div>
 
-            <el-form-item label="处理结果">
-                <MonacoEditor height="600px" v-model="testResult" language="json"/>
-            </el-form-item>
-        </template>
+            <el-row :gutter="32" class="mt-8">
+                <el-col :span="12">
+                    <div class="page-title">返回数据</div>
+                    <MonacoEditor height="600px" v-model="testResult" language="json" />
+                </el-col>
+
+                <el-col :span="12">
+                    <div class="page-title">调试日志</div>
+                    <div class="logs p-2 h-100">
+                        <div v-for="log in logs" :key="log" class="mb-2" :class="{error: log.level == 'error'}">
+                            <span class="mr-1">{{ log.time }}</span>
+                            <span class="mr-1">{{ log.level }}</span>
+                            <span class="mr-1">{{ log.title }}</span>
+                            <p class="px-8" v-html="log.content"></p>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
     </el-form>
 </template>
 
@@ -43,17 +50,31 @@ import * as apiApis from '@/apis/api'
 import { ElMessage } from 'element-plus';
 import MonacoEditor from '@/components/monaco-editor.vue'
 import QueryParams from './query-params.vue';
+import * as nodeUtils from '@/utils/node.js'
 
 const initModel = {
-    method: 'get',
-    queryParams: [],
+    params: [],
     body: '{}',
     headers: '{}'
 }
 const formModel = ref(initModel)
 const props = defineProps(["apiInfo", "editing"])
-const testResult = ref()
+const testResult = ref("")
 const testFailed = ref(false)
+const logs = ref([])
+
+onMounted(() => {
+    window.websocket.addListener('apiTest', ({level, title, content, time}) => {
+        content = _.isString(content) ? content : JSON.stringify(content)
+        content = content.replace(/(\r\n)/g, '<br/>')
+        logs.value.push({
+            level,
+            title,
+            time,
+            content
+        })
+    })
+})
 
 // 解析保存的测试数据
 watch(() => props.apiInfo.content.testData, (val) => {
@@ -69,21 +90,21 @@ watch(() => props.apiInfo.content.testData, (val) => {
 
 // 进行接口测试
 function doTest() {
-    let params = {};
-    
-    if (formModel.value.method == 'post') {
+    let finalParams = {};
+
+    if (props.apiInfo.method == 'post') {
         // post请求
-        params = formModel.value.body || {}
+        finalParams = formModel.value.body || {}
     } else {
         // get请求
-        let queryParams = formModel.value.queryParams
-        if (queryParams) {
-            queryParams.forEach(param => {
+        let params = formModel.value.params
+        if (params) {
+            finalParams.forEach(param => {
                 params[param.code] = param.value
             })
         }
     }
-    apiApis.testApi(formModel.value.method, props.apiInfo.path, params).then(resp => {
+    apiApis.testApi(props.apiInfo.method, props.apiInfo.path, finalParams).then(resp => {
         ElMessage.success('测试成功')
         testResult.value = JSON.stringify(resp)
         testFailed.value = false
@@ -93,3 +114,21 @@ function doTest() {
     })
 }
 </script>
+
+<style lang="scss" scoped>
+.logs {
+    background-color: #222;
+    color: #ddd;
+    line-height: 22px;
+    height: 600px;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    .error {
+        color: #cc0000;
+    }
+}
+.result {
+    border-top: 1px solid #ddd;
+}
+</style>

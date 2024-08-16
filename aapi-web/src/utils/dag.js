@@ -78,6 +78,8 @@ export function createDag(dom, popMenuRef) {
                     .show()
             })
         })
+
+        nodeSelected(nodes[nodes.length - 1]);
     })
 
     function setEditing(editing) {
@@ -192,7 +194,6 @@ export function createDag(dom, popMenuRef) {
                     config: node.config || {}
                 }
 
-                resultNode.config.filters = resultNode.config.filters || []
                 resultNodes.push(resultNode)
 
                 nodeMap[node.id] = resultNode
@@ -228,6 +229,9 @@ export function createDag(dom, popMenuRef) {
 
         removeNode(id) {
             canvas.removeNode(id)
+            if (currentNode.value && currentNode.value.id == id) {
+                nodeSelected()
+            }
         },
 
         removeCurrent() {

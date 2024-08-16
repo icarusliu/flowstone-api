@@ -1,57 +1,36 @@
 <template>
     <!-- 基础数据表格 -->
-    <el-table :data="rows" row-key="id" default-expand-all border>
+    <el-table :data="rows" row-key="id" :default-expand-all="defaultExpandAll != false" border @rowClick="onRowClick"
+        ref="tableRef">
+        <el-table-column width="52px" label="序号" type="index" fixed />
+
         <el-table-column v-for="field in fields" :prop="field.prop" :key="field.prop" :label="field.label"
-            :fixed="field.fixed"
-            :width="field.width"
-            :type="field.type == 'expand' ? 'expand' : 'default'"
+            :fixed="field.fixed" :width="field.width" :type="field.type == 'expand' ? 'expand' : 'default'"
             :min-width="field.minWidth">
-            
-            <!-- 操作列 -->
-            <template v-if="field.type == 'operations'" #default="{ row }">
-                <template v-for="button in field.buttons">
-                    <el-link :type="button.type" v-if="!button.visible || button.visible(row)" @click="button.action(row)" class="mr-1">
-                        {{ button.label }}
-                    </el-link>
-                </template>
-            </template>
 
-            <!-- 可展开列，一般放第一列 -->
-            <template v-else-if="field.type == 'expand'" #default="{row}">
-                <base-render :content="field.render(row[field.prop], row)"/>
-            </template>
-
-            <!-- 带有渲染函数的列表 -->
-            <template v-else-if="field.render" #default="{row}">
-                <base-render :content="field.render(row[field.prop], row)"/>
-            </template>
-
-            <!-- 内容为html的列 -->
-            <template v-else-if="field.type == 'html'" #default="{row}">
-                <div v-html="row[field.prop]"></div>
-            </template>
-
-            <!-- 带有转换函数的列 -->
-            <template v-else-if="field.converter" #default="{ row }">
-                {{ field.converter(row[field.prop], row) }}
+            <template #default="{ row }">
+                <base-table-column :row="row" :field="field" />
             </template>
         </el-table-column>
+
+        <slot name="append"></slot>
     </el-table>
 
-    <el-pagination 
-        v-if="pageable != false"
-        :total="total" :pageNo="pageNo" layout="prev, pager, next" @change="pageChanged" background size="small" class="mt-2"/>
+    <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo" layout="prev, pager, next" @change="pageChanged"
+        background size="small" class="mt-2" />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import BaseRender from '@/components/base-render.js'
+import baseTableColumn from './base-table-column.vue';
 
-const props = defineProps(["dataSupplier", "fields", "params", "pageable"])
+const props = defineProps(["dataSupplier", "fields", "params", "pageable", "defaultExpandAll"])
 const total = ref(0)
 const rows = ref([])
 const pageNo = ref(0)
 const pageSize = ref(10)
+const emits = defineEmits(["rowClick"])
+const tableRef = ref()
 
 onMounted(() => {
     loadData()
@@ -113,7 +92,16 @@ function reload() {
     loadData()
 }
 
+function onRowClick(params) {
+    emits('rowClick', params)
+}
+
+function toggleRowExpansion(row, expanded) {
+    tableRef.value.toggleRowExpansion(row, expanded)
+}
+
 defineExpose({
-    reload
+    reload,
+    toggleRowExpansion
 })
 </script>

@@ -23,15 +23,6 @@
     <!-- 脚本编辑器 -->
     <ScriptDialog :lang="scriptType" v-model:visible="visible" v-model="row[field.prop]" :readonly="readonly">
     </ScriptDialog>
-    <!-- <el-dialog v-model="visible" :title="'脚本编辑_' + scriptType" :append-to-body="true" width="80%">
-        <monacoEditor height="65vh" v-model="script" :language="scriptType" />
-        <template #footer>
-            <div>
-                <el-link type="primary" class="mr-4" @click="visible = false">取消</el-link>
-                <el-button type="primary" @click="doSaveScript" :disabled="readonly">保存</el-button>
-            </div>
-        </template>
-    </el-dialog> -->
 </template>
 
 <script setup>
@@ -43,11 +34,15 @@ const scriptType = ref('javascript')
 const visible = ref(false)
 const is = computed(() => {
     let type = props.field.type
-    return getIs(type)
+    return getIs(type, props.row)
 })
 
 // 获取组件
-function getIs(type) {
+function getIs(type, row) {
+    if (type instanceof Function) {
+        type = type(row)
+    }
+
     if (type == 'select') {
         return baseSelect
     } else if (type == 'checkbox') {

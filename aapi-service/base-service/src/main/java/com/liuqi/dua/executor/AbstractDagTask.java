@@ -12,10 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 抽象任务实现
@@ -28,8 +25,6 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
     protected T nodeConfig;
 
     protected ApiExecutorContext executorContext;
-
-
 
     public AbstractDagTask(ApiExecutorContext executorContext, NodeInput input) {
         this.setId(input);
@@ -50,12 +45,54 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
      */
     @Override
     public Object execute() {
+        this.info("节点执行开始，节点信息：", getId().getNodeInfo());
+
         Object result = this.executeInternal();
+
+        this.info("节点执行结束，执行结果", result);
 
         String code = this.getId().getNodeInfo().getCode();
         executorContext.putOutput(code, result);
 
         return result;
+    }
+
+    /**
+     * 推送WebSocket消息
+     *
+     * @param title 消息标题
+     */
+    protected void info(String title) {
+        this.info(title, null);
+    }
+
+    /**
+     * 推送WebSocket消息
+     *
+     * @param title 消息标题，
+     * @param msg   消息内容
+     */
+    protected void info(String title, Object msg) {
+        executorContext.info("【" + getId().getNodeInfo().getCode() + "】" + title, msg);
+    }
+
+    /**
+     * 推送异常消息
+     *
+     * @param title 消息标题
+     */
+    protected void error(String title) {
+        this.error(title, null);
+    }
+
+    /**
+     * 推送异常消息
+     *
+     * @param title 标题
+     * @param msg   内容
+     */
+    protected void error(String title, Object msg) {
+        executorContext.error("【" + getId().getNodeInfo().getCode() + "】" + title, msg);
     }
 
     public abstract Object executeInternal();
@@ -73,11 +110,8 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
         // 需要补充整个请求的参数
         Map<String, Object> params = new HashMap<>(outputs);
         Map<String, Object> requestParams = context.getRequestParams();
-        if (null != requestParams) {
-            params.put("request", requestParams);
-        } else {
-            params.put("request", new HashMap<>());
-        }
+
+        params.put("request", Objects.requireNonNullElseGet(requestParams, HashMap::new));
 
         return params;
     }

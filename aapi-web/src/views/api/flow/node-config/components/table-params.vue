@@ -17,7 +17,7 @@ import editTable from '@/components/edit-table.vue';
 import * as apiApis from '@/apis/api.js'
 
 const data = defineModel()
-const props = defineProps(["ds", "table", "readonly", "title", "dag"])
+const props = defineProps(["ds", "table", "readonly", "title", "dag", "inputParams"])
 const tableFields = ref([])
 const fields = ref([
     {
@@ -30,9 +30,7 @@ const fields = ref([
 
             row.value = val
         },
-        options: () => {
-            return tableFields.value
-        }
+        options: tableFields
     },
     {
         label: '操作符', prop: 'op', width: '110px', type: 'select', options: [
@@ -59,7 +57,7 @@ const fields = ref([
         ], disabled: (val, row) => {
             let op = row.op
             return op == 'null' || op == 'notNull'
-        }, 
+        },
         class: 'd-flex',
         mainClass: 'flex-auto mr-1',
         subClass: 'flex-auto',
@@ -89,6 +87,16 @@ const fields = ref([
         mainClass: 'flex-auto mr-1',
         subClass: 'flex-auto',
         placeholder: '参数一',
+        type: (row) => {
+            // 如果类型是输入参数，并且配置了输入参数，那么需要从输入参数中选择
+            return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'select' : 'input'
+        },
+        options: () => (props.inputParams || []).map(item => {
+            return {
+                label: item.name,
+                value: item.code
+            }
+        }),
         script: (row) => {
             if (row.type == 'js' || row.type == 'groovy') {
                 return row.type
@@ -100,7 +108,17 @@ const fields = ref([
             placeholder: '参数二',
             prop: 'value1', disabled: (val, row) => row.op != 'between',
             script: row => row.type == 'js' || row.type == 'groovy' ? row.type : '',
-            show: (row) => row.op == 'between'
+            show: (row) => row.op == 'between',
+            type: (row) => {
+                // 如果类型是输入参数，并且配置了输入参数，那么需要从输入参数中选择
+                return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'select' : 'input'
+            },
+            options: () => (props.inputParams || []).map(item => {
+                return {
+                    label: item.name,
+                    value: item.code
+                }
+            }),
         }
     },
 ])
@@ -120,6 +138,10 @@ watch(() => props.table, (val, oldVal) => {
         data.value = []
     }
 
+    if (!props.ds || !props.table) {
+        return
+    }
+
     apiApis.listTableFields(props.ds, props.table).then(resp => {
         tableFields.value = resp.map(item => {
             return {
@@ -127,8 +149,6 @@ watch(() => props.table, (val, oldVal) => {
                 value: item
             }
         })
-
-        fields.value[0].options = tableFields.value
     })
 }, {
     immediate: true

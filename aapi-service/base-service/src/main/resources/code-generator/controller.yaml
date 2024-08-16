@@ -20,7 +20,6 @@ imports:
   - org.springframework.web.bind.annotation.RequestBody
   - org.springframework.web.bind.annotation.PathVariable
   - org.springframework.web.bind.annotation.RestController
-  - reactor.core.publisher.Mono
   - org.springframework.validation.annotation.Validated
   - com.baomidou.mybatisplus.core.metadata.IPage
   - com.liuqi.common.base.bean.query.DynamicQuery
@@ -35,33 +34,30 @@ template: "@RestController
   
   @PostMapping(\"add\")
   @Operation(summary = \"新增\")
-  public Mono<Void> add(@RequestBody @Validated $T$AddReq req) {
+  public void add(@RequestBody @Validated $T$AddReq req) {
   $T$DTO dto = new $T$DTO();
   BeanUtils.copyProperties(req, dto);
   service.insert(dto);
-  return Mono.empty();
   }
   
   @PutMapping(\"update\")
   @Operation(summary = \"更新\")
-  public Mono<Void> update(@RequestBody @Validated $T$UpdateReq req) {
+  public void update(@RequestBody @Validated $T$UpdateReq req) {
   $T$DTO dto = new $T$DTO();
   BeanUtils.copyProperties(req, dto);
   service.update(dto);
-  return Mono.empty();
   }
   
   @DeleteMapping(\"delete/{id}\")
   @Operation(summary = \"删除\")
-  public Mono<Void> delete(@PathVariable(\"id\") String id) {
+  public void delete(@PathVariable(\"id\") String id) {
   service.delete(id);
-  return Mono.empty();
   }
   
   @GetMapping(\"detail/{id}\")
   @Operation(summary = \"根据id查找记录\")
-  public Mono<$T$DTO> findById(@PathVariable(\"id\") String id) {
-    return Mono.justOrEmpty(service.findById(id).orElse(null));
+  public $T$DTO findById(@PathVariable(\"id\") String id) {
+    return service.findById(id).orElse(null);
   }
   
   

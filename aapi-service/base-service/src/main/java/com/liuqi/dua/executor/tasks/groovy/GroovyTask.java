@@ -6,6 +6,8 @@ import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.AbstractDagTask;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+
 /**
  * Groovy任务
  *
@@ -25,6 +27,11 @@ public class GroovyTask extends AbstractDagTask<GroovyTaskConfig> {
      */
     @Override
     public Object executeInternal() {
-        return GroovyUtils.execute(this.nodeConfig.getGroovy(), this.getNodeExecuteParams());
+        String script = this.nodeConfig.getGroovy();
+        Map<String, Object> params = this.getNodeExecuteParams();
+
+        this.info("Groovy脚本执行参数：{}", params);
+
+        return GroovyUtils.execute(script, params);
     }
 }

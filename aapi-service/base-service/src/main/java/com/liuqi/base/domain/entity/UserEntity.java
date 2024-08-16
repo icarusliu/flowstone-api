@@ -1,10 +1,10 @@
 package com.liuqi.base.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler;
 import com.liuqi.base.bean.enums.UserStatus;
 import com.liuqi.common.base.domain.entity.BaseEntity;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,8 +14,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString
-@Builder
-@TableName("base_user")
+@TableName(value = "base_user", autoResultMap = true)
 public class UserEntity extends BaseEntity {
     private String username;
 
@@ -31,6 +30,7 @@ public class UserEntity extends BaseEntity {
 
     private String photo;
 
+    @TableField(typeHandler = Fastjson2TypeHandler.class)
     private Map<String, Object> metadata;
 
     private String ext1;

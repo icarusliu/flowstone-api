@@ -1,14 +1,20 @@
 package com.liuqi.common.annotations;
 
-import java.lang.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 管理员鉴权，被注解的方法只有管理员可使用
+ * 管理员权限
  *
- * @author LiuQi 18:00
+ * @author  LiuQi 2024/8/15-15:54
+ * @version V1.0
  **/
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
+@PreAuthorize("hasRole('ADMIN')")
 public @interface AuthAdmin {
 }

@@ -14,6 +14,7 @@ public class ApiDTO extends BaseDTO {
     private String name;
     private String remark;
     private String path;
+    private String method;
     private String typeId;
     private String typeName;
 }

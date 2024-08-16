@@ -1,14 +1,13 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.base.service.UserService;
 import com.liuqi.base.bean.dto.UserDTO;
 import com.liuqi.base.bean.query.UserQuery;
 import com.liuqi.base.bean.req.UserAddReq;
 import com.liuqi.base.bean.req.UserUpdateReq;
-import com.liuqi.common.annotations.NoAuth;
+import com.liuqi.base.service.UserService;
 import com.liuqi.common.base.bean.query.DynamicQuery;
-import com.liuqi.common.utils.UserContextHolder;
+import com.liuqi.common.bean.UserContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -36,27 +34,27 @@ public class UserController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
-    public Mono<Void> add(@RequestBody @Validated UserAddReq req) {
+    public void add(@RequestBody @Validated UserAddReq req) {
         UserDTO dto = UserDTO.builder().build();
         BeanUtils.copyProperties(req, dto);
         userService.insert(dto);
-        return Mono.empty();
+       
     }
 
     @PutMapping("update")
     @Operation(summary = "更新")
-    public Mono<Void> update(@RequestBody @Validated UserUpdateReq req) {
+    public void update(@RequestBody @Validated UserUpdateReq req) {
         UserDTO dto = UserDTO.builder().build();
         BeanUtils.copyProperties(req, dto);
         userService.update(dto);
-        return Mono.empty();
+       
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) {
         userService.delete(id);
-        return Mono.empty();
+       
     }
 
     @PostMapping("page-query")
@@ -79,14 +77,13 @@ public class UserController {
 
     @GetMapping("info")
     @Operation(summary = "当前登录用户信息")
-    @NoAuth
-    public Mono<UserDTO> getCurrentUserInfo() {
+    public UserDTO getCurrentUserInfo() {
         String userId = UserContextHolder.getUserId().orElse("");
         if (StringUtils.isEmpty(userId)) {
-            return Mono.just(UserDTO.builder().build());
+            return UserDTO.builder().build();
         }
         UserDTO user = userService.findById(userId).orElse(UserDTO.builder().build());
         user.setPassword(null);
-        return Mono.just(user);
+        return user;
     }
 }

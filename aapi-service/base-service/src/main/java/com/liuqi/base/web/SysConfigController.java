@@ -12,7 +12,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -26,28 +25,28 @@ public class SysConfigController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
-    public Mono<Void> add(@RequestBody @Validated SysConfigAddReq req) {
+    public void add(@RequestBody @Validated SysConfigAddReq req) {
         SysConfigDTO dto = new SysConfigDTO();
         BeanUtils.copyProperties(req, dto);
         dto.setEnabled(true);
         sysConfigService.insert(dto);
-        return Mono.empty();
+       
     }
 
     @PutMapping("update")
     @Operation(summary = "更新")
-    public Mono<Void> update(@RequestBody SysConfigUpdateReq req) {
+    public void update(@RequestBody SysConfigUpdateReq req) {
         SysConfigDTO dto = new SysConfigDTO();
         BeanUtils.copyProperties(req, dto);
         sysConfigService.update(dto);
-        return Mono.empty();
+       
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) {
         sysConfigService.delete(id);
-        return Mono.empty();
+       
     }
 
     @GetMapping("list")

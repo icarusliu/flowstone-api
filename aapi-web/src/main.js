@@ -9,7 +9,9 @@ import EntityManager from './components/entity-manager.vue'
 import TitleBar from './components/title-bar.vue'
 import { createPinia } from 'pinia'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-
+import { startWebSocket } from '@/utils/ws.js'
+import { useSysStore } from './store'
+import * as loginApis from '@/apis/login'
 
 const app = createApp(App)
 
@@ -18,13 +20,27 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 const pinia = createPinia()
-
 app
     .component('BaseForm', BaseForm)
     .component('BaseTable', BaseTable)
     .component('EntityManager', EntityManager)
     .component('titleBar', TitleBar)
     .use(pinia)
-    .use(router)
-    .use(elementPlus)
-    .mount('#app')
+
+
+// 获取初始化信息
+loginApis.getUserInfo().then(resp => {
+    const sysStore = useSysStore()
+    sysStore.setUserInfo(resp)
+
+    // 启动websocket
+    window.websocket = startWebSocket()
+
+    app.use(elementPlus)
+        .use(router)
+        .mount('#app')
+}).catch(() => {
+    app.use(elementPlus)
+        .use(router)
+        .mount('#app')
+})

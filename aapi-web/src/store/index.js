@@ -14,7 +14,7 @@ export const useSysStore = defineStore('sysStore', {
         },
 
         getUserInfo() {
-            return this.userInfo
+            return this.userInfo || {}
         },
 
         // 折叠菜单

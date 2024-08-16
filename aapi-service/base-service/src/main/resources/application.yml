@@ -45,31 +45,9 @@ spring:
           password: ${mysql.pwd}
 
   security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080
-      authorizationserver:
-        client:
-          oidc-client:
-            registration:
-              client-id: "test"
-              client-secret: "{noop}test"
-              client-authentication-methods:
-                - "client_secret_basic"
-              authorization-grant-types:
-                - "authorization_code"
-                - "refresh_token"
-              redirect-uris:
-                - "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
-              post-logout-redirect-uris:
-                - "http://127.0.0.1:8080/"
-              scopes:
-                - "openid"
-                - "test"
-                - "message.read"
-                - "message.write"
-            require-authorization-consent: true
+    type: security
+  main:
+    allow-circular-references: true
 
 knife4j:
   enable: true

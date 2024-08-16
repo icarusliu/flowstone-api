@@ -53,6 +53,10 @@ export default defineComponent({
   watch: {
     modelValue(val) {
       val !== this.getEditor()?.getValue() && this.updateMonacoVal(val)
+    },
+
+    editorOptions(val) {
+      this.editor && this.editor.updateOptions({readOnly: val.readOnly})
     }
   },
   setup(props) {
@@ -66,6 +70,13 @@ export default defineComponent({
       onFormatDoc
     }
   },
+
+  data() {
+    return {
+      editor: null
+    }
+  },
+
   methods: {
     updateMonacoVal(_val?: string) {
       const { modelValue, preComment } = this.$props
@@ -84,6 +95,8 @@ export default defineComponent({
       monacoEditor!.onDidBlurEditorText(() => {
         this.$emit('blur')
       })
+
+      this.editor = monacoEditor
     }
   }
 })

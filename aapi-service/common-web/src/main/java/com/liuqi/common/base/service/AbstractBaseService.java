@@ -14,7 +14,7 @@ import com.liuqi.common.base.domain.entity.BaseEntity;
 import com.liuqi.common.base.domain.mapper.BaseMapper;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.exception.CommErrorCodes;
-import com.liuqi.common.utils.UserContextHolder;
+import com.liuqi.common.bean.UserContextHolder;
 import liquibase.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -65,11 +65,11 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     protected void setCreateFields(D dto) {
         UserContextHolder.get()
                 .ifPresent(user -> {
-                    dto.setCreateUser(user.getDisplayName());
-                    dto.setCreateTime(LocalDateTime.now());
-                    dto.setDeleted(false);
+                    dto.setCreateUser(user.getNickname());
                     dto.setTenantId(user.getTenantId());
                 });
+        dto.setCreateTime(LocalDateTime.now());
+        dto.setDeleted(false);
     }
 
     @Override
@@ -121,10 +121,8 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      */
     protected void setUpdateFields(D dto) {
         UserContextHolder.get()
-                .ifPresent(user -> {
-                    dto.setUpdateUser(user.getDisplayName());
-                    dto.setUpdateTime(LocalDateTime.now());
-                });
+                .ifPresent(user -> dto.setUpdateUser(user.getNickname()));
+        dto.setUpdateTime(LocalDateTime.now());
     }
 
     /**

@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -26,27 +25,27 @@ public class OperationController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
-    public Mono<Void> add(@RequestBody OperationAddReq req) {
+    public void add(@RequestBody OperationAddReq req) {
         OperationDTO dto = new OperationDTO();
         BeanUtils.copyProperties(req, dto);
         service.insert(dto);
-        return Mono.empty();
+       
     }
 
     @PutMapping("update")
     @Operation(summary = "更新")
-    public Mono<Void> update(@RequestBody OperationUpdateReq req) {
+    public void update(@RequestBody OperationUpdateReq req) {
         OperationDTO dto = new OperationDTO();
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
-        return Mono.empty();
+       
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) {
         service.delete(id);
-        return Mono.empty();
+       
     }
 
     @PostMapping("page-query")

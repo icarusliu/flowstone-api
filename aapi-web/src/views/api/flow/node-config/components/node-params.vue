@@ -5,10 +5,12 @@
             <template #right>
                 <el-link type="primary" @click="newRow" :disabled="readonly" v-if="showAdd != false">新增</el-link>
             </template>
+            <template #remark>
+                <slot name="remark"></slot>
+            </template>
         </title-bar>
         <edit-table v-model="data" :fields="fields" :defRow="defRow" :readonly="readonly" :showNew="false" rowKey="id"
-            :showOperations="showOperations"
-            operationWidth="60px" ref="tableRef">
+            :showOperations="showOperations" operationWidth="60px" ref="tableRef">
         </edit-table>
     </div>
 </template>
@@ -16,14 +18,20 @@
 <script setup>
 import editTable from '@/components/edit-table.vue';
 
-const props = defineProps(['readonly', "dag", "title", "remark", "showAdd", "showOperations"])
+const props = defineProps(['readonly', "dag", "title", "remark", "showAdd", "showOperations", "inputParams"])
 const data = defineModel()
 const defRow = ref({
     type: 'request'
 })
 const tableRef = ref()
 const fields = ref([
-    { label: '参数', prop: 'key', disabled: () => props.showOperations == false },
+    {
+        label: '参数', prop: 'key', disabled: () => props.showOperations == false, change: (val, row) => {
+            if (!row.value && (row.type == 'request' || row.type == 'node')) {
+                row.value = val
+            }
+        }
+    },
     {
         label: '参数来源', prop: 'type', width: '120px', type: 'select', options: [
             { label: '常量', value: 'const' },
@@ -58,6 +66,17 @@ const fields = ref([
             label: '参数值', prop: 'value', disabled: (val, row) => {
                 return row.op == 'null' || row.op == 'notNull'
             },
+
+            type: (row) => {
+                // 如果类型是输入参数，并且配置了输入参数，那么需要从输入参数中选择
+                return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'select' : 'input'
+            },
+            options: () => (props.inputParams || []).map(item => {
+                return {
+                    label: item.name,
+                    value: item.code
+                }
+            }),
 
             script: (row) => {
                 if (row.type == 'js' || row.type == 'groovy') {

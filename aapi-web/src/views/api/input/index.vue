@@ -1,7 +1,8 @@
 <!-- 输入参数配置 -->
 <template>
-    <div>
+    <div class="v-center">
         <el-button type="primary" @click="addRow" :disabled="!editing">新增</el-button>
+        <div class="color-remark ml-4">输入参数可不配置，默认会取请求参数中的所有参数当成输入参数</div>
     </div>
 
     <div id="listParams">

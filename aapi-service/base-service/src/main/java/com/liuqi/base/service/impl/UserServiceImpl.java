@@ -2,22 +2,29 @@ package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.liuqi.base.service.UserService;
 import com.liuqi.base.bean.dto.UserDTO;
 import com.liuqi.base.bean.enums.UserStatus;
 import com.liuqi.base.bean.query.UserQuery;
-import com.liuqi.common.ErrorCodes;
 import com.liuqi.base.domain.entity.UserEntity;
 import com.liuqi.base.domain.mapper.UserMapper;
 import com.liuqi.base.service.DeptUserService;
 import com.liuqi.base.service.UserRoleService;
+import com.liuqi.base.service.UserService;
+import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.bean.UserContext;
 import com.liuqi.common.exception.AppException;
+import com.liuqi.common.exception.AuthErrorCodes;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static com.liuqi.common.ErrorCodes.BASE_USER_PHONE_EXISTS;
@@ -30,6 +37,9 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
     @Autowired
     private DeptUserService deptUserService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDTO toDTO(UserEntity entity) {
         UserDTO dto = UserDTO.builder().build();
@@ -39,7 +49,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserEntity toEntity(UserDTO dto) {
-        UserEntity entity = UserEntity.builder().build();
+        UserEntity entity = new UserEntity();
         BeanUtils.copyProperties(dto, entity);
         return entity;
     }
@@ -70,11 +80,14 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
         }
 
         if (StringUtils.isEmpty(dto.getPassword())) {
-            dto.setPassword("abcd@1234");
+            dto.setPassword(username);
         }
 
         dto.setIsSuperAdmin(false);
         dto.setStatus(UserStatus.VALID);
+
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+
 
         return true;
     }
@@ -127,4 +140,30 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
                 .or(q -> q.eq("phone", phone));
         return this.count(query) > 0;
     }
+
+    @Override
+    public UserContext loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.findByUsername(username)
+                .map(user -> {
+                    UserContext userContext = new UserContext();
+                    BeanUtils.copyProperties(user, userContext);
+                    userContext.setUserId(user.getId());
+
+                    // 补充用户权限相关内容，包括：用户身份及用户角色相关信息
+                    List<SimpleGrantedAuthority> authorityList = new ArrayList<>(16);
+                    userContext.setAuthorities(authorityList);
+                    if (user.getIsSuperAdmin()) {
+                        // 兼容hasAuthority及hasRole两种使用方式
+                        authorityList.add(new SimpleGrantedAuthority("admin"));
+                        authorityList.add(new SimpleGrantedAuthority("ROLE_admin"));
+                    } else {
+                        authorityList.add(new SimpleGrantedAuthority("user"));
+                    }
+
+                    // 补充权限信息 // 暂不实现
+
+                    return userContext;
+                }).orElseThrow(() -> AppException.of(AuthErrorCodes.USERNAME_OR_PASSWORD_ERROR));
+    }
+
 }

@@ -20,7 +20,7 @@ const fields = ref([
     { label: 'URL', prop: 'url', required: true },
     { label: '用户名', prop: 'username', required: true, width: '80px' },
     {label: '添加时间', prop: 'createTime', width: '150px', system: true}, 
-    {label: '修改时间', prop: 'updateTIme', width: '150px', system: true}, 
+    {label: '修改时间', prop: 'updateTime', width: '150px', system: true}, 
 ])
 
 </script>

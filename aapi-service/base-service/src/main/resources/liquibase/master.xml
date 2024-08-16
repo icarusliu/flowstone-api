@@ -53,6 +53,40 @@
             );
         </sql>
     </changeSet>
+
+    <changeSet id="init-user-role" author="test">
+        <sql>
+            create table base_user_role(
+            id varchar(64) not null primary key,
+            user_id varchar(64) not null comment '用户id',
+            role_id varchar(64) not null comment '角色id',
+            tenant_id varchar(32),
+            create_user varchar(64),
+            create_time timestamp default current_timestamp,
+            update_user varchar(64),
+            update_time timestamp default current_timestamp on update current_timestamp,
+            deleted int(1) default 0
+            );
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="init-dept-user" author="test">
+        <sql>
+            create table base_dept_user(
+            id varchar(64) not null primary key,
+            user_id varchar(64) not null comment '用户id',
+            dept_id varchar(64) not null comment '机构id',
+            tenant_id varchar(32),
+            create_user varchar(64),
+            create_time timestamp default current_timestamp,
+            update_user varchar(64),
+            update_time timestamp default current_timestamp on update current_timestamp,
+            deleted int(1) default 0
+            );
+        </sql>
+    </changeSet>
+
     <changeSet id="create-table-base_menu" author="codeGenerator">
         <sql>
             create table base_menu(
@@ -160,6 +194,34 @@
             update_time timestamp on update current_timestamp comment '更新时间',
             deleted int(1) default 0 comment '是否删除'
             )
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-d_api_log" author="codeGenerator">
+        <sql>
+            create table d_api_log(
+            id varchar(64) not null primary key comment '主键',
+            api_id varchar(64) not null,
+            api_path varchar(128) not null,
+            api_name varchar(255) not null,
+            status integer default 0 comment '状态',
+            params varchar(1000) comment '接口调用参数',
+            error_msg varchar(1000) comment '简短异常信息',
+            result text comment '存储结果或异常详细信息',
+            spent_time int default 0 comment '耗时',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-method" author="liuqi">
+        <sql>
+            alter table d_api add column method varchar(64) default 'get' comment '方法';
+            alter table d_api_draft add column method varchar(64) default 'get' comment '方法';
         </sql>
     </changeSet>
 </databaseChangeLog>

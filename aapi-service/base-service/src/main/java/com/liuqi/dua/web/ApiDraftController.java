@@ -16,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -40,36 +39,34 @@ public class ApiDraftController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
-    public Mono<ApiDraftDTO> add(@RequestBody @Validated ApiDraftAddReq req) {
+    public ApiDraftDTO add(@RequestBody @Validated ApiDraftAddReq req) {
         ApiDraftDTO dto = new ApiDraftDTO();
         BeanUtils.copyProperties(req, dto);
         dto.setStatus(0);
-        return Mono.just(service.insert(dto));
+        return service.insert(dto);
     }
 
     @PutMapping("update")
     @Operation(summary = "更新")
-    public Mono<Void> update(@RequestBody @Validated ApiDraftUpdateReq req) {
+    public void update(@RequestBody @Validated ApiDraftUpdateReq req) {
         ApiDraftDTO dto = new ApiDraftDTO();
         BeanUtils.copyProperties(req, dto);
         if (dto.getStatus() == 1) {
             dto.setStatus(2);
         }
         service.update(dto);
-        return Mono.empty();
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) {
         service.delete(id);
-        return Mono.empty();
     }
 
     @GetMapping("detail/{id}")
     @Operation(summary = "根据id查找记录")
-    public Mono<ApiDraftDTO> findById(@PathVariable("id") String id) {
-        return Mono.justOrEmpty(service.findById(id).orElse(null));
+    public ApiDraftDTO findById(@PathVariable("id") String id) {
+        return service.findById(id).orElse(null);
     }
 
     @PostMapping("page-query")

@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class DeptUserController {
 
     @GetMapping("add/{deptId}")
     @Operation(summary = "新增")
-    public Mono<Void> add(@PathVariable("deptId") String deptId,
+    public void add(@PathVariable("deptId") String deptId,
                           @RequestParam("userIds") String userIdsStr) {
         List<String> userIds = Arrays.asList(userIdsStr.split(","));
         List<DeptUserDTO> dtos = userIds.stream().map(userId -> {
@@ -38,19 +37,19 @@ public class DeptUserController {
         }).collect(Collectors.toList());
         service.insert(dtos);
 
-        return Mono.empty();
+       
     }
 
     @DeleteMapping("delete/{deptId}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("deptId") String deptId,
+    public void delete(@PathVariable("deptId") String deptId,
                              @RequestParam(value = "userIds", required = false) String userIds) {
         if (StringUtils.isEmpty(userIds)) {
             service.deleteByDept(Collections.singleton(deptId));
         } else {
             service.deleteDeptUsers(deptId, Arrays.asList(userIds.split(",")));
         }
-        return Mono.empty();
+       
     }
 
     @PostMapping("page-query")

@@ -7,10 +7,13 @@ import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInfo;
 import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.AbstractDagTask;
+import com.liuqi.dua.executor.bean.NodeParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +32,17 @@ public class SqlTask extends AbstractDagTask<SqlNodeConfig> {
     @Override
     public Object executeInternal() {
         NodeInput task = this.getId();
-        return this.executeInternal(task, getNodeExecuteParams());
+
+        // 参数解析，如果节点配置了参数，那么以配置的参数为准，否则以默认的输入参数、上级参数为准
+        Map<String, Object> params;
+        List<NodeParam> nodeParams = this.getNodeConfig().getParams();
+        if (!CollectionUtils.isEmpty(nodeParams)) {
+            params = this.getNodeParamValues(nodeParams);
+        } else {
+            params = this.getNodeExecuteParams();
+        }
+
+        return this.executeInternal(task, params);
     }
 
     /**
@@ -62,6 +75,9 @@ public class SqlTask extends AbstractDagTask<SqlNodeConfig> {
                 if (StringUtils.isBlank(sql)) {
                     continue;
                 }
+
+                this.info("准备执行SQL", sql);
+                this.info("SQL执行参数", params);
 
                 String key = "dagSqlTask-" + task.getNodeInfo().getId();
                 resp = DynamicSqlHelper.executeSql(key, sql, params);

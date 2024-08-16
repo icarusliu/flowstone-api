@@ -17,7 +17,7 @@ public class TableNodeConfig {
     private String table;
 
     // 过滤条件，字段配置，配置每个字段是模糊还是精确等
-    private List<NodeParam> filters;
+    private List<NodeParam> params;
 
     // 是否分页
     private Boolean pageable;

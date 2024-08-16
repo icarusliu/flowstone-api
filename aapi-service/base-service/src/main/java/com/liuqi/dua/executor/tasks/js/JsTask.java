@@ -30,10 +30,14 @@ public class JsTask extends AbstractDagTask<JsTaskConfig> {
     public Object executeInternal() {
         String js = this.nodeConfig.getJs();
         if (StringUtils.isBlank(js)) {
+            this.error("脚本内容为空");
             return null;
         }
 
         Map<String, Object> params = this.getNodeExecuteParams();
+
+        this.info("脚本执行参数", params);
+
         return JsUtils.execute(js, params);
     }
 }

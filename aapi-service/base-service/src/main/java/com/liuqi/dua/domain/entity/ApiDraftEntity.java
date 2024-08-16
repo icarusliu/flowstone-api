@@ -19,6 +19,7 @@ public class ApiDraftEntity extends BaseEntity {
     private String name;
     private String remark;
     private String path;
+    private String method;
     private String typeId;
     private Integer status;
 }

@@ -15,5 +15,6 @@ public class ApiDraftUpdateReq {
     private String remark;
     private String path;
     private String typeId;
+    private String method;
     private Integer status;
 }

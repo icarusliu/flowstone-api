@@ -16,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -40,33 +39,30 @@ public class ApiController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
-    public Mono<Void> add(@RequestBody @Validated ApiAddReq req) {
+    public void add(@RequestBody @Validated ApiAddReq req) {
         ApiDTO dto = new ApiDTO();
         BeanUtils.copyProperties(req, dto);
         service.insert(dto);
-        return Mono.empty();
     }
 
     @PutMapping("update")
     @Operation(summary = "更新")
-    public Mono<Void> update(@RequestBody @Validated ApiUpdateReq req) {
+    public void update(@RequestBody @Validated ApiUpdateReq req) {
         ApiDTO dto = new ApiDTO();
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
-        return Mono.empty();
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
-    public Mono<Void> delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) {
         service.delete(id);
-        return Mono.empty();
     }
 
     @GetMapping("detail/{id}")
     @Operation(summary = "根据id查找记录")
-    public Mono<ApiDTO> findById(@PathVariable("id") String id) {
-        return Mono.justOrEmpty(service.findById(id).orElse(null));
+    public ApiDTO findById(@PathVariable("id") String id) {
+        return service.findById(id).orElse(null);
     }
 
     @PostMapping("page-query")

@@ -34,6 +34,7 @@ const type = computed(() => {
   .right-content {
     position: relative;
     height: calc(100% - 80px);
+    overflow-y: auto;
   }
 }
 

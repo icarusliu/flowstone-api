@@ -11,8 +11,8 @@
     </el-descriptions>
 
     <div class="p-2">
-        <table-params title="查询条件" v-model="model.filters" :readonly="!editing"
-            :table="model.table" :ds="model.ds" :dag="dag"></table-params>
+        <table-params title="查询条件" v-model="model.params" :readonly="!editing"
+            :table="model.table" :ds="model.ds" :dag="dag" :inputParams="inputParams"></table-params>
     </div>
 </template>
 
@@ -21,7 +21,7 @@ import dsSelect from './components/ds-select.vue';
 import * as apiApis from '@/apis/api.js'
 import tableParams from './components/table-params.vue';
 
-const props = defineProps(["dag", "editing"])
+const props = defineProps(["dag", "editing", "inputParams"])
 const tables = ref([])
 onMounted(() => {
     let ds = model.value.ds

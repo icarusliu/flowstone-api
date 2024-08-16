@@ -5,16 +5,17 @@
 
         <el-tabs class="mt-4 tabs" finish-status="success" v-model="activeTab" @tab-change="tabChange">
             <el-tab-pane label="基础信息" name="base">
-                <base-form :fields="fields" v-model="formModel" class="form" :readonly="!editing" ref="formRef"/>
+                <base-form :fields="fields" v-model="formModel" class="form" :readonly="!editing" ref="formRef" />
             </el-tab-pane>
-            <el-tab-pane label="输入配置" name="input">
-                <inputParams v-model="formModel.content.inputParams" :editing="editing" v-if="loaded" ref="inputRef"/>
-            </el-tab-pane>
+            <!-- <el-tab-pane label="输入配置" name="input">
+                <inputParams v-model="formModel.content.inputParams" :editing="editing" v-if="loaded" ref="inputRef" />
+            </el-tab-pane> -->
             <el-tab-pane label="处理流程" name="flow">
-                <apiFlow v-model="formModel.content.nodes" ref="flowRef" :editing="editing" v-if="loaded"/>
+                <apiFlow v-model="formModel.content.nodes" :inputParams="formModel.content.inputParams" ref="flowRef"
+                    :editing="editing" v-if="loaded" />
             </el-tab-pane>
             <el-tab-pane label="接口测试" v-if="!editing" name="test">
-                <apiTest :apiInfo="formModel" :editing="editing"  v-if="loaded"/>
+                <apiTest :apiInfo="formModel" :editing="editing" v-if="loaded" />
             </el-tab-pane>
         </el-tabs>
 
@@ -41,10 +42,15 @@ import apiTest from './test/index.vue'
 import inputParams from './input/index.vue'
 import * as apiApis from '@/apis/api'
 import { useRouter } from 'vue-router'
+import * as nodeUtils from '@/utils/node'
 
 const router = useRouter()
 const fields = ref([
     { label: '接口名称', prop: 'name', required: true },
+    { label: '接口类型', prop: 'method', required: true, type: 'select', options: [
+        {label: 'GET', value: 'get'},
+        {label: 'POST', value: 'post'},
+    ] },
     { label: '接口路径', prop: 'path', required: true, prepend: '/dua/' },
     { label: '接口分类', prop: 'typeId', required: true, type: 'tree-select', options: loadTypes },
     { label: '接口备注', prop: 'remark', type: 'textarea', rows: 6 },
@@ -58,12 +64,13 @@ const loaded = ref(false)
 
 const flowRef = ref()
 const formRef = ref()
-const inputRef = ref()
+// const inputRef = ref()
 
 watch(() => router.currentRoute.value.query?.id, val => {
     if (!val) {
         editing.value = true
         formModel.value = {
+            method: 'get',
             content: {
                 nodes: [],
                 testData: {},
@@ -94,10 +101,10 @@ function getApiInfo() {
 
             if (!resp.content.nodes) {
                 resp.content.nodes = []
-            } 
+            }
             if (!resp.content.testData) {
                 resp.content.testData = {}
-            } 
+            }
 
             if (!resp.content.inputParams) {
                 resp.content.inputParams = []
@@ -133,24 +140,27 @@ function doSave() {
             return
         }
 
-        // 输入参数校验
-        inputRef.value.validate((resp) => {
+        flowRef.value.validate((resp) => {
             if (!resp) {
-                activeTab.value = 'input'
+                activeTab.value = 'flow'
                 return
             }
 
-            flowRef.value.validate((resp) => {
-                if (!resp) {
-                    activeTab.value = 'flow'
-                    return
-                }
+            doSaveInternal()
 
-                doSaveInternal()
-            })
+            // 输入参数校验
+            // inputRef.value.validate((resp) => {
+            //     if (!resp) {
+            //         activeTab.value = 'input'
+            //         return
+            //     }
+
+            //     doSaveInternal()
+            // })
         })
+
     })
-    
+
 }
 
 // 参数校验通过后执行真正的保存动作
@@ -159,6 +169,10 @@ function doSaveInternal() {
 
     let nodes = flowRef.value.getNodes()
     newData.content.nodes = nodes
+
+    // 自动加载节点引用的请求参数并保存到测试参数中
+    nodeUtils.loadParams(formModel.value.method, nodes, newData.content.testData)
+    let content = newData.content
 
     newData.content = JSON.stringify(newData.content)
     entityApis.save('/base/api-draft', newData).then((resp) => {
@@ -172,7 +186,7 @@ function doSaveInternal() {
         } else {
             formModel.value.status = 2
         }
-        formModel.value.content.nodes = nodes
+        formModel.value.content = content
         originModel = _.cloneDeep(formModel.value)
         editing.value = false
     })

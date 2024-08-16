@@ -3,12 +3,24 @@
     <div class="mb-2" v-if="withNew != false">
         <el-button type="primary" @click="newItem()">新增</el-button>
     </div>
-    <base-table :fields="fields" :dataSupplier="dataSupplier" :pageable="!tree" ref="tableRef"/>
+    <base-table :fields="fields" :dataSupplier="dataSupplier" :pageable="!tree" ref="tableRef">
+        <template #append>
+            <el-table-column label="操作" :width="operationsWidth || '130px'">
+                <template #default="{ row, $index }">
+                    <slot name="rowButtons" :row="row" :index="$index">
+                        <entity-manager-row-buttons :row="row" :index="$index" :tree="tree" :withEdit="withEdit"
+                            :withDelete="withDelete" @addSub="addSub" @goEdit="goEdit" @doDelete="doDelete">
+                        </entity-manager-row-buttons>
+                    </slot>
+                </template>
+            </el-table-column>
+        </template>
+    </base-table>
 
     <!-- 新增或编辑界面 -->
     <el-drawer v-model="visible" :title="title" :close-on-click-modal="false" :close-on-press-escape="false">
         <base-form :fields="newFields" v-model="formModel" labelPosition="top" ref="formRef" />
-
+        <slot name="newRemark" v-if="!formModel.id"></slot>
         <template #footer>
             <div class="text-right">
                 <el-link type="primary" class="mr-2" @click="visible = false">取消</el-link>
@@ -23,6 +35,7 @@ import * as entityApis from '@/apis/entity.js'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref, onMounted, reactive } from 'vue'
 import * as _ from 'lodash'
+import EntityManagerRowButtons from './entity-manager-row-buttons.vue'
 
 const props = defineProps(["fields", "apiPrefix", "withDelete", "withEdit", "withNew", "tree", "operationsWidth"])
 const visible = ref(false)
@@ -32,7 +45,6 @@ const formModel = ref({})
 const formRef = ref()
 const tableRef = ref()
 const defModel = ref({})
-let hasOperation = false;
 
 onMounted(() => {
     if (!props.fields) {
@@ -51,29 +63,6 @@ onMounted(() => {
             defModel.value[field.prop] = field.default
         }
     })
-
-    if (!hasOperation) {
-        const buttons = []
-        if (props.tree) {
-            buttons.push({ label: '添加', type: 'primary', action: addSub })
-        }
-        if (props.withEdit != false) {
-            buttons.push({ label: '编辑', type: 'primary', action: goEdit })
-        }
-        if (props.withDelete != false) {
-            buttons.push({ label: '删除', type: 'danger', action: doDelete })
-        }
-
-        // 补充按钮 
-        props.fields.push({
-            label: '操作',
-            type: 'operations',
-            buttons,
-            width: props.operationsWidth || '120px',
-            fixed: 'right'
-        })
-        hasOperation = true
-    }
 })
 
 // 添加子元素
@@ -129,4 +118,9 @@ function doSave() {
         })
     })
 }
+
+defineExpose({
+    goEdit,
+    doDelete
+})
 </script>

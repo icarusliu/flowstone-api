@@ -60,6 +60,8 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
             }
 
             log.debug("待执行SQL：{}", sql);
+            this.info("待执行SQL", sql);
+            this.info("执行参数", params);
 
             return DynamicSqlHelper.executeSql(key, sql, params);
         } finally {
@@ -81,7 +83,7 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
         sb.append("select * from ")
                 .append(table)
                 .append(" where 1 = 1 ");
-        List<NodeParam> filters = config.getFilters();
+        List<NodeParam> filters = config.getParams();
 
         // 获取字段信息
         TableInfo tableInfo = TableInfoHelper.getTableInfo(table);

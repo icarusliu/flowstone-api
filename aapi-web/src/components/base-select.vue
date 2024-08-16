@@ -9,6 +9,7 @@
 
 <script setup>
 import { defineProps, defineEmits, ref, onMounted } from 'vue'
+import * as _ from 'lodash'
 
 const props = defineProps(["options"])
 const model = defineModel()
@@ -21,6 +22,17 @@ onMounted(() => {
         finalOptions.value = resp;
     })
 })
+
+
+if (_.isArray(props.options)) {
+    // 防止数据出现变化时未重新加载
+    // 但函数返回的数据出现变化时，暂时不能进行监听与处理，尤其是异步函数
+    watch(() => props.options, () => {
+        finalOptions.value = props.options
+    }, {
+        deep: true
+    })
+}
 
 function loadOptions() {
     const options = props.options;

@@ -7,18 +7,19 @@ import com.github.dexecutor.core.ExecutionConfig;
 import com.github.dexecutor.core.graph.Node;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.exception.AppException;
+import com.liuqi.common.bean.UserContextHolder;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.executor.bean.ApiConfig;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInfo;
 import com.liuqi.dua.executor.bean.NodeInput;
+import com.liuqi.dua.service.ApiLogService;
+import com.liuqi.ws.WebSocketService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -49,18 +50,31 @@ public class DagExecutor implements ApplicationContextAware {
 
     @Autowired(required = false)
     private HttpServletResponse response;
+
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private WebSocketService webSocketService;
+
+    @Autowired
+    private ApiLogService apiLogService;
 
     /**
      * 执行接口任务
      *
      * @param api           接口信息
      * @param requestParams 请求参数
+     * @param isTest        是否是在接口测试中
      * @return 处理结果
      */
-    public Object execute(ApiDTO api, Map<String, Object> requestParams) {
+    public Object execute(ApiDTO api, Map<String, Object> requestParams, boolean isTest) {
+        Long startTime = System.currentTimeMillis();
         String content = api.getContent();
         if (StringUtils.isEmpty(content)) {
+            apiLogService.addErrorLog(api, requestParams, "接口定义异常，节点配置为空");
+            if (isTest) {
+                webSocketService.error("apiTest", "接口内容体为空");
+            }
             throw AppException.of(ErrorCodes.API_CONTENT_EMPTY);
         }
 
@@ -68,6 +82,10 @@ public class DagExecutor implements ApplicationContextAware {
         ApiConfig apiConfig = JSON.parseObject(content, ApiConfig.class);
         List<NodeInfo> nodeInfoList = apiConfig.getNodes();
         if (CollectionUtils.isEmpty(nodeInfoList)) {
+            apiLogService.addErrorLog(api, requestParams, "接口定义异常，节点配置为空");
+            if (isTest) {
+                webSocketService.error("apiTest", "接口未配置任何节点");
+            }
             throw AppException.of(ErrorCodes.API_NODES_EMPTY);
         }
 
@@ -79,6 +97,14 @@ public class DagExecutor implements ApplicationContextAware {
         context.setNodes(nodeInfoList);
         context.setRequestParams(requestParams);
         context.setApplicationContext(applicationContext);
+        context.setIsTest(isTest);
+        context.setWebSocketService(webSocketService);
+        UserContextHolder.get().ifPresent(context::setUserContext);
+
+        if (isTest) {
+            webSocketService.info("apiTest", "接口测试开始");
+            webSocketService.info("apiTest", "接口上下文", context);
+        }
 
         // 转换成任务输入对象
         List<NodeInput> nodes = nodeInfoList.stream().map(node -> {
@@ -87,7 +113,7 @@ public class DagExecutor implements ApplicationContextAware {
             return nodeInput;
         }).collect(Collectors.toList());
 
-        DagExecutionListener listener = new DagExecutionListener();
+        DagExecutionListener listener = new DagExecutionListener(context);
         DexecutorConfig<NodeInput, Object> config = new DexecutorConfig<>(executionService, new DagTaskProvider(context), listener);
         DefaultDexecutor<NodeInput, Object> executor = new DefaultDexecutor<>(config);
 
@@ -100,6 +126,11 @@ public class DagExecutor implements ApplicationContextAware {
         // 如果存在异常，则进行抛出
         List<Exception> exceptions = listener.getExceptions();
         if (!CollectionUtils.isEmpty(exceptions)) {
+            if (isTest) {
+                webSocketService.error("apiTest", "接口执行失败");
+            }
+
+            apiLogService.addErrorLog(api, requestParams, "接口执行失败", exceptions);
             throw AppException.of(ErrorCodes.API_CALL_ERROR);
         }
 
@@ -108,9 +139,18 @@ public class DagExecutor implements ApplicationContextAware {
         Collection<Node<NodeInput, Object>> processedNodes = config.getDexecutorState().getProcessedNodes();
         List<Node<NodeInput, Object>> endNodes = processedNodes.stream().filter(node -> CollectionUtils.isEmpty(node.getOutGoingNodes()))
                 .toList();
+        long spentTime = System.currentTimeMillis() - startTime;
         if (endNodes.size() == 1) {
             // 只有一个最终节点，将其结果做返回结果
-            return endNodes.get(0).getResult();
+            Object result = endNodes.get(0).getResult();
+            if (isTest) {
+                webSocketService.info("apiTest", "接口执行成功，返回结果", result);
+                webSocketService.info("apiTest", "执行耗时", spentTime);
+            }
+
+            apiLogService.addSuccessLog(api, requestParams, result, spentTime);
+
+            return result;
         } else {
             // 多个节点，那么以节点编码做key，组成成Map返回
             Map<String, Object> result = new HashMap<>(16);
@@ -122,6 +162,13 @@ public class DagExecutor implements ApplicationContextAware {
                     result.put(nodeCode, nodeResult);
                 }
             });
+
+            if (isTest) {
+                webSocketService.info("apiTest", "接口执行成功，返回结果", result);
+                webSocketService.info("apiTest", "执行耗时", spentTime);
+            }
+
+            apiLogService.addSuccessLog(api, requestParams, result, spentTime);
 
             return result;
         }
