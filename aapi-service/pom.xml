@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>aapi-service-parent</name>
-	<description>模板工程</description>
+	<description>流石API管理工具</description>
 	<modules>
 		<module>common-web</module>
 		<module>base-service</module>
