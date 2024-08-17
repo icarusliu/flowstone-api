@@ -1,0 +1,19 @@
+name: $T$
+dir: resources/vue
+comment: "页面"
+template: '<template>
+    <div class="page-title">$NAME$管理</div>
+            <entity-manager :fields="fields" apiPrefix="/base/$PATH$" :tree="false"></entity-manager>
+  </template>
+  
+  <script setup>
+  import { ref } from "vue"
+  
+  const fields = ref([
+  $$$loopFields
+  {label: "$FIELD_NAME$", prop: "$FIELD_PROP$"},
+  $$$
+  {label: "添加时间", prop: "createTime", width: "200px", system: true},
+  {label: "修改时间", prop: "updateTime", width: "200px", system: true},
+])
+  </script>'
