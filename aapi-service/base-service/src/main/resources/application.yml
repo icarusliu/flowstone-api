@@ -1,11 +1,6 @@
 server:
   port: 8080
 
-application:
-  security:
-    domain: ngq.com
-    ignored-urls: /favicon.ico,/test,/test/**/*,/doc.html,/webjars/**/*,/v3/api-docs/**/*,/v3/api-docs,/swagger-ui.html
-
 spring:
   profiles:
     active: dev
@@ -46,6 +41,7 @@ spring:
 
   security:
     type: security
+    domain: ngq.com
   main:
     allow-circular-references: true
 

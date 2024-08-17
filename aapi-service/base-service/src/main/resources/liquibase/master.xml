@@ -34,7 +34,7 @@
         <sql>
             alter table base_user add column nickname varchar(64) comment '姓名';
             insert into base_user(id, username, password, phone, is_super_admin, tenant_id, nickname)
-            values('QIQINIUBI', 'admin', 'admin@(IJN', '13973111891', 1, 'sys', 'admin');
+            values('QIQINIUBI', 'admin', '$2a$10$/eAkf76RWkJEDO3SR1dEnO7QRgpLn3dViFpT2GY/hvxU.CBVc/ue.', '13973111891', 1, 'sys', 'admin');
         </sql>
     </changeSet>
 
