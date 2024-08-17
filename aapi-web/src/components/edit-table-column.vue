@@ -27,6 +27,7 @@
 
 <script setup>
 import baseSelect from '@/components/base-select.vue'
+import BaseAutoComplete from '@/components/base-autocomplete.vue'
 import ScriptDialog from './script-dialog.vue'
 
 const props = defineProps(["field", "row", "readonly", "index"])
@@ -44,7 +45,9 @@ function getIs(type, row) {
     }
 
     if (type == 'select') {
-        return baseSelect
+        return baseSelect 
+    } else if (type == 'autocomplete') {
+        return BaseAutoComplete
     } else if (type == 'checkbox') {
         return 'el-checkbox'
     } else {

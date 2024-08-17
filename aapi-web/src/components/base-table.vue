@@ -72,6 +72,10 @@ function loadData() {
     queryParams.pageSize = pageSize.value
 
     let result = props.dataSupplier(queryParams)
+    if (!result) {
+        return Promise.resolve([])
+    }
+
     if (!result.then) {
         result = Promise.resolve(result)
     }

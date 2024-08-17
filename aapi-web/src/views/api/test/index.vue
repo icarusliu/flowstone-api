@@ -2,15 +2,15 @@
     <!-- 接口测试 -->
     <el-form labelWidth="120px">
         <el-form-item label="查询参数" v-if="apiInfo.method == 'get'">
-            <QueryParams v-model="formModel.params" />
+            <QueryParams v-model="model.params" />
         </el-form-item>
 
         <el-form-item label="请求体" v-if="apiInfo.method == 'post'">
-            <MonacoEditor height="200px" v-model="formModel.body" language="json" />
+            <MonacoEditor height="200px" v-model="model.body" language="json" />
         </el-form-item>
 
         <!-- <el-form-item label="请求头">
-            <MonacoEditor height="200px" v-model="formModel.headers" language="json"/>
+            <MonacoEditor height="200px" v-model="model.headers" language="json"/>
         </el-form-item> -->
 
         <div class="text-center mb-4">
@@ -24,7 +24,10 @@
 
             <el-row :gutter="32" class="mt-8">
                 <el-col :span="12">
-                    <div class="page-title">返回数据</div>
+                    <div class="page-title v-center">
+                        <span>返回数据</span>
+                        <el-link type="primary" class="ml-4" @click="doSaveExample" v-if="!testFailed">保存成示例</el-link>
+                    </div>
                     <MonacoEditor height="600px" v-model="testResult" language="json" />
                 </el-col>
 
@@ -51,17 +54,14 @@ import { ElMessage } from 'element-plus';
 import MonacoEditor from '@/components/monaco-editor.vue'
 import QueryParams from './query-params.vue';
 import * as nodeUtils from '@/utils/node.js'
+import * as jsonUtils from '@/utils/json'
 
-const initModel = {
-    params: [],
-    body: '{}',
-    headers: '{}'
-}
-const formModel = ref(initModel)
 const props = defineProps(["apiInfo", "editing"])
 const testResult = ref("")
 const testFailed = ref(false)
 const logs = ref([])
+const emits = defineEmits(["save"])
+const model = defineModel()
 
 onMounted(() => {
     window.websocket.addListener('apiTest', ({level, title, content, time}) => {
@@ -76,17 +76,6 @@ onMounted(() => {
     })
 })
 
-// 解析保存的测试数据
-watch(() => props.apiInfo.content.testData, (val) => {
-    if (!val) {
-        return
-    }
-
-    _.defaults(val, initModel)
-    formModel.value = val
-}, {
-    immediate: true
-})
 
 // 进行接口测试
 function doTest() {
@@ -94,13 +83,13 @@ function doTest() {
 
     if (props.apiInfo.method == 'post') {
         // post请求
-        finalParams = formModel.value.body || {}
+        finalParams = model.value.testData.body || {}
     } else {
         // get请求
-        let params = formModel.value.params
+        let params = model.value.testData.params
         if (params) {
-            finalParams.forEach(param => {
-                params[param.code] = param.value
+            params.forEach(param => {
+                finalParams[param.code] = param.value
             })
         }
     }
@@ -112,6 +101,33 @@ function doTest() {
         testFailed.value = true
         testResult.value = JSON.stringify(err)
     })
+}
+
+// 保存示例及输入输出参数
+function doSaveExample() {
+    let result = testResult.value
+    if (!result) {
+        ElMessage.warning("内容为空")
+        return
+    }
+
+    // 列表只取第一个元素
+    result = JSON.parse(result)
+    if (_.isArray(result) && result.length > 1) {
+        result = result[0]
+    } else if (_.isObject(result)) {
+        // object处理第一层数据
+        _.forIn(result, (v, k) => {
+            if (_.isArray(v) && v.length > 1) {
+                result.put(k, v[0])
+            }   
+        })
+    }
+
+    let params = jsonUtils.loadJsonSchema(result)
+    model.value.output = params || []
+    model.value.outputExample = JSON.stringify(result)
+    emits('save', false)
 }
 </script>
 

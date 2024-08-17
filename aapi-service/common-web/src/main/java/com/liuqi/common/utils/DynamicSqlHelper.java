@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 动态SQL实现
@@ -109,11 +110,31 @@ public class DynamicSqlHelper {
                     log.debug("查询结果：{}", result);
                 }
 
+                list = result.getRecords().stream().map(item -> {
+                    // key转换
+                    Map<String, Object> map = new HashMap<>(16);
+                    item.forEach((k, v) -> {
+                        k = StringUtils.underlineToCamel(k);
+                        map.put(k, v);
+                    });
+                    return map;
+                }).collect(Collectors.toList());
+                result.setRecords(list);
+
                 return  result;
             }
 
             // 查询
-            return sqlSession.selectList(key, params);
+            List<Map<String, Object>> map = sqlSession.selectList(key, params);
+
+            return map.stream().map(item -> {
+                Map<String, Object> newMap = new HashMap<>(16);
+                item.forEach((k, v) -> {
+                    k = StringUtils.underlineToCamel(k);
+                    newMap.put(k, v);
+                });
+                return newMap;
+            }).collect(Collectors.toList());
         }
     }
 

@@ -89,7 +89,7 @@ const fields = ref([
         placeholder: '参数一',
         type: (row) => {
             // 如果类型是输入参数，并且配置了输入参数，那么需要从输入参数中选择
-            return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'select' : 'input'
+            return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'autocomplete' : 'input'
         },
         options: () => (props.inputParams || []).map(item => {
             return {

@@ -51,8 +51,10 @@ public class ApiDraftController {
     public void update(@RequestBody @Validated ApiDraftUpdateReq req) {
         ApiDraftDTO dto = new ApiDraftDTO();
         BeanUtils.copyProperties(req, dto);
-        if (dto.getStatus() == 1) {
-            dto.setStatus(2);
+        if (req.getChangeStatus()) {
+            if (dto.getStatus() == 1) {
+                dto.setStatus(2);
+            }
         }
         service.update(dto);
     }

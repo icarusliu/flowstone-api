@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="login-box">
-            <h1 class="color-primary">欢迎使用流水API管理工具</h1>
+            <h1 class="color-primary">欢迎使用流石API管理工具</h1>
             <div class="content">
                 <div class="sub-title">
                     <span class="title font-bold">

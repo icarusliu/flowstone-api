@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -136,6 +137,11 @@ public class ApiExecutorContext {
         }
 
         // 解析请求头信息
+        if (null == RequestContextHolder.getRequestAttributes()) {
+            // 内部调用时，request不为空，但实际没有请求，会报错
+            return;
+        }
+
         Enumeration<String> enumeration = request.getHeaderNames();
         while (enumeration.hasMoreElements()) {
             String key = enumeration.nextElement();

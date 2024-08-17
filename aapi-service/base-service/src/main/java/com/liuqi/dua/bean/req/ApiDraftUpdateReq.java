@@ -17,4 +17,6 @@ public class ApiDraftUpdateReq {
     private String typeId;
     private String method;
     private Integer status;
+
+    private Boolean changeStatus = false;
 }

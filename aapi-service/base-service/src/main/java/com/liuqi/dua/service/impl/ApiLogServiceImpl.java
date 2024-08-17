@@ -80,6 +80,13 @@ public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogD
     private void insertAsync(ApiLogDTO log, String userId) {
         log.setCreateUser(userId);
         log.setUpdateUser(userId);
+
+        String result = log.getResult();
+        if (StringUtils.isNotBlank(result) && result.length() > 255) {
+            result = result.substring(0, 250) + "...";
+            log.setResult(result);
+        }
+
         this.insert(log);
     }
 

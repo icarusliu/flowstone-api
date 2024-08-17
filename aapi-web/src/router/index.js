@@ -17,6 +17,9 @@ const routes = [
             {
                 path: '/apis/editor',
                 component: () => import('../views/api/editor.vue')
+            }, {
+                path: '/apis/doc',
+                component: () => import('../views/api/doc.vue')
             },
             {
                 path: '/manager/type',

@@ -2,7 +2,8 @@
 <template>
     <div class="v-center">
         <el-button type="primary" @click="addRow" :disabled="!editing">新增</el-button>
-        <div class="color-remark ml-4">输入参数可不配置，默认会取请求参数中的所有参数当成输入参数</div>
+        <el-button type="primary" @click="showJson = true" :disabled="!editing" plain>从JSON加载</el-button>
+        <div class="color-remark ml-4">输出配置主要用于作为接口文档使用，并不对实际的接口输出结果有影响</div>
     </div>
 
     <div id="listParams">
@@ -13,25 +14,43 @@
             </template>
         </edit-table>
     </div>
+
+    <div class="mt-4 mb-8">
+        <div class="page-title">
+            返回示例
+        </div>
+        <monaco-editor v-model="apiInfo.content.outputExample" language="json" height="300px" :editorOptions="{readOnly: true}"/>
+    </div>
+
+    <el-dialog title="从JSON加载配置" v-model="showJson">
+        <monaco-editor v-model="json" language="json" height="500px" />
+
+        <template #footer>
+            <el-button @click="showJson = false">取消</el-button>
+            <el-button type="primary" @click="doLoad" :disabled="!json">加载</el-button>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup>
 import editTable from '@/components/edit-table.vue';
+import monacoEditor from '../../../components/monaco-editor.vue';
 import * as _ from 'lodash'
 import * as uuid from 'uuid'
 import * as utils from '@/utils/utils'
 import { ElMessage } from 'element-plus'
+import * as jsonUtils from '@/utils/json'
 
 const data = defineModel()
 const props = defineProps(["apiInfo", "editing"])
 const fields = ref([
     { label: '参数编码', prop: 'code', disabled: (val, row) => val == '*', width: '400px' },
     {
-        label: '参数名', prop: 'name', disabled: (val, row) => row.code == '*', width: '200px'
+        label: '参数名', prop: 'name',  width: '200px'
     },
-
     {
         label: '参数类型', prop: 'type', width: '120px', type: 'select', options: [
+            { label: '无限制', value: 'unknown' },
             { label: '字符串', value: 'string' },
             { label: '整数', value: 'int' },
             { label: '小数', value: 'float' },
@@ -47,8 +66,6 @@ const fields = ref([
             delete row.children
         }
     },
-    { label: '必需', prop: 'required', width: '60px', type: 'checkbox', disabled: (val, row) => row.code == '*' },
-    { label: '默认值', prop: 'default', width: '120px' },
     { label: '备注', prop: 'remark' }
 ])
 const defRow = reactive({
@@ -56,6 +73,8 @@ const defRow = reactive({
     reuiqred: false,
 })
 const tableRef = ref(0)
+const json = ref("")
+const showJson = ref(false)
 
 function addRow() {
     tableRef.value.newRow()
@@ -76,17 +95,17 @@ function validate(callback) {
     if (!rows) {
         callback(true)
         return
-    } 
+    }
 
     let b = utils.loop(rows, item => {
         if (!item.code) {
-            ElMessage.error("输入配置中，存在为空的参数编码")
+            ElMessage.error("输出配置中，存在为空的参数编码")
             callback(false)
             return true
         }
 
         if (item.type == 'object' && (!item.children || !item.children.length)) {
-            ElMessage.error("输入配置中，对象类型的参数，必须包含有子元素")
+            ElMessage.error("输出配置中，对象类型的参数，必须包含有子元素")
             callback(false)
             return true
         }
@@ -99,7 +118,21 @@ function validate(callback) {
     callback(true)
 }
 
-defineExpose({validate})
+function doLoad() {
+    // 从JSON中加载数据
+    try {
+        let d = JSON.parse(json.value);
+        let result = jsonUtils.loadJsonSchema(d)
+        data.value = result || []
+        showJson.value = false
+    } catch (err) {
+        console.error(err)
+        ElMessage.error("JSON格式无效")
+    }
+
+}
+
+defineExpose({ validate })
 </script>
 
 <style lang="scss" scoped>

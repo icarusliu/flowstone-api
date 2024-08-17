@@ -49,8 +49,9 @@ const fields = ref([
     {label: '添加时间', prop: 'createTime', width: '150px', system: true}, 
     {label: '修改时间', prop: 'updateTime', width: '150px', system: true}, 
     {
-        label: '操作', type: 'operations', width: '130px', buttons: [
+        label: '操作', type: 'operations', width: '150px', buttons: [
             { label: '详情', type: 'primary', action: goEdit },
+            { label: '文档', type: 'primary', action: goDoc },
             { label: '下线', type: 'danger', action: doOffline, visible: row => row.status == 1 || row.status == 2 },
             { label: '发布', type: 'success', action: doPublish, visible: row => row.status != 1 },
         ],
@@ -116,6 +117,10 @@ function doPublish(row) {
 // 查询
 function doQuery() {
     tableRef.value.reload()
+}
+
+function goDoc(row) {
+    router.push('/apis/doc?id=' + row.id)
 }
 </script>
 

@@ -69,14 +69,9 @@ const fields = ref([
 
             type: (row) => {
                 // 如果类型是输入参数，并且配置了输入参数，那么需要从输入参数中选择
-                return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'select' : 'input'
+                return (row.type == 'request' && props.inputParams && props.inputParams.length) ? 'auto-complete' : 'input'
             },
-            options: () => (props.inputParams || []).map(item => {
-                return {
-                    label: item.name,
-                    value: item.code
-                }
-            }),
+            options: () => (props.inputParams || []).map(item => item.code),
 
             script: (row) => {
                 if (row.type == 'js' || row.type == 'groovy') {

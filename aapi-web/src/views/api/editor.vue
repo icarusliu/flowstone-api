@@ -7,15 +7,35 @@
             <el-tab-pane label="基础信息" name="base">
                 <base-form :fields="fields" v-model="formModel" class="form" :readonly="!editing" ref="formRef" />
             </el-tab-pane>
-            <!-- <el-tab-pane label="输入配置" name="input">
+            <el-tab-pane label="输入配置" name="input" v-if="showMore">
                 <inputParams v-model="formModel.content.inputParams" :editing="editing" v-if="loaded" ref="inputRef" />
-            </el-tab-pane> -->
+            </el-tab-pane>
             <el-tab-pane label="处理流程" name="flow">
                 <apiFlow v-model="formModel.content.nodes" :inputParams="formModel.content.inputParams" ref="flowRef"
                     :editing="editing" v-if="loaded" />
             </el-tab-pane>
+            <el-tab-pane label="输出配置" name="output" v-if="showMore">
+                <outputParams v-model="formModel.content.output" :editing="editing" :apiInfo="formModel" v-if="loaded" ref="outputRef"/>
+            </el-tab-pane>
             <el-tab-pane label="接口测试" v-if="!editing" name="test">
-                <apiTest :apiInfo="formModel" :editing="editing" v-if="loaded" />
+                <apiTest :apiInfo="formModel" :editing="editing" v-if="loaded" @save="doSaveTest" v-model="formModel.content"/>
+            </el-tab-pane>
+            <el-tab-pane>
+                <template #label>
+                    <el-link type="primary" class="more ml-4" @click.stop="showMore = true" v-if="!showMore">
+                        <el-icon>
+                            <DArrowRight />
+                        </el-icon>
+                        更多
+                    </el-link>
+
+                    <el-link type="primary" class="more ml-4" @click.stop="setSimpleModel" v-if="showMore">
+                        <el-icon>
+                            <DArrowLeft />
+                        </el-icon>
+                        简化
+                    </el-link>
+                </template>
             </el-tab-pane>
         </el-tabs>
 
@@ -43,14 +63,17 @@ import inputParams from './input/index.vue'
 import * as apiApis from '@/apis/api'
 import { useRouter } from 'vue-router'
 import * as nodeUtils from '@/utils/node'
+import OutputParams from './output/index.vue'
 
 const router = useRouter()
 const fields = ref([
     { label: '接口名称', prop: 'name', required: true },
-    { label: '接口类型', prop: 'method', required: true, type: 'select', options: [
-        {label: 'GET', value: 'get'},
-        {label: 'POST', value: 'post'},
-    ] },
+    {
+        label: '接口类型', prop: 'method', required: true, type: 'select', options: [
+            { label: 'GET', value: 'get' },
+            { label: 'POST', value: 'post' },
+        ]
+    },
     { label: '接口路径', prop: 'path', required: true, prepend: '/dua/' },
     { label: '接口分类', prop: 'typeId', required: true, type: 'tree-select', options: loadTypes },
     { label: '接口备注', prop: 'remark', type: 'textarea', rows: 6 },
@@ -61,10 +84,10 @@ const editing = ref(true)
 const activeTab = ref('base')
 const id = computed(() => router.currentRoute.value.query?.id)
 const loaded = ref(false)
-
+const showMore = ref(false) // 是否高级配置模式
 const flowRef = ref()
 const formRef = ref()
-// const inputRef = ref()
+const inputRef = ref()
 
 watch(() => router.currentRoute.value.query?.id, val => {
     if (!val) {
@@ -74,7 +97,8 @@ watch(() => router.currentRoute.value.query?.id, val => {
             content: {
                 nodes: [],
                 testData: {},
-                inputParams: []
+                inputParams: [],
+                output: []
             }
         }
         loaded.value = true
@@ -108,6 +132,10 @@ function getApiInfo() {
 
             if (!resp.content.inputParams) {
                 resp.content.inputParams = []
+            }
+
+            if (!resp.content.output) {
+                resp.content.output = []
             }
         } else {
             resp.content = {
@@ -146,21 +174,34 @@ function doSave() {
                 return
             }
 
-            doSaveInternal()
+            if (!inputRef.value) {
+                doSaveInternal()
+            } else {
+                // 输入参数校验
+                inputRef.value.validate((resp) => {
+                    if (!resp) {
+                        activeTab.value = 'input'
+                        return
+                    }
 
-            // 输入参数校验
-            // inputRef.value.validate((resp) => {
-            //     if (!resp) {
-            //         activeTab.value = 'input'
-            //         return
-            //     }
-
-            //     doSaveInternal()
-            // })
+                    doSaveInternal()
+                })
+            }
         })
 
     })
 
+}
+
+// 保存测试参数
+function doSaveTest() {
+    let newData = _.cloneDeep(formModel.value)
+    let content = newData.content
+    newData.content = JSON.stringify(content)
+    newData.changeStatus = false
+    entityApis.save('/base/api-draft', newData).then(() => {
+        ElMessage.success('操作成功')
+    })
 }
 
 // 参数校验通过后执行真正的保存动作
@@ -175,6 +216,7 @@ function doSaveInternal() {
     let content = newData.content
 
     newData.content = JSON.stringify(newData.content)
+    newData.changeStatus = true
     entityApis.save('/base/api-draft', newData).then((resp) => {
         ElMessage.success("保存成功");
         if (resp.id) {
@@ -220,6 +262,16 @@ function doPublish() {
 function tabChange(val) {
     flowRef.value.update()
 }
+
+// 设置成简化模式，隐藏input/output配置
+function setSimpleModel() {
+    let tab = activeTab.value
+    if (tab == 'input' || tab == 'output') {
+        activeTab.value = 'flow'
+    } 
+
+    showMore.value = false
+}
 </script>
 
 <style lang="scss" scoped>
@@ -248,5 +300,9 @@ function tabChange(val) {
     position: absolute;
     top: 58px;
     right: 16px;
+}
+
+.more {
+    position: absolute;
 }
 </style>

@@ -3,7 +3,7 @@
         :default-active="active" unique-opened>
         <div class="p-4 font-bold title text-center">
             <i class="iconfont icon-liushuixian-liushuixianx" />
-            <span class="ml-4" v-if="!menuFolded">流水接口管理工具</span>
+            <span class="ml-4" v-if="!menuFolded">流石接口管理工具</span>
         </div>
         <el-sub-menu v-for="menu in menus" :key="menu.path" :index="menu.path">
             <template #title>

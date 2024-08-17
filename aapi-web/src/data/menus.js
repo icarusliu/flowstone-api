@@ -22,10 +22,6 @@ export default [
                 name: '接入方管理',
                 path: '/manager/supplier',
             },
-            // {
-            //     name: '定时任务',
-            //     path: '/manager/supplier',
-            // }
         ]
     },
     {
@@ -42,10 +38,6 @@ export default [
             path: '/logs/run',
             name: '运行日志',
         },
-            // {
-            //     path: '/logs/operations',
-            //     name: '操作日志',
-            // },
             // {
             //     path: '/manager/export',
             //     name: '接口导出',
