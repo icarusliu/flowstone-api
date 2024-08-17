@@ -30,7 +30,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="init-admin-user" author="test">
+    <changeSet id="init-admin-user" author="test" failOnError="false">
         <sql>
             alter table base_user add column nickname varchar(64) comment '姓名';
             insert into base_user(id, username, password, phone, is_super_admin, tenant_id, nickname)
