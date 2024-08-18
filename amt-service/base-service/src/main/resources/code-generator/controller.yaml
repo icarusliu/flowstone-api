@@ -27,7 +27,7 @@ imports:
 template: "@RestController
 @RequestMapping(\"/base/$PATH$\")
   @Slf4j
-  @Tag(name = \"$NAME$控制器\")
+  @Tag(name = \"$COMMENT$控制器\")
   public class $T$Controller {
   @Autowired
   private $T$Service service;

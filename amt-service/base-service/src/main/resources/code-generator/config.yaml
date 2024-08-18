@@ -11,7 +11,7 @@ withLiquibase: true
 # withLiquibase为true时生效；liquibase的生成语句保存文件，不配置则默认是liquibase/master.xml
 liquibaseFile: liquibase/master.xml
 # 前端界面配置模板
-pageTemplate: page.yaml
+pageTemplate: page
 # 需要生成的类列表，每个类列表需要对应一个同名的yaml配置文件
 classes:
   - dto

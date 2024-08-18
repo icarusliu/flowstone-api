@@ -227,21 +227,21 @@
     <changeSet id="create-table-base_schedule_task" author="codeGenerator">
         <sql>
             create table base_schedule_task(
-                id varchar(64) not null primary key comment '主键',
-                name varchar(255) not null comment '任务名称',
-                cron varchar(512) not null comment '任务执行配置',
-                api_id varchar(64) not null comment '调用接口',
-                api_name varchar(255) comment '接口名称',
-                remark varchar(255) comment '备注',
-                params varchar(1024) comment '任务调用参数',
-                status integer not null default 1 comment '任务状态，0: 停用；1：启用',
-                started int(1) not null default 0 comment '是否启动',
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time timestamp default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time timestamp on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            name varchar(255) not null comment '任务名称',
+            cron varchar(512) not null comment '任务执行配置',
+            api_id varchar(64) not null comment '调用接口',
+            api_name varchar(255) comment '接口名称',
+            remark varchar(255) comment '备注',
+            params varchar(1024) comment '任务调用参数',
+            status integer not null default 1 comment '任务状态，0: 停用；1：启用',
+            started int(1) not null default 0 comment '是否启动',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             )
         </sql>
     </changeSet>

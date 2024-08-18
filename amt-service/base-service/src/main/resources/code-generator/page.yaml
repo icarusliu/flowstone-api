@@ -1,8 +1,6 @@
-name: $T$
-dir: resources/vue
-comment: "页面"
+dir: vue
 template: '<template>
-    <div class="page-title">$NAME$管理</div>
+    <div class="page-title">$COMMENT$管理</div>
             <entity-manager :fields="fields" apiPrefix="/base/$PATH$" :tree="false"></entity-manager>
   </template>
   
@@ -13,7 +11,7 @@ template: '<template>
   $$$loopFields
   {label: "$FIELD_NAME$", prop: "$FIELD_PROP$"},
   $$$
-  {label: "添加时间", prop: "createTime", width: "200px", system: true},
+  {label: "添加时间", prop: "createTime", width: "200px", system: true},$BR$
   {label: "修改时间", prop: "updateTime", width: "200px", system: true},
 ])
   </script>'
