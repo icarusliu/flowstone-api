@@ -7,9 +7,11 @@
                 编辑
             </el-link>
 
+            <span v-else-if="field.type == 'text'">{{ row[field.prop] }}</span>
+
             <!-- 其它编辑组件 -->
             <component v-else :is="is" v-model="row[field.prop]" :disabled="getDisabled(field, row)"
-                :options="field.options" :placeholder="field.placeholder" @change="doChange(field, $event, row, $index)">
+                :options="field.options" :placeholder="field.placeholder" @change="doChange(field, $event, row, index)">
             </component>
         </div>
 
