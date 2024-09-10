@@ -10,15 +10,15 @@
             <span v-else-if="field.type == 'text'">{{ row[field.prop] }}</span>
 
             <!-- 其它编辑组件 -->
-            <component v-else :is="is" v-model="row[field.prop]" :disabled="getDisabled(field, row)"
-                :options="field.options" :placeholder="field.placeholder" @change="doChange(field, $event, row, index)">
+            <component v-else :is="is" v-model="row[field.prop]" :disabled="getDisabled(field, row)" autofocus
+                :options="field.options" :placeholder="field.placeholder" @change="doChange(field, $event, row, index)"
+                valueFormat="YYYY-MM-DD">
             </component>
         </div>
 
         <!-- 一个格式中放两个字段的情况 -->
-        <div class="cell-sub" :class="field.subClass" v-if="field.sub && (!field.sub.show || field.sub.show(row))" >
-            <edit-table-column :field="field.sub" :row="row"
-                :readonly="readonly" :index="index" />
+        <div class="cell-sub" :class="field.subClass" v-if="field.sub && (!field.sub.show || field.sub.show(row))">
+            <edit-table-column :field="field.sub" :row="row" :readonly="readonly" :index="index" />
         </div>
     </div>
 
@@ -31,6 +31,7 @@
 import baseSelect from '@/components/base-select.vue'
 import BaseAutoComplete from '@/components/base-autocomplete.vue'
 import ScriptDialog from './script-dialog.vue'
+import { ElDatePicker } from 'element-plus';
 
 const props = defineProps(["field", "row", "readonly", "index"])
 const scriptType = ref('javascript')
@@ -47,9 +48,11 @@ function getIs(type, row) {
     }
 
     if (type == 'select') {
-        return baseSelect 
+        return baseSelect
     } else if (type == 'autocomplete') {
         return BaseAutoComplete
+    } else if (type == 'datepicker') {
+        return ElDatePicker
     } else if (type == 'checkbox') {
         return 'el-checkbox'
     } else {
@@ -73,7 +76,15 @@ function doChange(field, val, row, idx) {
         return
     }
 
-    field.change(val, row, { fields: props.fields, idx})
+    field.change(val, row, { fields: props.fields, idx })
 }
 
 </script>
+
+<style lang="scss" scoped>
+:deep() {
+    .el-date-editor {
+        --el-date-editor-width: 160px;
+    }
+}
+</style>
