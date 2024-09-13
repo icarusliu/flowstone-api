@@ -1,15 +1,12 @@
-FROM openjdk:17-jre
-
-ENV SPRING_OUTPUT_ANSI_ENABLED=NEVER \
-    JHIPSTER_SLEEP=0 \
-    JAVA_OPTS=""
+# 以下是基础镜像，不包含nginx/web/mariadb
+# FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/openjdk:17-slim
+# 以下是集成镜像，包含有nginx/web/mariadb的镜像
+from swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
 
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/#[[\$]]#TZ /etc/localtime && echo '#[[\$]]#TZ' > /etc/timezone
 
-CMD echo "The application will start in #[[\$]]#{JHIPSTER_SLEEP}s..." && \
-    sleep #[[\$]]#{JHIPSTER_SLEEP} && \
-    java #[[\$]]#{JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /app.jar
+CMD nginx && service mariadb start && java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
 
 EXPOSE 80
 

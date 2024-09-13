@@ -37,3 +37,4 @@ build/
 .vscode/
 /log/
 /base/log/
+/base-service/src/main/docker/base-service-0.0.1-SNAPSHOT.jar
