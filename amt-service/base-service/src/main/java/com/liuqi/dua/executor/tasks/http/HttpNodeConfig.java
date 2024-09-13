@@ -21,7 +21,7 @@ public class HttpNodeConfig {
     private Long timeoutInSecond;
 
     // 认证规则
-    private String auth;
+    private AuthConfig auth;
 
     // 请求参数配置
     private List<NodeParam> params;

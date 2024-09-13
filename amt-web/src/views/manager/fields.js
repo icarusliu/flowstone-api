@@ -44,10 +44,10 @@ export const getAuthTableFields = ({ editAction, deleteAction }) => {
 };
 
 const paramOptions = [
-    { label: '直接值', value: 'value' },
+    { label: '直接值', value: 'const' },
     { label: 'cookie', value: 'cookie' },
     { label: '请求头', value: 'headers' },
-    { label: '请求参数', value: 'params' },
+    { label: '请求参数', value: 'request' },
     { label: 'JS', value: 'js' },
     { label: 'groovy', value: 'groovy' }
 ]
@@ -67,7 +67,7 @@ export const authFormFields = [
         }, display: form => form.type == 'static', fields: [
             { label: '参数名', prop: 'key' },
             {
-                label: '参数来源', prop: 'source', type: 'select', options: paramOptions
+                label: '参数来源', prop: 'type', type: 'select', options: paramOptions
             },
             {
                 label: '参数配置', prop: 'value', script: (row) => {
@@ -92,7 +92,7 @@ export const authFormFields = [
     },
     { label: '认证地址', prop: 'authUrl', display: form => form.type == 'dynamic', required: true },
     {
-        label: '认证类型', prop: 'dynamicType', display: form => form.type == 'dynamic', type: 'radioGroup', options: [
+        label: '认证类型', prop: 'method', display: form => form.type == 'dynamic', type: 'radioGroup', options: [
             { label: 'GET', value: 'get' },
             { label: 'POST', value: 'post' }
         ]
@@ -110,8 +110,8 @@ export const authFormFields = [
         }, fields: [
             { label: '参数名', prop: 'key' },
             {
-                label: '参数来源', prop: 'source', type: 'select', options: [
-                    { label: '直接值', value: 'value' },
+                label: '参数来源', prop: 'type', type: 'select', options: [
+                    { label: '直接值', value: 'const' },
                     { label: '返回Cookie', value: 'cookie' },
                     { label: '返回体', value: 'body' },
                     { label: '返回头', value: 'headers' },

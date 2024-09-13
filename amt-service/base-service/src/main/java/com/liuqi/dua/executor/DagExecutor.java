@@ -68,7 +68,7 @@ public class DagExecutor implements ApplicationContextAware {
      * @return 处理结果
      */
     public Object execute(ApiDTO api, Map<String, Object> requestParams, boolean isTest) {
-        Long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         String content = api.getContent();
         if (StringUtils.isEmpty(content)) {
             apiLogService.addErrorLog(api, requestParams, "接口定义异常，节点配置为空");

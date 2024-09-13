@@ -7,6 +7,13 @@
             </el-select>
         </el-descriptions-item>
 
+        
+        <el-descriptions-item label="认证规则" v-if="model.supplier">
+            <el-select v-model="model.auth" :disabled="readonly" placeholder="请选择认证规则" value-key="name">
+                <el-option v-for="option in authConfigs" :label="option.name" :value="option"></el-option>
+            </el-select>
+        </el-descriptions-item>
+
         <el-descriptions-item label="接口路径">
             <el-input v-model="model.path" :disabled="readonly" @change="pathChanged" placeholder="如包含路径参数，请使用：{...}进行处理"
                 clearable />
@@ -103,6 +110,19 @@ onMounted(() => {
     apiApis.getSuppliers().then(resp => {
         suppliers.value = resp || []
     })
+})
+
+const authConfigs = computed(() => {
+    if (!model.value) {
+        return []
+    }
+    let supplier = suppliers.value.filter(item => item.id == model.value.supplier)
+    if (!supplier || !supplier.length) {
+        return []
+    }
+
+    let authConfig = supplier[0].authConfig
+    return JSON.parse(authConfig || '[]')
 })
 
 // 路径修改时，检查路径参数

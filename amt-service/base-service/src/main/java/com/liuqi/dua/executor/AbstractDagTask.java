@@ -111,7 +111,9 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
         Map<String, Object> params = new HashMap<>(outputs);
         Map<String, Object> requestParams = context.getRequestParams();
 
-        params.put("request", Objects.requireNonNullElseGet(requestParams, HashMap::new));
+        params.put("params", Objects.requireNonNullElseGet(requestParams, HashMap::new));
+        params.put("headers", context.getRequestHeaders());
+        params.put("cookie", context.getRequestCookies());
 
         return params;
     }
@@ -122,7 +124,7 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
      * @param nodeParams 节点参数配置
      * @return 节点参数值
      */
-    protected Map<String, Object> getNodeParamValues(List<NodeParam> nodeParams) {
+    protected Map<String, Object> getNodeParamValues(List<? extends NodeParam> nodeParams) {
         Map<String, Object> result = new HashMap<>(16);
         if (CollectionUtils.isEmpty(nodeParams)) {
             return result;
@@ -159,6 +161,16 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
             case "const" -> Pair.of(value, value1);
             case "request" -> {
                 nodeParam.setNodeCode("request");
+                yield getNodeParamValueFromOtherNode(nodeParam);
+            }
+
+            case "cookie" -> {
+                nodeParam.setNodeCode("cookie");
+                yield getNodeParamValueFromOtherNode(nodeParam);
+            }
+
+            case "headers" -> {
+                nodeParam.setNodeCode("headers");
                 yield getNodeParamValueFromOtherNode(nodeParam);
             }
 

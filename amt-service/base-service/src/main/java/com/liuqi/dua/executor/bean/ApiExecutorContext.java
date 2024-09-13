@@ -5,6 +5,7 @@ import com.liuqi.common.bean.UserContext;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.ws.WebSocketMsg;
 import com.liuqi.ws.WebSocketService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
@@ -45,6 +46,9 @@ public class ApiExecutorContext {
     // 接口请求头信息
     @JsonIgnore
     private Map<String, String> requestHeaders = new HashMap<>();
+
+    // 接口请求Cookie
+    private Map<String, String> requestCookies = new HashMap<>(16);
 
     // 节点信息
     private List<NodeInfo> nodes;
@@ -147,6 +151,13 @@ public class ApiExecutorContext {
             String key = enumeration.nextElement();
             String value = request.getHeader(key);
             this.requestHeaders.put(key, value);
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+                this.requestCookies.put(cookie.getName(), cookie.getValue());
+            }
         }
     }
 

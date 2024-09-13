@@ -168,11 +168,11 @@ export function loadParams(method, nodes, testData) {
     if (method == 'get') {
         // 加载已存在的参数值
         let paramValue = {}
-        testData.params.forEach(param => {
+        testData.queryParams.forEach(param => {
             paramValue[param.code] = param.value
         })
 
-        testData.params = params.map(item => {
+        testData.queryParams = params.map(item => {
             return {
                 code: item,
                 value: paramValue[item]
@@ -298,7 +298,7 @@ function validateHttpNode({ config, name }) {
 }
 
 // 参数校验
-function validateParams({ config, name }) {
+function validateParams(params, name) {
     if (!params || !params.length) {
         return true
     }
