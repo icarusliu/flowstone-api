@@ -6,6 +6,8 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.alibaba.fastjson2.JSON;
 import com.liuqi.common.ErrorCodes;
+import com.liuqi.common.GroovyUtils;
+import com.liuqi.common.JsUtils;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.dua.bean.dto.SupplierDTO;
 import com.liuqi.dua.executor.AbstractDagTask;
@@ -139,6 +141,25 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
         }
         Map<String, Object> finalBodyMap = bodyMap;
 
+        // 脚本执行参数组装
+        Map<String, Object> executeParams = new HashMap<>(16);
+        if (StringUtils.isNotBlank(body)) {
+            executeParams.put("body", JSON.parse(body));
+        } else {
+            executeParams.put("body", new HashMap<>(16));
+        }
+        Map<String, String> headers = new HashMap<>(16);
+        executeParams.put("headers", headers);
+        response.headers().forEach((k, l) -> {
+            if (l.isEmpty()) {
+                return;
+            }
+            headers.put(k, l.get(0));
+        });
+        Map<String, String> cookies = new HashMap<>(16);
+        executeParams.put("cookie", cookies);
+        response.getCookies().forEach(cookie -> cookies.put(cookie.getName(), cookie.getValue()));
+
         authConfig.getTargetParams().forEach(param -> {
             if (null == param.getValue() || "".equals(param.getValue())) {
                 return;
@@ -158,6 +179,8 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
                         yield finalBodyMap.get(value);
                     }
                 }
+                case "js" -> JsUtils.execute(value, executeParams);
+                case "groovy" -> GroovyUtils.execute(value, executeParams);
                 default -> throw new IllegalStateException("Unexpected value: " + type);
             };
 
