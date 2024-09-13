@@ -30,6 +30,9 @@ const routes = [
             }, {
                 path: '/manager/supplier',
                 component: () => import('../views/manager/supplier.vue')
+            }, {
+                path: '/manager/supplier-auth/:id',
+                component: () => import('../views/manager/supplier-auth.vue')
             },
             {
                 path: '/logs',

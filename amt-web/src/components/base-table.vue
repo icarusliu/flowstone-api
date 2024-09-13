@@ -8,8 +8,8 @@
             :fixed="field.fixed" :width="field.width" :type="field.type == 'expand' ? 'expand' : 'default'"
             :min-width="field.minWidth">
 
-            <template #default="{ row }">
-                <base-table-column :row="row" :field="field" />
+            <template #default="{ row, $index }">
+                <base-table-column :row="row" :field="field" :index="$index"/>
             </template>
         </el-table-column>
 

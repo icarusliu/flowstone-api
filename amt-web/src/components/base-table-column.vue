@@ -2,7 +2,7 @@
     <!-- 操作列 -->
     <template v-if="field.type == 'operations'">
         <template v-for="button in field.buttons">
-            <el-link :type="button.type" v-if="!button.visible || button.visible(row)" @click="button.action(row)" :class="clazz"
+            <el-link :type="button.type" v-if="!button.visible || button.visible(row)" @click="button.action(row, index)" :class="clazz"
                 class="mr-1">
                 {{ button.label }}
             </el-link>
@@ -33,7 +33,7 @@
 <script setup>
 import BaseRender from '@/components/base-render.js'
 
-const props = defineProps(["field", "row"])
+const props = defineProps(["field", "row", "index"])
 
 const tagType = computed(() => {
     return props.field.tagType(props.row[props.field.prop], props.row)

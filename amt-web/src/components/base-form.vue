@@ -4,55 +4,70 @@
     <div>
         <el-form :model="form" :label-position="labelPosition" :label-width="labelWidth" class="base-form" ref="formRef"
             :validate-on-rule-change="false" :rules="rules">
-            <el-form-item v-for="field in fields" :label="field.label" :required="field.required"
-                v-show="field.type != 'operations'" :prop="field.prop">
-                <!-- 下拉 -->
-                <base-select v-if="field.type == 'select'" v-model="form[field.prop]" :value-key="field.valueKey"
-                    :disabled="field.editable == false || readonly" @change="(val, item) => onFieldChange(field, val, item)"
-                    :options="field.options">
-                </base-select>
+            <template v-for="field in fields">
+                <el-form-item :label="field.label" :required="field.required"
+                    v-if="field.type != 'operations' && showField(field)" :prop="field.prop">
+                    <!-- 下拉 -->
+                    <base-select v-if="field.type == 'select'" v-model="form[field.prop]" :value-key="field.valueKey"
+                        :disabled="field.editable == false || readonly"
+                        @change="(val, item) => onFieldChange(field, val, item)" :options="field.options">
+                    </base-select>
 
-                <!-- 树形下拉 -->
-                <base-tree-select v-else-if="field.type == 'tree-select'" v-model="form[field.prop]"
-                    :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)"
-                    :options="field.options">
-                </base-tree-select>
+                    <!-- 树形下拉 -->
+                    <base-tree-select v-else-if="field.type == 'tree-select'" v-model="form[field.prop]"
+                        :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)"
+                        :options="field.options">
+                    </base-tree-select>
 
-                <!-- 数字输入 -->
-                <el-input-number v-else-if="field.type == 'number'" v-model="form[field.prop]"
-                    :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
-                </el-input-number>
+                    <!-- 数字输入 -->
+                    <el-input-number v-else-if="field.type == 'number'" v-model="form[field.prop]"
+                        :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
+                    </el-input-number>
 
-                <!-- 复选 -->
-                <el-checkbox v-else-if="field.type == 'checkbox'" v-model="form[field.prop]"
-                    :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
-                </el-checkbox>
+                    <!-- 单选 -->
+                    <el-radio-group v-else-if="field.type == 'radioGroup'" v-model="form[field.prop]"
+                        :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
+                        <el-radio-button v-for="option in field.options" :label="option.label"
+                            :value="option.value"></el-radio-button>
+                    </el-radio-group>
 
-                <!-- 子表格 -->
-                <template v-else-if="field.type == 'table'">
-                    <div class="buttons mb-2" v-if="field.editable == false || readonly">
-                        <el-button type="primary" @click="showNew(field)">新增</el-button>
-                    </div>
-                    <base-table :columns="getColumns(field)" :rows="form[field.prop]"></base-table>
-                </template>
+                    <!-- 复选 -->
+                    <el-checkbox v-else-if="field.type == 'checkbox'" v-model="form[field.prop]"
+                        :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
+                    </el-checkbox>
 
-                <!-- testarea -->
-                <el-input v-else-if="field.type == 'textarea'" type="textarea" :rows="field.rows" v-model="form[field.prop]"
-                    :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)">
-                </el-input>
-
-                <!-- Cron表达式编辑 -->
-                <cron-editor v-else-if="field.type == 'cron'" v-model="form[field.prop]"
-                  :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)"/>
-
-                <!-- 其它情况 -->
-                <el-input v-else v-model="form[field.prop]" :disabled="field.editable == false || readonly"
-                    @change="val => onFieldChange(field, val)">
-                    <template #prepend v-if="field.prepend">
-                        {{ field.prepend }}
+                    <!-- 子表格 -->
+                    <template v-else-if="field.type == 'table'">
+                        <div class="buttons mb-2" v-if="field.editable == false || readonly">
+                            <el-button type="primary" @click="showNew(field)">新增</el-button>
+                        </div>
+                        <base-table :columns="getColumns(field)" :rows="form[field.prop]"></base-table>
                     </template>
-                </el-input>
-            </el-form-item>
+
+                    <!-- 子可编辑表格 -->
+                    <template v-else-if="field.type == 'editTable'">
+                        <edit-table :fields="field.fields" v-model="form[field.prop]" :defRow="field.default"></edit-table>
+                    </template>
+
+                    <!-- testarea -->
+                    <el-input v-else-if="field.type == 'textarea'" type="textarea" :rows="field.rows"
+                        v-model="form[field.prop]" :disabled="field.editable == false || readonly"
+                        @change="val => onFieldChange(field, val)">
+                    </el-input>
+
+                    <!-- Cron表达式编辑 -->
+                    <cron-editor v-else-if="field.type == 'cron'" v-model="form[field.prop]"
+                        :disabled="field.editable == false || readonly" @change="val => onFieldChange(field, val)" />
+
+                    <!-- 其它情况 -->
+                    <el-input v-else v-model="form[field.prop]" :disabled="field.editable == false || readonly"
+                        @change="val => onFieldChange(field, val)">
+                        <template #prepend v-if="field.prepend">
+                            {{ field.prepend }}
+                        </template>
+                    </el-input>
+                </el-form-item>
+            </template>
         </el-form>
 
         <!-- 子表格新增的情况 -->
@@ -75,6 +90,7 @@ import * as _ from 'lodash';
 import BaseSelect from './base-select.vue'
 import baseTreeSelect from './base-tree-select.vue'
 import CronEditor from './cron-editor.vue';
+import EditTable from '@/components/edit-table.vue'
 
 const form = defineModel();
 const rules = ref({});
@@ -255,7 +271,7 @@ function loadRules() {
             const msg = validation.msg;
 
             // 可能是校验函数或者正则表达式或者内置校验
-            if (type == 'func') {
+            if (type == 'func' || _.isFunction(validator)) {
                 fieldRules.push({
                     validator
                 })
@@ -299,6 +315,22 @@ function loadRules() {
 
         rules.value[field.prop] = fieldRules;
     })
+}
+
+function showField(field) {
+    if (field.display == false) {
+        return false
+    }
+
+    if (!field.display) {
+        return true
+    }
+
+    if (_.isFunction(field.display)) {
+        return field.display(form.value)
+    }
+
+    return field.display
 }
 
 defineExpose({

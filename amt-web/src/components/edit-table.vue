@@ -1,7 +1,7 @@
 <template>
     <!-- 可编辑表格 -->
     <div class="mb-2">
-        <el-button type="primary" @click="newRow" :disabled="readonly" v-if="showNew != false">新增</el-button>
+        <el-button type="primary" plain @click="newRow" :disabled="readonly" v-if="showNew != false">新增</el-button>
     </div>
     <el-table :data="data" class="table" :row-key="rowKey" default-expand-all :border="!!border"
         @cell-dblclick="cellDblClick">
@@ -42,8 +42,11 @@ const emits = defineEmits(["delete"])
 
 // 新增行
 function newRow() {
-    const row = _.cloneDeep(props.defRow)
+    const row = _.cloneDeep(props.defRow || {})
     row.id = uuid.v4()
+    if (!data.value) {
+        data.value = []
+    }
     data.value.push(row)
 }
 

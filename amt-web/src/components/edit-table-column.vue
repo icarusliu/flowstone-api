@@ -3,7 +3,7 @@
     <div class="cell-content" :class="field.class">
         <div class="cell-main" v-if="!field.show || field.show(row)" :class="field.mainClass">
             <!-- 脚本编辑 -->
-            <el-link type="primary" v-if="field.script && field.script(row) != ''" @click="showEditScript" class="mr-2">
+            <el-link type="primary" v-if="field.script && field.script(row)" @click="showEditScript" class="mr-2">
                 编辑
             </el-link>
 
