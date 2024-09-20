@@ -26,8 +26,11 @@
 
 ### 使用docker直接启动现有镜像
 镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
+
 镜像内已集成mariadb/nginx，直接启动后即可通过浏览器打开页面进行测试；
+
 启动命令示例：
+
 ```cmd
 docker run -d -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
 ```
@@ -37,9 +40,9 @@ docker run -d -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-
 - 启动后，需要增加默认的host，ui.ngq.com到localhost； 
 - 通过浏览器打开ui.ngq.com:3001即可使用相关功能；默认登录用户与密码：admin/admin123
 - 如需修改域名，可使用以下命令启动：（比如修改成test.com）
-```cmd
-docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
-```
+    ```cmd
+    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
+    ```
 
 ## 界面
 接口文档
