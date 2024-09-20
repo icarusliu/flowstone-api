@@ -11,6 +11,10 @@ const routes = [
         component: Index,
         children: [
             {
+                path: '/',
+                redirect: '/apis/list'
+            },
+            {
                 path: '/apis/list',
                 component: ApiIndex
             },

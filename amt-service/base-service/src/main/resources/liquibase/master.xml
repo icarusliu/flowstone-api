@@ -245,4 +245,22 @@
             )
         </sql>
     </changeSet>
+    <changeSet id="create-table-base_sys_config" author="codeGenerator">
+        <sql>
+            create table base_sys_config(
+            id varchar(64) not null primary key comment '主键',
+            code varchar(255),
+            value varchar(255),
+            name varchar(255),
+            remark varchar(255),
+            enabled int(1) default 0,
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            )
+        </sql>
+    </changeSet>
 </databaseChangeLog>

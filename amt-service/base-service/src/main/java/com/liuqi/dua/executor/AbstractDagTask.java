@@ -148,7 +148,7 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
      * @param nodeParam 节点参数配置
      * @return 节点参数值 left为第一个参数值，right为第二个参数值
      */
-    protected Pair<Object, Object> getNodeParamValue(NodeParam nodeParam) {
+    public Pair<Object, Object> getNodeParamValue(NodeParam nodeParam) {
         if (null == nodeParam) {
             return Pair.of(null, null);
         }
