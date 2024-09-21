@@ -37,12 +37,13 @@ docker run -d -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-
 
 注意：
 - mariadb数据在容器销毁后，所修改的数据会丢失，如果需要保留，需要增加磁盘映射到/var/lib/mysql；
-- 启动后，需要增加默认的host，ui.ngq.com到localhost； 
+- 启动后，需要增加默认的hosts，ui.ngq.com到127.0.0.1； 
 - 通过浏览器打开ui.ngq.com:3001即可使用相关功能；默认登录用户与密码：admin/admin123
-- 如需修改域名，可使用以下命令启动：（比如修改成test.com）
+- 如需修改域名，可使用以下命令启动：（比如修改成localhost）
     ```cmd
-    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
+    docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
     ```
+   修改成localhost后，即可以不需要配置hosts，直接通过localhost:3001即可访问；
 
 ## 界面
 接口文档
