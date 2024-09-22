@@ -27,8 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 @Data
 public class ApiExecutorContext {
-    // 接口信息
-    private ApiDTO apiInfo;
+//    // 接口信息
+//    private ApiDTO apiInfo;
+    private String apiId;
 
     // 接口请求对象，可以为空
     @JsonIgnore

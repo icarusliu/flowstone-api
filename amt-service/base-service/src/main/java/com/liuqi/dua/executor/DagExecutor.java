@@ -93,7 +93,7 @@ public class DagExecutor implements ApplicationContextAware {
         ApiExecutorContext context = new ApiExecutorContext();
         context.setRequest(request);
         context.setResponse(response);
-        context.setApiInfo(api);
+        context.setApiId(api.getId());
         context.setNodes(nodeInfoList);
         context.setRequestParams(requestParams);
         context.setApplicationContext(applicationContext);

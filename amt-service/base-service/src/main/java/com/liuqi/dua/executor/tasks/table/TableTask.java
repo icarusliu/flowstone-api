@@ -44,7 +44,7 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
         DynamicDataSourceContextHolder.push(ds);
 
         try {
-            String key = "dagTableTask-" + this.executorContext.getApiInfo().getId()
+            String key = "dagTableTask-" + this.executorContext.getApiId()
                     + "-" + this.getId().getNodeInfo().getId();
 
             // 处理分页参数

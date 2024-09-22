@@ -34,11 +34,11 @@
                 <el-col :span="12">
                     <div class="page-title">调试日志</div>
                     <div class="logs p-2 h-100">
-                        <div v-for="log in logs" :key="log" class="mb-2" :class="{error: log.level == 'error'}">
+                        <div v-for="log in logs" :key="log" class="mb-2" :class="{ error: log.level == 'error' }">
                             <span class="mr-1">{{ log.time }}</span>
                             <span class="mr-1">{{ log.level }}</span>
                             <span class="mr-1">{{ log.title }}</span>
-                            <p class="px-8" v-html="log.content"></p>
+                            <el-input type="textarea" autosize v-model="log.content" class="input" />
                         </div>
                     </div>
                 </el-col>
@@ -53,7 +53,6 @@ import * as apiApis from '@/apis/api'
 import { ElMessage } from 'element-plus';
 import MonacoEditor from '@/components/monaco-editor.vue'
 import QueryParams from './query-params.vue';
-import * as nodeUtils from '@/utils/node.js'
 import * as jsonUtils from '@/utils/json'
 
 const props = defineProps(["apiInfo", "editing"])
@@ -64,9 +63,16 @@ const emits = defineEmits(["save"])
 const model = defineModel()
 
 onMounted(() => {
-    window.websocket.addListener('apiTest', ({level, title, content, time}) => {
-        content = _.isString(content) ? content : JSON.stringify(content)
-        content = content.replace(/(\r\n)/g, '<br/>')
+    window.websocket.addListener('apiTest', ({ level, title, content, time }) => {
+        // content = _.isString(content) ? content : JSON.stringify(content)
+        // content = content.replace(/(\r\n)/g, '<br/>')
+        if (_.isString(content)) {
+            if (content.startsWith("[") || content.startsWith("{")) {
+                content = JSON.stringify(JSON.parse(content), null, "\t");
+            }
+        } else {
+            content = JSON.stringify(content, null, "\t")
+        }
         logs.value.push({
             level,
             title,
@@ -120,7 +126,7 @@ function doSaveExample() {
         _.forIn(result, (v, k) => {
             if (_.isArray(v) && v.length > 1) {
                 result.put(k, v[0])
-            }   
+            }
         })
     }
 
@@ -142,8 +148,28 @@ function doSaveExample() {
 
     .error {
         color: #cc0000;
+
+        :deep() {
+            .el-textarea__inner {
+                color: #cc0000;
+            }
+        }
+    }
+
+    .input {
+        background-color: transparent;
+
+        :deep() {
+            .el-textarea__inner {
+                background-color: transparent;
+                border: none;
+                box-shadow: none;
+                color: #ddd;
+            }
+        }
     }
 }
+
 .result {
     border-top: 1px solid #ddd;
 }

@@ -81,7 +81,7 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
      *
      * @return 组装的请求头
      */
-    private Map<String, String> getRequestHeaders() {
+    private Map<String, String> getRequestHeaders(RequestContext requestContext) {
         Map<String, Object> headers = this.getNodeParamValues(nodeConfig.getHeaders());
         Map<String, String> finalHeaders = new HashMap<>(16);
         headers.forEach((k, v) -> {
@@ -91,6 +91,10 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
 
             finalHeaders.put(k, v.toString());
         });
+
+        if (null != requestContext) {
+            finalHeaders.putAll(requestContext.getHeaders());
+        }
 
         this.info("headers", finalHeaders);
         return finalHeaders;
@@ -106,10 +110,7 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
      */
     private Object runBatch(String method, HttpNodeConfig nodeConfig, String url, RequestContext requestContext) {
         // 解析请求头
-        Map<String, String> finalHeaders = getRequestHeaders();
-        if (null != requestContext) {
-            finalHeaders.putAll(requestContext.getHeaders());
-        }
+        Map<String, String> finalHeaders = getRequestHeaders(requestContext);
 
         Map<String, Object> params;
         if (method.equals("get") || method.equals("delete")) {
@@ -218,10 +219,7 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
     @Nullable
     private Object runSingle(String method, HttpNodeConfig nodeConfig, String url, RequestContext requestContext) {
         // 解析请求头
-        Map<String, String> finalHeaders = getRequestHeaders();
-        if (null != requestContext) {
-            finalHeaders.putAll(requestContext.getHeaders());
-        }
+        Map<String, String> finalHeaders = getRequestHeaders(requestContext);
 
         // 参数解析
         Map<String, Object> params;
