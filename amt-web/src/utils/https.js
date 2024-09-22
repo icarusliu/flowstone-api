@@ -101,7 +101,8 @@ function request(func, url, params, config) {
                 if (code == 200 || code == '200') {
                     resolve(res)
                     return
-                } else if (code == '401') {
+                } else if (code == '401' && url.indexOf('dua-test') == -1) {
+                    // dua-test接口不处理401，否则如果是源系统返回401，会导致工具跳登录页面
                     ElMessage.error("会话超时，请重新登录")
                     goLogin()
                     return

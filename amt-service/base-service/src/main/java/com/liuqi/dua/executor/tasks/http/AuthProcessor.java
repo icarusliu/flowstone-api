@@ -5,6 +5,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.alibaba.fastjson2.JSON;
+import com.jayway.jsonpath.JsonPath;
 import com.liuqi.common.GroovyUtils;
 import com.liuqi.common.JsUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,7 @@ public class AuthProcessor {
     /**
      * 处理接口认证
      */
-    public static RequestContext processAuth(HttpTask task) {
-        AuthConfig authConfig = task.getNodeConfig().getAuth();
+    public static RequestContext processAuth(HttpTask task, AuthConfig authConfig) {
         String authType = authConfig.getType();
         RequestContext requestContext = new RequestContext();
         if ("static".equals(authType)) {
@@ -107,7 +107,8 @@ public class AuthProcessor {
                     if (value.equals("*")) {
                         yield value;
                     } else {
-                        yield finalBodyMap.get(value);
+                        String path = "$." + value;
+                        yield JsonPath.read(finalBodyMap, path);
                     }
                 }
                 case "js" -> JsUtils.execute(value, executeParams);

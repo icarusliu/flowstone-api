@@ -10,7 +10,7 @@
         
         <el-descriptions-item label="认证规则" v-if="model.supplier">
             <el-select v-model="model.auth" :disabled="readonly" placeholder="请选择认证规则" value-key="name">
-                <el-option v-for="option in authConfigs" :label="option.name" :value="option"></el-option>
+                <el-option v-for="option in authConfigs" :label="option.name" :value="option.id"></el-option>
             </el-select>
         </el-descriptions-item>
 

@@ -12,6 +12,7 @@ import java.util.List;
  **/
 @Data
 public class AuthConfig {
+    private String id;
     private String name;
     private String type;
 

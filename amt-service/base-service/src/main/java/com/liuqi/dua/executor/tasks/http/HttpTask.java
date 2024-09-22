@@ -55,10 +55,17 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
         this.info("准备进行接口调用，url", url);
 
         // 先进行认证规则处理
-        AuthConfig authConfig = nodeConfig.getAuth();
+        String auth = nodeConfig.getAuth();
         RequestContext requestContext = null;
-        if (null != authConfig) {
-            requestContext = AuthProcessor.processAuth(this);
+        if (StringUtils.isNotBlank(auth)) {
+            String authConfig = supplierDTO.getAuthConfig();
+            if (StringUtils.isNotBlank(authConfig)) {
+                List<AuthConfig> authConfigList = JSON.parseArray(authConfig, AuthConfig.class);
+                AuthConfig config = authConfigList.stream().filter(item -> auth.equals(item.getId()))
+                        .findAny()
+                        .orElseThrow(() -> new RuntimeException("认证规则不存在"));
+                requestContext = AuthProcessor.processAuth(this, config);
+            }
         }
 
         if (!nodeConfig.getBatch()) {
@@ -267,10 +274,10 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
 
         request.addHeaders(finalHeaders);
 
+        executorContext.getRequestCookies().forEach((k, v) -> request.cookie(new HttpCookie(k, v)));
         if (null != requestContext) {
             requestContext.getCookie().forEach((k, v) -> request.cookie(new HttpCookie(k, v)));
         }
-        executorContext.getRequestCookies().forEach((k, v) -> request.cookie(new HttpCookie(k, v)));
 
         HttpResponse response = request.execute();
         if (!response.isOk()) {

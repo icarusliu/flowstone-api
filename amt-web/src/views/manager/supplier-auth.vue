@@ -67,6 +67,7 @@ import { useRouter } from 'vue-router'
 import { getAuthTableFields, authFormFields } from './fields'
 import { ElMessageBox } from 'element-plus'
 import * as _ from 'lodash'
+import * as uuid from 'uuid'
 
 const router = useRouter()
 const fields = ref(getAuthTableFields({
@@ -110,6 +111,7 @@ function showNew() {
     isNew = true
     newVisible.value = true
     formData.value = {
+        name: '默认认证',
         params: [],
         type: 'static',
         dynamicType: 'get',
@@ -122,6 +124,10 @@ function doSave() {
     formRef.value.validate((result) => {
         if (!result) {
             return
+        }
+
+        if (!formData.value.id) {
+            formData.value.id = uuid.v4()
         }
 
         if (isNew) {
