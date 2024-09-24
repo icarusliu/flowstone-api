@@ -126,6 +126,9 @@ public class DynamicSqlHelper {
 
             // 查询
             List<Map<String, Object>> map = sqlSession.selectList(key, params);
+            if (log.isDebugEnabled()) {
+                log.debug("查询结果：{}", map);
+            }
 
             return map.stream().map(item -> {
                 Map<String, Object> newMap = new HashMap<>(16);

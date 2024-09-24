@@ -25,23 +25,23 @@
 - 注意Token域名默认是ngq.com，默认情况下本地需加host  ui.ngq.com到localhost；前端启动后打开页面ui.ngq.com:3000即可访问页面；默认用户密码：admin/admin123
 
 ### 使用docker直接启动现有镜像
-镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
+镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
 
 镜像内已集成mariadb/nginx，直接启动后即可通过浏览器打开页面进行测试；
 
 启动命令示例：
 
 ```cmd
-docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.1
+docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
 ```
 
 注意：
 - docker镜像相对于代码可能会有版本过期的问题，如若在使用镜像过程中存在某些问题，可以尝试自行使用代码进行启动，或者在线进行反馈；
 - mariadb数据在容器销毁后，所修改的数据会丢失，如果需要保留，需要增加磁盘映射到/var/lib/mysql；
 - 通过浏览器打开localhost:3001即可使用相关功能；默认登录用户与密码：admin/admin123
-- SPRING_SECURITY_DOMAIN可以修改域名，如不指定，默认是ngq.com，以下命令将域名修改成test.com
+- SPRING_SECURITY_DOMAIN可以修改域名，如不指定，默认是localhost，以下命令将域名修改成test.com
     ```cmd
-    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.1
+    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
     ```
    修改成test.com或者其它域名后（即所有非localhost的域名），如果未做域名解析，需要本地配置hosts才可正常访问；
 
