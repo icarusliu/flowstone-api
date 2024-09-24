@@ -44,6 +44,13 @@ spring:
     domain: localhost
   main:
     allow-circular-references: true
+  data:
+    redis:
+      enabled: false
+      host: localhost
+      port: 6379
+      password:
+      connectTimeout: 10
 
 knife4j:
   enable: true
@@ -61,5 +68,5 @@ logging:
 api:
   # 白名单
   whiteIps: 127.0.0.1
-  # 流量限制，每s每ip最多支持请求数
+  # 流量限制，每s每ip最多支持请求数，需要启用Redis才能使用
   limitInSecond: 60
