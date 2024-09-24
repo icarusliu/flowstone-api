@@ -15,6 +15,7 @@ import lombok.Data;
 @TableName("d_api_draft")
 @Data
 public class ApiDraftEntity extends BaseEntity {
+    private Boolean guestMode;
     private String content;
     private String name;
     private String remark;

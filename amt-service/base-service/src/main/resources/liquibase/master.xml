@@ -294,4 +294,16 @@
             ]]>
     </sql>
     </changeSet>
+
+    <changeSet id="alter-d_api-add-guestMode" author="qi2.liu">
+        <sql>
+            alter table d_api add column guest_mode bit(1) default 0 comment '游客模式，0：否；1：是';
+        </sql>
+    </changeSet>
+
+    <changeSet id="alter-d_api_draft-add-guestMode" author="qi2.liu">
+        <sql>
+            alter table d_api_draft add column guest_mode bit(1) default 0 comment '游客模式，0：否；1：是';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

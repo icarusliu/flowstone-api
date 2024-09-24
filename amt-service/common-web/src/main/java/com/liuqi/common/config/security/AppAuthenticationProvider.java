@@ -16,13 +16,10 @@ public class AppAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // 用户登录异常次数检查 TODO
-
         try {
-            Authentication result = super.authenticate(authentication);
-            return result;
+            return super.authenticate(authentication);
         } catch (Exception ex) {
             // 保存用户异常次数  TODO
-
             throw ex;
         }
     }

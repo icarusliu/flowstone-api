@@ -12,17 +12,13 @@ import java.io.Serializable;
 
 /**
  * 认证失败处理类 返回未授权
- * 
- * @author ruoyi
  */
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, Serializable
 {
     private static final long serialVersionUID = -8970718410437077606L;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
-            throws IOException
-    {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) {
         int code = HttpStatus.UNAUTHORIZED.value();
         response.setStatus(code);
     }

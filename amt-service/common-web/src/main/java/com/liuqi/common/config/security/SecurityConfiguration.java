@@ -17,11 +17,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * Security配置
  *
- * @author  LiuQi 2024/8/15-10:20
+ * @author LiuQi 2024/8/15-10:20
  * @version V1.0
  **/
 @Configuration
@@ -31,6 +32,9 @@ public class SecurityConfiguration {
     @Autowired
     private AppSecurityFilter appSecurityFilter;
 
+    @Autowired(required = false)
+    private RequestMatcher requestMatcher;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -39,10 +43,18 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new AuthenticationEntryPointImpl()))
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/login", "/base/user/info").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests((authorize) -> {
+                            if (null != requestMatcher) {
+                                // 处理游客接口
+                                authorize.requestMatchers(requestMatcher)
+                                        .permitAll();
+                            }
+
+                            authorize
+                                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                    .requestMatchers("/auth/login", "/base/user/info").permitAll()
+                                    .anyRequest().authenticated();
+                        }
                 ).logout(AbstractHttpConfigurer::disable)
                 .addFilterBefore(appSecurityFilter, UsernamePasswordAuthenticationFilter.class)
         ;

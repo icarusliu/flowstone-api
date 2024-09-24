@@ -15,6 +15,7 @@ import lombok.Data;
 @TableName("d_api")
 @Comment("接口")
 public class ApiEntity extends BaseEntity {
+    private Boolean guestMode;
     private String content;
     private String name;
     private String remark;

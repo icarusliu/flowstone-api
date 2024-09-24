@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class ApiDraftUpdateReq {
     private String id;
+    private Boolean guestMode;
     private String content;
     private String name;
     private String remark;

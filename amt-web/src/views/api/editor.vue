@@ -15,10 +15,12 @@
                     :editing="editing" v-if="loaded" />
             </el-tab-pane>
             <el-tab-pane label="输出配置" name="output" v-if="showMore">
-                <outputParams v-model="formModel.content.output" :editing="editing" :apiInfo="formModel" v-if="loaded" ref="outputRef"/>
+                <outputParams v-model="formModel.content.output" :editing="editing" :apiInfo="formModel" v-if="loaded"
+                    ref="outputRef" />
             </el-tab-pane>
             <el-tab-pane label="接口测试" v-if="!editing" name="test">
-                <apiTest :apiInfo="formModel" :editing="editing" v-if="loaded" @save="doSaveTest" v-model="formModel.content"/>
+                <apiTest :apiInfo="formModel" :editing="editing" v-if="loaded" @save="doSaveTest"
+                    v-model="formModel.content" />
             </el-tab-pane>
             <el-tab-pane>
                 <template #label>
@@ -74,6 +76,7 @@ const fields = ref([
             { label: 'POST', value: 'post' },
         ]
     },
+    { label: '游客模式', prop: 'guestMode', default: false, type: 'checkbox' },
     { label: '接口路径', prop: 'path', required: true, prepend: '/dua/' },
     { label: '接口分类', prop: 'typeId', required: true, type: 'tree-select', options: loadTypes },
     { label: '接口备注', prop: 'remark', type: 'textarea', rows: 6 },
@@ -276,7 +279,7 @@ function setSimpleModel() {
     let tab = activeTab.value
     if (tab == 'input' || tab == 'output') {
         activeTab.value = 'flow'
-    } 
+    }
 
     showMore.value = false
 }

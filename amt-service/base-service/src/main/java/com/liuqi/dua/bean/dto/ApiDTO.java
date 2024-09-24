@@ -10,6 +10,10 @@ import lombok.Data;
  **/
 @Data
 public class ApiDTO extends BaseDTO {
+    /**
+     * 游客模式
+     */
+    private Boolean guestMode = false;
     private String content;
     private String name;
     private String remark;

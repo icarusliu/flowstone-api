@@ -9,6 +9,7 @@ import lombok.Data;
  **/
 @Data
 public class ApiAddReq {
+    private Boolean guestMode;
     private String content;
     private String name;
     private String remark;

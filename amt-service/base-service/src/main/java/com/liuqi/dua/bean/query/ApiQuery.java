@@ -10,5 +10,6 @@ import lombok.Data;
  **/
 @Data
 public class ApiQuery extends BaseQuery {
+    private Boolean guestMode;
     private String key;
 }
