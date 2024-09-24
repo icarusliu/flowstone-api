@@ -22,7 +22,7 @@
 ### 开发启动
 - 前端：node18版本；其它版本未经测试；直接npm run dev 即可连接本地启动的后端服务进行开发；
 - 后端：JDK17版本及以上；需要有mysql服务器，并创建对应的数据库，相关地址可在application-dev.yml文件中修改；修改完成后直接启动ServiceApplication.java类即可；数据库初始化脚本通过liquibase自动执行;
-- 注意Token域名默认是ngq.com，默认情况下本地需加host  ui.ngq.com到localhost；前端启动后打开页面ui.ngq.com:3000即可访问页面；默认用户密码：admin/admin123
+- 注意Token域名默认是localhost，端启动后打开页面localhost:3000即可访问页面；默认用户密码：admin/admin123
 
 ### 使用docker直接启动现有镜像
 镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
