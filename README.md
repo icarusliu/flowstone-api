@@ -85,17 +85,18 @@ curl 'http://localhost:3000/api/dua/test/js' \
 
 # 6. 系统架构
 ## 6.1 系统功能架构
-![架构图-系统功能架构 drawio](https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0 =200x)
+<img src="https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0"/>
+![架构图-系统功能架构 drawio](https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0)
 其中标黄部分暂未实现；
 
 ## 6.2 系统技术架构
-![架构图-系统技术架构 drawio](https://github.com/user-attachments/assets/6c29fba8-d092-4ea3-bf08-8ba79c5db0ff =200x)
+![架构图-系统技术架构 drawio](https://github.com/user-attachments/assets/6c29fba8-d092-4ea3-bf08-8ba79c5db0ff)
 
 ## 6.3 系统交互架构
-![架构图-系统交互架构 drawio](https://github.com/user-attachments/assets/5ce4ae2e-7e0f-4128-967f-84b21322f85d =200x)
+![架构图-系统交互架构 drawio](https://github.com/user-attachments/assets/5ce4ae2e-7e0f-4128-967f-84b21322f85d)
 
 ## 6.4 系统部署架构
-![架构图-系统部署架构 drawio](https://github.com/user-attachments/assets/2a17660d-ae9b-48ef-8319-0ff39c79cdcb =200x)
+![架构图-系统部署架构 drawio](https://github.com/user-attachments/assets/2a17660d-ae9b-48ef-8319-0ff39c79cdcb)
 
 # 7. 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。
