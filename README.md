@@ -14,27 +14,13 @@
 - 当已经有了大屏或者其它前端低码工具，而后端接口仍旧需要定制开发时，可以使用本工具来进行后端接口的快速配置与开发；
 - 在数据类的交付项目中，需要进行一些简单的数据抽取、加工及开发对应的数据接口时，可以使用本工具来完成替代这部分功能，从而能够快速完成数据加工处理、接口开发，提升交付效率。
 
-# 3. 功能构架
-## 3.1 系统功能架构
-![架构图-系统功能架构 drawio](https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0)
-其中标黄部分暂未实现；
-
-## 3.2 系统技术架构
-![架构图-系统技术架构 drawio](https://github.com/user-attachments/assets/6c29fba8-d092-4ea3-bf08-8ba79c5db0ff)
-
-## 3.3 系统交互架构
-![架构图-系统交互架构 drawio](https://github.com/user-attachments/assets/5ce4ae2e-7e0f-4128-967f-84b21322f85d)
-
-## 3.4 系统部署架构
-![架构图-系统部署架构 drawio](https://github.com/user-attachments/assets/2a17660d-ae9b-48ef-8319-0ff39c79cdcb)
-
-# 4. 启动
-## 4.1 开发启动
+# 3. 启动
+## 3.1 开发启动
 - 前端：node18版本；其它版本未经测试；直接npm run dev 即可连接本地启动的后端服务进行开发；
 - 后端：JDK17版本及以上；需要有mysql服务器，并创建对应的数据库，相关地址可在application-dev.yml文件中修改；修改完成后直接启动ServiceApplication.java类即可；数据库初始化脚本通过liquibase自动执行;
 - 注意Token域名默认是localhost，端启动后打开页面localhost:3000即可访问页面；默认用户密码：admin/admin123
 
-## 4.2 使用docker直接启动现有镜像
+## 3.2 使用docker直接启动现有镜像
 镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
 
 镜像内已集成mariadb/nginx，直接启动后即可通过浏览器打开页面进行测试；
@@ -55,7 +41,7 @@ docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhua
     ```
    修改成test.com或者其它域名后（即所有非localhost的域名），如果未做域名解析，需要本地配置hosts才可正常访问；
 
-# 5. 界面
+# 4. 界面
 接口文档
 ![image](https://github.com/user-attachments/assets/eb8aa31e-370b-4278-a9ea-bfd8d788ec1f)
 
@@ -80,7 +66,7 @@ SQL节点
 接口测试
 ![image](https://github.com/user-attachments/assets/b1506bf8-713a-4826-b6e0-8fe8cfce4946)
 
-# 6. 接口调用
+# 5. 接口调用
 管理前端测试时调用的接口为发布前的接口，此处只适合做测试用，而给到用户前端或者外系统调用时，需要将接口进行发布，使用发布后的接口进行调用。
 
 通过前端调用接口时的路径：http://localhost:3000/api/dua/*，其中 * 表示的是所配置的接口路径；
@@ -96,6 +82,20 @@ curl 'http://localhost:3000/api/dua/test/js' \
 注意如果指定过域名需要将localhost修改成对应域名；端口也需进行相应修改；
 
 接口调用时需要包含有相应的Token信息，这个Token可以在管理端登录时获取；也可以手动调用该登录接口；后续将会扩展应用式鉴权模式。
+
+# 6. 系统架构
+## 6.1 系统功能架构
+![架构图-系统功能架构 drawio](https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0)
+其中标黄部分暂未实现；
+
+## 6.2 系统技术架构
+![架构图-系统技术架构 drawio](https://github.com/user-attachments/assets/6c29fba8-d092-4ea3-bf08-8ba79c5db0ff)
+
+## 6.3 系统交互架构
+![架构图-系统交互架构 drawio](https://github.com/user-attachments/assets/5ce4ae2e-7e0f-4128-967f-84b21322f85d)
+
+## 6.4 系统部署架构
+![架构图-系统部署架构 drawio](https://github.com/user-attachments/assets/2a17660d-ae9b-48ef-8319-0ff39c79cdcb)
 
 # 7. 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。
@@ -121,3 +121,4 @@ curl 'http://localhost:3000/api/dua/test/js' \
 
 ## v1.0.0
 - 基础版本
+
