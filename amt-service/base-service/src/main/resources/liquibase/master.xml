@@ -264,6 +264,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="init-test-data" author="qi2.liu">
+        <sql>
+            <![CDATA[
+                INSERT INTO d_api_supplier (id, name, url, remark, auth_config, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1822951519482310658', 'local', 'http://localhost:8080', null, '[]', null, null, '2024-08-12 19:01:25', 'admin', '2024-09-24 10:46:05', 0);
+                INSERT INTO d_api_draft (id, type_id, content, name, remark, path, status, tenant_id, create_user, create_time, update_user, update_time, deleted, method) VALUES ('1838396512896405506', '1822093887141924865', '{"nodes":[{"id":"7c018431-2979-4552-b307-d159bbbbc5eb","code":"node1","name":"新建测试表","icon":"icon-jiediansql","type":"sql","left":53,"top":78,"parentIds":[],"config":{"params":[],"ds":"local","sql":"create table if not exists t_test(id varchar(32), name varchar(32))"}},{"id":"7fce5e99-c0db-42c1-82cb-57dd6904d408","code":"node2","name":"插入测试","icon":"icon-jiediansql","type":"sql","left":260,"top":92,"parentIds":["7c018431-2979-4552-b307-d159bbbbc5eb"],"config":{"params":[{"type":"request","id":"af586e8b-5aaf-4814-afdd-6e9b8a894634","key":"id","value":"id"},{"type":"request","id":"9a893735-9fdc-410a-9809-a96dd3ea9359","key":"name","value":"name"}],"ds":"local","sql":"insert into t_test(id, name)\\r\\nvalues(#{id}, #{name})"}},{"id":"5a1b64d5-2f5f-4016-a9d7-e408c07d2a92","code":"node3","name":"查询测试","icon":"icon-jiediansql","type":"sql","left":492,"top":104,"parentIds":["7fce5e99-c0db-42c1-82cb-57dd6904d408"],"config":{"params":[{"type":"request","id":"a1fd6d80-defe-4fcf-a17c-2ed4d6bfd289","key":"id","value":"id"}],"ds":"local","sql":"select * from t_test\\r\\nwhere 1 = 1\\r\\n<if test=\\"null != id and \'\' != id\\">\\r\\nand id = #{id}\\r\\n</if>"}}],"testData":{"queryParams":[{"id":"b3eb50e2-9ef0-4f44-948e-b6f301626948","code":"id","value":"test"},{"id":"845f406d-4819-4e64-a885-0b38f00f8bd8","code":"name","value":"test"}]},"inputParams":[],"output":[],"queryParams":[]}', '建表、插入、查询测试', null, 'test/sql', 2, 'sys', 'admin', '2024-09-24 09:54:19', 'admin', '2024-09-24 10:40:32', 0, 'get');
+                INSERT INTO d_api_type (id, name, sort, parent_id, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1822093887141924865', '接口测试', 0, null, null, null, '2024-08-10 10:13:30', null, '2024-08-13 14:26:45', 0);
+                INSERT INTO d_ds (id, code, name, type, url, username, password, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1822106626417602561', 'local', '本地数据库', 'mysql', 'jdbc:mysql://localhost:3306/acode_api?useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull', 'root', 'mysql12345', null, null, '2024-08-10 11:04:07', null, null, 0);
+            ]]>
+        </sql>
+    </changeSet>
+
     <changeSet id="init-test-data-v1" author="qi2.liu">
         <sql>
             delete from d_api_supplier where id = '1822951519482310658';
