@@ -10,6 +10,20 @@
 - 便于扩展的节点类型，目前支持SQL、Table、Http、JS、Groovy五种节点，可方便在此基础上扩展更多节点，比如Kafka推送节点等；
 - 关于数据源：目前仅支持MySql，后续扩展支持更多数据库类型；
 
+## 功能构架
+### 系统功能架构
+![架构图-系统功能架构 drawio](https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0)
+其中标黄部分暂未实现；
+
+### 系统技术架构
+![架构图-系统技术架构 drawio](https://github.com/user-attachments/assets/6c29fba8-d092-4ea3-bf08-8ba79c5db0ff)
+
+### 系统交互架构
+![架构图-系统交互架构 drawio](https://github.com/user-attachments/assets/5ce4ae2e-7e0f-4128-967f-84b21322f85d)
+
+### 系统部署架构
+![架构图-系统部署架构 drawio](https://github.com/user-attachments/assets/2a17660d-ae9b-48ef-8319-0ff39c79cdcb)
+
 ## 适用场景
 - 当已经有了大屏或者其它前端低码工具，而后端接口仍旧需要定制开发时，可以使用本工具来进行后端接口的快速配置与开发；
 - 在数据类的交付项目中，需要进行一些简单的数据抽取、加工及开发对应的数据接口时，可以使用本工具来完成替代这部分功能，从而能够快速完成数据加工处理、接口开发，提升交付效率。
@@ -69,6 +83,23 @@ SQL节点
 
 接口测试
 ![image](https://github.com/user-attachments/assets/b1506bf8-713a-4826-b6e0-8fe8cfce4946)
+
+## 接口调用
+管理前端测试时调用的接口为发布前的接口，此处只适合做测试用，而给到用户前端或者外系统调用时，需要将接口进行发布，使用发布后的接口进行调用。
+
+通过前端调用接口时的路径：http://localhost:3000/api/dua/*，其中 * 表示的是所配置的接口路径；
+
+通过后端服务直接调用时的路径：http://localhost:8080/dua/*；
+
+比如通过前端调用的curl语句：
+```curl
+curl 'http://localhost:3000/api/dua/test/js' \
+  -H 'Cookie: access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdXBlciI6dHJ1ZSwibmlja25hbWUiOiJhZG1pbiIsInRlbmFudElkIjoic3lzIiwiaWQiOiJRSVFJTklVQkkiLCJ1c2VybmFtZSI6ImFkbWluIn0.OUSwVEJVqzSYQIfNou6jtv0N4Mil7H8bFXBOruquS70; token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdXBlciI6dHJ1ZSwibmlja25hbWUiOiJhZG1pbiIsInRlbmFudElkIjoic3lzIiwiaWQiOiJRSVFJTklVQkkiLCJ1c2VybmFtZSI6ImFkbWluIn0.OUSwVEJVqzSYQIfNou6jtv0N4Mil7H8bFXBOruquS70'
+```
+
+注意如果指定过域名需要将localhost修改成对应域名；端口也需进行相应修改；
+
+接口调用时需要包含有相应的Token信息，这个Token可以在管理端登录时获取；也可以手动调用该登录接口；后续将会扩展应用式鉴权模式。
 
 # 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。

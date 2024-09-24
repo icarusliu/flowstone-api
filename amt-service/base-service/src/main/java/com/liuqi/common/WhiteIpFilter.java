@@ -37,6 +37,12 @@ public class WhiteIpFilter implements Filter {
         }
 
         String ip = WebUtils.getRequestHost(request);
+        if (ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1")) {
+            // 本机
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
         String[] ipArr = ip.split("\\.");
         boolean find = false;
         for (String s : whiteIps.split(",")) {

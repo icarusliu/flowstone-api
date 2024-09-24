@@ -59,4 +59,7 @@ logging:
     org.springframework.security: trace
 
 api:
+  # 白名单
   whiteIps: 127.0.0.1
+  # 流量限制，每s每ip最多支持请求数
+  limitInSecond: 60
