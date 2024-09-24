@@ -15,8 +15,8 @@
 - 在数据类的交付项目中，需要进行一些简单的数据抽取、加工及开发对应的数据接口时，可以使用本工具来完成替代这部分功能，从而能够快速完成数据加工处理、接口开发，提升交付效率。
 
 ## 使用技术
-- 前端：Vue3+Vite+ElementPlus+MonacoEditor等
-- 后端：SpringBoot3+MyBatis-Plus+liquibase+Security等；
+- 前端：Vue3+Vite+ElementPlus+MonacoEditor+butterfly-dag等；
+- 后端：SpringBoot3+MyBatis-Plus+liquibase+Security+DagExecutor等；
 
 ## 启动
 ### 开发启动
