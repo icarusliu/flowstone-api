@@ -110,9 +110,9 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
 
         // 需要补充整个请求的参数
         Map<String, Object> params = new HashMap<>(outputs);
-        Map<String, Object> requestParams = context.getRequestParams();
-
-        params.put("params", Objects.requireNonNullElseGet(requestParams, HashMap::new));
+        Map<String, Object> requestParams = Objects.requireNonNullElseGet(context.getRequestParams(), HashMap::new);
+//        params.put("params", requestParams);
+        params.put("request", requestParams);
         params.put("headers", context.getRequestHeaders());
         params.put("cookie", context.getRequestCookies());
 

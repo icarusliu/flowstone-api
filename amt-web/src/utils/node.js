@@ -1,5 +1,6 @@
 import { ElMessage } from 'element-plus'
 import * as _ from 'lodash'
+import * as uuid from 'uuid'
 
 // 节点类型
 export const nodeTypes = [
@@ -151,6 +152,8 @@ export function loadParams(method, nodes, testData) {
         return callback(false)
     }
 
+debugger
+
     let params = []
     nodes.forEach(node => {
         // 根据节点类型进行处理
@@ -168,15 +171,27 @@ export function loadParams(method, nodes, testData) {
     if (method == 'get') {
         // 加载已存在的参数值
         let paramValue = {}
-        testData.queryParams.forEach(param => {
-            paramValue[param.code] = param.value
-        })
+        if (testData.queryParams) {
+            testData.queryParams.forEach(param => {
+                paramValue[param.code] = param.value
+            })
+        }
 
-        testData.queryParams = params.map(item => {
-            return {
-                code: item,
-                value: paramValue[item]
+        // 需要去重处理
+        let queryParams = testData.queryParams = []
+        let processed = []
+        params.forEach(param => {
+            if (processed.indexOf(param) != -1) {
+                return
             }
+
+            processed.push(param)
+
+            queryParams.push({
+                id: uuid.v4(),
+                code: param,
+                value: paramValue[param]
+            })
         })
     } else {
         let oldBody = JSON.parse(testData.body || '{}')

@@ -41,7 +41,7 @@ spring:
 
   security:
     type: security
-    domain: ngq.com
+    domain: localhost
   main:
     allow-circular-references: true
 

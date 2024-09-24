@@ -96,7 +96,9 @@ watch(() => router.currentRoute.value.query?.id, val => {
             method: 'get',
             content: {
                 nodes: [],
-                testData: {},
+                testData: {
+                    queryParams: []
+                },
                 inputParams: [],
                 output: []
             }
@@ -127,7 +129,11 @@ function getApiInfo() {
                 resp.content.nodes = []
             }
             if (!resp.content.testData) {
-                resp.content.testData = {}
+                resp.content.testData = {
+                    queryParams: []
+                }
+            } else if (!resp.content.testData.queryParams) {
+                resp.content.testData.queryParams = []
             }
 
             if (!resp.content.inputParams) {
@@ -142,7 +148,9 @@ function getApiInfo() {
                 // 流程定义
                 nodes: [],
                 // 测试数据
-                testData: {},
+                testData: {
+                    queryParams: []
+                },
                 // 输入定义
                 inputParams: []
             }

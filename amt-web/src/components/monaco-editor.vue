@@ -80,7 +80,8 @@ export default defineComponent({
   methods: {
     updateMonacoVal(_val?: string) {
       const { modelValue, preComment } = this.$props
-      const val = preComment ? `${preComment}\n${_val || modelValue}` : (_val || modelValue)
+      let content = _val || modelValue || ''
+      const val = preComment ? `${preComment}\n${content}` : content
       this.updateVal(val)
       this.$emit('change', val); 
     }

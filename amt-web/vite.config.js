@@ -18,7 +18,7 @@ export default ({ mode }) => {
       }
     },
     server: {
-      host: 'ui.ngq.com',
+      host: 'localhost',
       port: 3000,
       proxy: {
         '/api/': {

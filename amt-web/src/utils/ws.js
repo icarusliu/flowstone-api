@@ -4,8 +4,11 @@ import { useSysStore } from '../store/index.js'
 
 
 export function startWebSocket() {
-    let websocket = new WebSocket("ws://ui.ngq.com:8080/ws/front")
-
+    let href = window.location.href.replace('http://', '')
+    let idx = href.indexOf('/')
+    href = href.substring(0, idx)
+    let websocket = new WebSocket("ws://" + href + "/ws/front")
+    
     // 心跳检测器
     let timer
 

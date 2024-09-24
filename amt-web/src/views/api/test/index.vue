@@ -2,11 +2,11 @@
     <!-- 接口测试 -->
     <el-form labelWidth="120px">
         <el-form-item label="查询参数" v-if="apiInfo.method == 'get'">
-            <QueryParams v-model="model.params" />
+            <QueryParams v-model="model.testData.queryParams" />
         </el-form-item>
 
         <el-form-item label="请求体" v-if="apiInfo.method == 'post'">
-            <MonacoEditor height="200px" v-model="model.body" language="json" />
+            <MonacoEditor height="200px" v-model="model.testData.body" language="json" />
         </el-form-item>
 
         <!-- <el-form-item label="请求头">
@@ -92,7 +92,7 @@ function doTest() {
         finalParams = model.value.testData.body || {}
     } else {
         // get请求
-        let params = model.value.testData.params
+        let params = model.value.testData.queryParams
         if (params) {
             params.forEach(param => {
                 finalParams[param.code] = param.value

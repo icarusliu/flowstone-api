@@ -78,7 +78,7 @@ SQL节点
 # 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。
 
-# 版本变更记录：
+# 版本变更记录
 ## v1.0.0
 - 基础版本
 
