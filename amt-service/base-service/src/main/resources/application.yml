@@ -57,3 +57,6 @@ knife4j:
 logging:
   level:
     org.springframework.security: trace
+
+api:
+  whiteIps: 127.0.0.1

@@ -70,12 +70,6 @@ SQL节点
 接口测试
 ![image](https://github.com/user-attachments/assets/b1506bf8-713a-4826-b6e0-8fe8cfce4946)
 
-## 后续计划
-- 扩展更多的数据库类型支持；
-- 扩展支持MQ节点
-- 应用式接口鉴权模式
-- 其它
-
 # 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。
 
