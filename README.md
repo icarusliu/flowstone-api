@@ -32,18 +32,17 @@
 启动命令示例：
 
 ```cmd
-docker run -d -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
+docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.1
 ```
 
 注意：
 - mariadb数据在容器销毁后，所修改的数据会丢失，如果需要保留，需要增加磁盘映射到/var/lib/mysql；
-- 启动后，需要增加默认的hosts，ui.ngq.com到127.0.0.1； 
-- 通过浏览器打开ui.ngq.com:3001即可使用相关功能；默认登录用户与密码：admin/admin123
-- 如需修改域名，可使用以下命令启动：（比如修改成localhost）
+- 通过浏览器打开localhost:3001即可使用相关功能；默认登录用户与密码：admin/admin123
+- SPRING_SECURITY_DOMAIN可以修改域名，如不指定，默认是ngq.com，以下命令将域名修改成test.com
     ```cmd
-    docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.0
+    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.1
     ```
-   修改成localhost后，即可以不需要配置hosts，直接通过localhost:3001即可访问；
+   修改成test.com或者其它域名后（即所有非localhost的域名），如果未做域名解析，需要本地配置hosts才可正常访问；
 
 ## 界面
 接口文档
@@ -78,3 +77,14 @@ SQL节点
 
 # 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。
+
+# 版本变更记录：
+## v1.0.0
+- 基础版本
+
+## v1.0.1
+- 完善接入方认证鉴权功能
+- 接口类型为其它节点或者请求参数时，增加JSONPath解析功能，可通过a.b的方式进行多层级变量解析；
+- 处理数据源无法录入密码的bug；
+- 调试日志增加JSON格式化功能；
+- 处理日志模块缺失导致前端无法启动问题；
