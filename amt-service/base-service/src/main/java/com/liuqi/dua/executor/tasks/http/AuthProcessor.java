@@ -5,6 +5,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONPath;
 import com.jayway.jsonpath.JsonPath;
 import com.liuqi.common.GroovyUtils;
 import com.liuqi.common.JsUtils;
@@ -108,7 +109,7 @@ public class AuthProcessor {
                         yield value;
                     } else {
                         String path = "$." + value;
-                        yield JsonPath.read(finalBodyMap, path);
+                        yield JSONPath.eval(finalBodyMap, path);
                     }
                 }
                 case "js" -> JsUtils.execute(value, executeParams);

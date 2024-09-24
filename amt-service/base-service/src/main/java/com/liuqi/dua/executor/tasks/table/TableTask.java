@@ -1,17 +1,16 @@
 package com.liuqi.dua.executor.tasks.table;
 
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.liuqi.common.base.bean.query.FilterOp;
 import com.liuqi.common.utils.DynamicSqlHelper;
+import com.liuqi.dua.executor.AbstractDagTask;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
-import com.liuqi.dua.executor.AbstractDagTask;
 import com.liuqi.dua.executor.bean.NodeParam;
+import com.liuqi.dua.service.DsService;
 import liquibase.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.CollectionUtils;
 
@@ -86,8 +85,9 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
         List<NodeParam> filters = config.getParams();
 
         // 获取字段信息
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(table);
-        Map<String, TableFieldInfo> fieldMap = tableInfo.getFieldList().stream().collect(Collectors.toMap(TableFieldInfo::getColumn, s -> s));
+        List<Map<String, Object>> fields = this.getTableFields(this.nodeConfig.getDs(), table);
+        Map<String, Map<String, Object>> fieldMap = fields.stream()
+                .collect(Collectors.toMap(map -> MapUtils.getString(map, "columnName"),s -> s));
 
         if (!CollectionUtils.isEmpty(filters)) {
             filters.forEach(filter -> {
@@ -121,8 +121,10 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
                 }
 
                 // 获取字段是否是字符串类型
-                TableFieldInfo fieldInfo = fieldMap.get(column);
-                boolean isChar = fieldInfo.isCharSequence();
+                Map<String, Object> fieldInfo = fieldMap.get(column);
+                String columnType = MapUtils.getString(fieldInfo, "columnType");
+                boolean isChar = columnType.startsWith("char") || columnType.startsWith("varchar")
+                        || columnType.contains("text") || columnType.contains("date") || columnType.contains("time");
 
                 sb.append(" and ")
                         .append(column);
@@ -187,4 +189,15 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
         return sb.toString();
     }
 
+    /**
+     * 查找表字段列表
+     *
+     * @param ds    数据源
+     * @param table 表名
+     * @return 表对应的字段列表
+     */
+    public List<Map<String, Object>> getTableFields(String ds, String table) {
+        DsService dsService = this.executorContext.getApplicationContext().getBean(DsService.class);
+        return dsService.getTableFieldsFull(ds, table);
+    }
 }

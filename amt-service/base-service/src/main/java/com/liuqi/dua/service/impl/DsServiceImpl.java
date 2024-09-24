@@ -8,21 +8,25 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
+import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.dua.bean.dto.DsDTO;
 import com.liuqi.dua.bean.query.DsQuery;
 import com.liuqi.dua.domain.entity.DsEntity;
 import com.liuqi.dua.domain.mapper.DsMapper;
-import com.liuqi.dua.service.DsService;
 import com.liuqi.dua.executor.DynamicDsConfigService;
+import com.liuqi.dua.service.DsService;
 import jakarta.annotation.PostConstruct;
 import liquibase.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 数据源配置服务实现
@@ -63,6 +67,7 @@ public class DsServiceImpl extends AbstractBaseService<DsEntity, DsDTO, DsMapper
                 .eq(StringUtils.isNotBlank(query.getId()), "id", query.getId())
                 .in(null != query.getIds(), "id", query.getIds())
                 .eq("deleted", false)
+                .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode())
                 .orderByDesc("create_time");
     }
 
@@ -101,15 +106,45 @@ public class DsServiceImpl extends AbstractBaseService<DsEntity, DsDTO, DsMapper
      */
     @Override
     public List<String> getTables(String ds) {
+        String schema = getSchema(ds);
+
         DynamicDataSourceContextHolder.push(ds);
         try {
-            List<TableInfo> list = TableInfoHelper.getTableInfos();
-
-            return list.stream().map(TableInfo::getTableName)
+            //noinspection unchecked
+            List<Map<String, Object>> list = (List<Map<String, Object>>) DynamicSqlHelper.executeSql("dsBase",
+                    "select table_name from information_schema.tables where table_schema='" + schema + "'",
+                    new HashMap<>(1));
+            return list.stream().map(map -> MapUtils.getString(map, "tableName"))
                     .toList();
         } finally {
             DynamicDataSourceContextHolder.poll();
         }
+    }
+
+    /**
+     * 获取DS对应的库名
+     *
+     * @param ds 数据源编码
+     * @return 对应的数据库名称
+     */
+    private String getSchema(String ds) {
+        DsDTO dsDTO = this.findByCode(ds);
+        String url = dsDTO.getUrl();
+
+        String schema = url.replace("jdbc:mysql://", "");
+        int idx = schema.indexOf("/");
+        schema = schema.substring(idx + 1);
+        idx = schema.indexOf("?");
+        if (idx >= 0) {
+            schema = schema.substring(0, idx);
+        }
+        return schema;
+    }
+
+    private DsDTO findByCode(String ds) {
+        DsQuery query = new DsQuery();
+        query.setCode(ds);
+        return this.findOne(query).orElse(null);
     }
 
     /**
@@ -121,18 +156,33 @@ public class DsServiceImpl extends AbstractBaseService<DsEntity, DsDTO, DsMapper
      */
     @Override
     public List<String> getTableFields(String ds, String table) {
+        String schema = getSchema(ds);
+
         DynamicDataSourceContextHolder.push(ds);
         try {
-            TableInfo tableInfo = TableInfoHelper.getTableInfo(table);
-
-            if (null == tableInfo) {
-                throw AppException.of(ErrorCodes.DS_TABLE_NOT_EXISTS);
-            }
-
-            return tableInfo.getFieldList().stream()
-                    .map(TableFieldInfo::getColumn)
-                    .map(StringUtil::toCamelCase)
+            String sql = "select column_name from information_schema.columns where TABLE_SCHEMA = '" + schema + "' and TABLE_NAME = '" + table + "'";
+            //noinspection unchecked
+            List<Map<String, Object>> list = (List<Map<String, Object>>) DynamicSqlHelper.executeSql("dsBase-columns",
+                    sql,
+                    new HashMap<>(1));
+            return list.stream().map(item -> MapUtils.getString(item, "columnName"))
                     .toList();
+        } finally {
+            DynamicDataSourceContextHolder.poll();
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> getTableFieldsFull(String ds, String table) {
+        String schema = getSchema(ds);
+
+        DynamicDataSourceContextHolder.push(ds);
+        try {
+            String sql = "select * from information_schema.columns where TABLE_SCHEMA = '" + schema + "' and TABLE_NAME = '" + table + "'";
+            //noinspection unchecked
+            return (List<Map<String, Object>>) DynamicSqlHelper.executeSql("dsBase-columns",
+                    sql,
+                    new HashMap<>(1));
         } finally {
             DynamicDataSourceContextHolder.poll();
         }

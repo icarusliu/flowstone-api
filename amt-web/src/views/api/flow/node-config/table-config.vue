@@ -31,7 +31,6 @@ const model = defineModel()
 
 // 加载表列表
 function loadTables(val) {
-    console.log(val);
     if (!val) {
         tables.value = []
         return

@@ -1,6 +1,7 @@
 package com.liuqi.dua.executor;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONPath;
 import com.github.dexecutor.core.task.Task;
 import com.jayway.jsonpath.JsonPath;
 import com.liuqi.common.GroovyUtils;
@@ -251,9 +252,9 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
             String key = Optional.ofNullable(nodeParam.getValue())
                     .map(Object::toString)
                     .orElse(nodeParam.getKey());
-            value = JsonPath.read(map, "$." + key);
+            value = JSONPath.eval(map, "$." + key);
             if (null != nodeParam.getValue1()) {
-                value1 = JsonPath.read(map, "$." + nodeParam.getValue1());
+                value1 = JSONPath.eval(map, "$." + nodeParam.getValue1());
             }
 
             return Pair.of(value, value1);

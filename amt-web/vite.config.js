@@ -27,7 +27,11 @@ export default ({ mode }) => {
         },
         '/profile': {
           target: baseUrl
-        }
+        },
+        '/ws/front': {
+          target: env.VITE_WS_URL,
+          changeOrigin: false
+        },
       }
     },
     alias: {

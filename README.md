@@ -36,6 +36,7 @@ docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhua
 ```
 
 注意：
+- docker镜像相对于代码可能会有版本过期的问题，如若在使用镜像过程中存在某些问题，可以尝试自行使用代码进行启动，或者在线进行反馈；
 - mariadb数据在容器销毁后，所修改的数据会丢失，如果需要保留，需要增加磁盘映射到/var/lib/mysql；
 - 通过浏览器打开localhost:3001即可使用相关功能；默认登录用户与密码：admin/admin123
 - SPRING_SECURITY_DOMAIN可以修改域名，如不指定，默认是ngq.com，以下命令将域名修改成test.com

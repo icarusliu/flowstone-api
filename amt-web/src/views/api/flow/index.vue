@@ -45,6 +45,10 @@ onMounted(() => {
     dag.value = createDag(canvasRef.value, popMenuRef)
     dag.value.loadNodes(nodes.value)
 
+    if (props.editing) {
+        dag.value.startEdit()
+    }
+
     document.addEventListener("click", () => {
         popMenuRef.value && (popMenuRef.value.style.display = 'none')
     })
