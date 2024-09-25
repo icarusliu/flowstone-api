@@ -1,8 +1,11 @@
 package com.liuqi.base.service;
 
 import com.alibaba.fastjson2.JSON;
+import com.liuqi.base.bean.dto.ClientDTO;
+import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.bean.LoginResp;
 import com.liuqi.common.bean.UserInfoResp;
+import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.AuthUtils;
 import com.liuqi.common.bean.UserContext;
 import jakarta.servlet.http.Cookie;
@@ -21,7 +24,7 @@ import org.springframework.stereotype.Service;
 /**
  * Security登录服务
  *
- * @author  LiuQi 2024/8/15-10:19
+ * @author LiuQi 2024/8/15-10:19
  * @version V1.0
  **/
 @Slf4j
@@ -32,6 +35,9 @@ public class LoginService {
 
     @Autowired
     private HttpServletResponse response;
+
+    @Autowired
+    private ClientService clientService;
 
     @Value("${spring.security.domain:ngq.com}")
     private String domain;
@@ -68,5 +74,36 @@ public class LoginService {
         result.setUserInfo(userInfo);
 
         return result;
+    }
+
+    /**
+     * 客户端登录
+     *
+     * @param clientId     客户端id
+     * @param clientSecret 客户端密钥
+     * @return 登录结果
+     */
+    public String loginByClient(String clientId, String clientSecret) {
+        ClientDTO client = clientService.findById(clientId).orElseThrow(() -> AppException.of(ErrorCodes.BASE_CLIENT_INVALID));
+        if (!client.getSecret().equals(clientSecret)) {
+            throw AppException.of(ErrorCodes.BASE_CLIENT_INVALID);
+        }
+
+        if (client.isDisabled()) {
+            throw AppException.of(ErrorCodes.BASE_CLIENT_DISABLED);
+        }
+
+        UserContext userContext = new UserContext();
+        userContext.setUserId(client.getId());
+        userContext.setUsername(client.getId());
+        userContext.setNickname(client.getName());
+        userContext.setIsClient(true);
+
+        Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(userContext, null, userContext.getAuthorities());
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        return AuthUtils.generateToken(userContext);
     }
 }

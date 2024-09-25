@@ -306,4 +306,22 @@
             alter table d_api_draft add column guest_mode bit(1) default 0 comment '游客模式，0：否；1：是';
         </sql>
     </changeSet>
+    <changeSet id="create-table-base_client" author="codeGenerator">
+        <sql>
+            create table base_client(
+                id varchar(64) not null primary key comment '主键',
+                name varchar(255) not null comment '名称',
+                secret varchar(255) not null comment '密钥',
+                disabled int(1) default 0 comment '是否停用，0：否，1：是',
+                remark varchar(255) comment '描述',
+                white_ips varchar(255) comment '应用白名单',
+                tenant_id varchar(255) comment '租户编号',
+                create_user varchar(255) not null comment '创建用户',
+                create_time timestamp default current_timestamp comment '创建时间',
+                update_user varchar(255) comment '更新用户',
+                update_time timestamp on update current_timestamp comment '更新时间',
+                deleted int(1) default 0 comment '是否删除'
+            )
+        </sql>
+    </changeSet>
 </databaseChangeLog>

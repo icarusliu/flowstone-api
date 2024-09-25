@@ -1,8 +1,8 @@
 package com.liuqi.common.config.security;
 
-import com.liuqi.common.utils.AuthUtils;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.common.bean.UserContextHolder;
+import com.liuqi.common.utils.AuthUtils;
 import com.liuqi.common.utils.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -44,9 +43,11 @@ public class AppSecurityFilter extends OncePerRequestFilter {
         }
 
         UserContext userContext = AuthUtils.parse(token);
-        String username = userContext.getUsername();
-        userContext = (UserContext) userDetailsService.loadUserByUsername(username);
-        UserContextHolder.set(userContext);
+        if (userContext.getIsClient()) {
+            String username = userContext.getUsername();
+            userContext = (UserContext) userDetailsService.loadUserByUsername(username);
+            UserContextHolder.set(userContext);
+        }
 
         Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(userContext, null, userContext.getAuthorities());
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

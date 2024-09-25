@@ -33,6 +33,8 @@ public class UserContext implements UserDetails {
 
     private List<SimpleGrantedAuthority> authorities;
 
+    private Boolean isClient = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

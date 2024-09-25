@@ -32,6 +32,9 @@ export default [
             path: '/base/user',
             name: '用户管理',
         },{
+            path: '/manager/client',
+            name: '客户端管理',
+        },{
             path: '/manager/schedule-task',
             name: '定时任务',
         },{

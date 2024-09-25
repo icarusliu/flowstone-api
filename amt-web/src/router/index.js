@@ -37,6 +37,9 @@ const routes = [
             }, {
                 path: '/manager/supplier-auth/:id',
                 component: () => import('../views/manager/supplier-auth.vue')
+            }, {
+                path: '/manager/client',
+                component: () => import('../views/base/client.vue')
             },
             {
                 path: '/logs',

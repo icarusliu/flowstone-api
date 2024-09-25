@@ -41,6 +41,10 @@ public enum ErrorCodes implements BaseErrorCodes {
     // -------------------------------系统配置项相关异常
     BASE_CONFIG_CODE_EXISTS("C06001", "配置项编码重复"),
 
+    // -------------------------------客户端相关异常
+    BASE_CLIENT_INVALID("C07001", "客户端信息不正确"),
+    BASE_CLIENT_DISABLED("C07002", "客户端已禁用"),
+
     // -------------------------------接口配置相关异常
     API_CONTENT_EMPTY("D01001", "接口配置为空"),
 
@@ -52,7 +56,7 @@ public enum ErrorCodes implements BaseErrorCodes {
     API_NOT_EXISTS("D01006", "接口不存在"),
     DS_TABLE_NOT_EXISTS("D01007", "表不存在"),
 
-    API_SUPPLIER_NOT_EXISTS("D01008", "接入方不存在");
+    API_SUPPLIER_NOT_EXISTS("D01008", "接入方不存在"),;
 
     private final String code;
     private final String msg;

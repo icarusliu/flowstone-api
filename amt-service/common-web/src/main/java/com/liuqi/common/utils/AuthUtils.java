@@ -28,6 +28,7 @@ public class AuthUtils {
         payload.put("tenantId", userContext.getTenantId());
         payload.put("super", userContext.getIsSuperAdmin());
         payload.put("avatar", userContext.getAvatar());
+        payload.put("isClient", userContext.getIsClient());
         return JWTUtil.createToken(payload, key.getBytes());
     }
 

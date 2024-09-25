@@ -82,6 +82,8 @@ SQL节点
 ![image](https://github.com/user-attachments/assets/b1506bf8-713a-4826-b6e0-8fe8cfce4946)
 
 # 6. 接口调用
+
+## 6.1 基础说明
 管理前端测试时调用的接口为发布前的接口，此处只适合做测试用，而给到用户前端或者外系统调用时，需要将接口进行发布，使用发布后的接口进行调用。
 
 通过前端调用接口时的路径：http://localhost:3000/api/dua/*，其中 * 表示的是所配置的接口路径；
@@ -91,12 +93,26 @@ SQL节点
 比如通过前端调用的curl语句：
 ```curl
 curl 'http://localhost:3000/api/dua/test/js' \
-  -H 'Cookie: access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdXBlciI6dHJ1ZSwibmlja25hbWUiOiJhZG1pbiIsInRlbmFudElkIjoic3lzIiwiaWQiOiJRSVFJTklVQkkiLCJ1c2VybmFtZSI6ImFkbWluIn0.OUSwVEJVqzSYQIfNou6jtv0N4Mil7H8bFXBOruquS70; token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdXBlciI6dHJ1ZSwibmlja25hbWUiOiJhZG1pbiIsInRlbmFudElkIjoic3lzIiwiaWQiOiJRSVFJTklVQkkiLCJ1c2VybmFtZSI6ImFkbWluIn0.OUSwVEJVqzSYQIfNou6jtv0N4Mil7H8bFXBOruquS70'
+  -H 'Cookie: access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdXBlciI6dHJ1ZSwibmlja25hbWUiOiJhZG1pbiIsInRlbmFudElkIjoic3lzIiwiaWQiOiJRSVFJTklVQkkiLCJ1c2VybmFtZSI6ImFkbWluIn0.OUSwVEJVqzSYQIfNou6jtv0N4Mil7H8bFXBOruquS70'
 ```
 
 注意如果指定过域名需要将localhost修改成对应域名；端口也需进行相应修改；
 
-接口调用时需要包含有相应的Token信息，这个Token可以在管理端登录时获取；也可以手动调用该登录接口；后续将会扩展应用式鉴权模式。
+## 6.2 通过管理端token调用
+接口调用时需要包含有相应的Token信息，这个Token可以在管理端登录时获取；也可以手动调用该登录接口。
+
+## 6.3 通过客户端模式调用
+- 进入客户端管理功能，新增客户端；
+- 使用clientId/clientSecret进行token换算，示例：
+  ```curl
+  curl http://localhost:3000/api/auth/client-login?clientId=1838749028435689474&clientSecret=f812e3ea708446b98fd81fd4940cdec5
+  ```
+  调用后将会返回一串字符串，复制在后续接口中调用
+- 进行实际接口调用，使用cookie或者header中添加authorization，比如：
+  ```curl
+  curl 'http://localhost:3000/api/dua/test/js' \
+  -H 'Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdXBlciI6dHJ1ZSwibmlja25hbWUiOiJhZG1pbiIsInRlbmFudElkIjoic3lzIiwiaWQiOiJRSVFJTklVQkkiLCJ1c2VybmFtZSI6ImFkbWluIn0.OUSwVEJVqzSYQIfNou6jtv0N4Mil7H8bFXBOruquS70'
+  ```
 
 # 7. 其它说明
 本工具基础代码使用[流石代码生成](https://gitee.com/changkang/flowstone-code-generator)工具（Idea的插件）生成，这个插件也是本人所写的一个插件，通过定义代码模板的方式一键生成基于MyBatisPlus的基础代码及Liquibase脚本、前端页面；感兴趣的可以关注一拨。
