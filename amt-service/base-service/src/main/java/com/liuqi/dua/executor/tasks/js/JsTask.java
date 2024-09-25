@@ -1,6 +1,6 @@
 package com.liuqi.dua.executor.tasks.js;
 
-import com.liuqi.common.JsUtils;
+import com.liuqi.common.utils.JsUtils;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.AbstractDagTask;

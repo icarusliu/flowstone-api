@@ -7,6 +7,7 @@ import com.liuqi.dua.bean.query.ApiQuery;
 import com.liuqi.dua.domain.entity.ApiEntity;
 import com.liuqi.dua.domain.mapper.ApiMapper;
 import com.liuqi.dua.service.ApiService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ public class ApiServiceImpl extends AbstractBaseService<ApiEntity, ApiDTO, ApiMa
                     q.eq("id", query.getKey())
                             .or().eq("path", query.getKey());
                 })
+                .notIn(CollectionUtils.isNotEmpty(query.getIdsNot()), "id", query.getIdsNot())
                 .orderByDesc("create_time");
     }
 }

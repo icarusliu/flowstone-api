@@ -11,4 +11,6 @@ public class ClientAddReq {
     private String name;
     private String remark;
     private String whiteIps;
+    private Integer limitInSecond;
+    private Boolean withAllApis;
 }

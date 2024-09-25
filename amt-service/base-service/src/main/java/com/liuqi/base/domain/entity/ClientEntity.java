@@ -22,11 +22,17 @@ public class ClientEntity extends BaseEntity {
     private String secret;
 
     @Comment("是否停用，0：否，1：是")
-    private boolean disabled;
+    private Boolean disabled;
 
     @Comment("描述")
     private String remark;
 
     @Comment("应用白名单")
     private String whiteIps;
+
+    @Comment("应用支持每s请求数")
+    private Integer limitInSecond;
+
+    @Comment("是否支持访问所有接口")
+    private Boolean withAllApis;
 }

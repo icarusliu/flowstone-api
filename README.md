@@ -16,18 +16,18 @@
 
 # 3. 系统架构
 ## 3.1 系统功能架构
-<img src="https://github.com/user-attachments/assets/538fd84d-d5cf-43c5-a910-b47e41fb39d7" width="500"/>
+<img src="https://github.com/user-attachments/assets/7f2366b2-30ea-49df-98ed-4c71b64d5ab3" width="500"/>
 
 其中标黄部分暂未实现；
 
 ## 3.2 系统技术架构
-<img src="https://github.com/user-attachments/assets/6c29fba8-d092-4ea3-bf08-8ba79c5db0ff" width="500"/>
+<img src="https://github.com/user-attachments/assets/ad7f3da5-9085-43cb-93aa-d13f05720629" width="500"/>
 
 ## 3.3 系统交互架构
-<img src="https://github.com/user-attachments/assets/5ce4ae2e-7e0f-4128-967f-84b21322f85d" width="400"/>
+<img src="https://github.com/user-attachments/assets/9c14cc1b-3e61-4fae-800a-e850e20439ce" width="400"/>
 
 ## 3.4 系统部署架构
-<img src="https://github.com/user-attachments/assets/2a17660d-ae9b-48ef-8319-0ff39c79cdcb" width="400"/>
+<img src="https://github.com/user-attachments/assets/ddd95b16-3419-45f6-b034-a860962250b0" width="400"/>
 
 # 4. 启动
 ## 4.1 开发启动
@@ -126,6 +126,7 @@ curl 'http://localhost:3000/api/dua/test/js' \
 - 完善文档功能，增加调用Curl示例；
 - 增加手动保存测试数据功能，同时完善输入配置功能，保存测试数据时，如果未配置输入参数，则会使用测试数据解析输入参数进行填充
 - 修复游客模式带来的测试接口时跳转登录页面问题；
+- 增加客户端接口授权功能，可为客户端授权所有接口或者部分指定接口；
 
 ## v1.0.2
 - 增加各种节点类型的示例接口

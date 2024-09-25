@@ -89,7 +89,7 @@ public class LoginService {
             throw AppException.of(ErrorCodes.BASE_CLIENT_INVALID);
         }
 
-        if (client.isDisabled()) {
+        if (client.getDisabled()) {
             throw AppException.of(ErrorCodes.BASE_CLIENT_DISABLED);
         }
 

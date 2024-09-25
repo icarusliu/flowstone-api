@@ -40,6 +40,9 @@ const routes = [
             }, {
                 path: '/manager/client',
                 component: () => import('../views/base/client.vue')
+            },{
+                path: '/manager/client-apis/:id',
+                component: () => import('../views/base/client-apis.vue')
             },
             {
                 path: '/logs',

@@ -21,6 +21,8 @@
     <!-- 标签 -->
     <el-tag v-else-if="field.tagType" :type="tagType.type"  :class="clazz">{{ tagType.text }}</el-tag>
 
+    <el-checkbox v-else-if="field.type == 'checkbox'" :modelValue="row[field.prop]" @change="val => field.change && field.change(val, row)"/>
+
     <!-- 带有转换函数的列 -->
     <template v-else-if="field.converter">
         <span :class="clazz">{{ field.converter(row[field.prop], row) }}</span>

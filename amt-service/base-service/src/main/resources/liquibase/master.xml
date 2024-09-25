@@ -309,19 +309,41 @@
     <changeSet id="create-table-base_client" author="codeGenerator">
         <sql>
             create table base_client(
-                id varchar(64) not null primary key comment '主键',
-                name varchar(255) not null comment '名称',
-                secret varchar(255) not null comment '密钥',
-                disabled int(1) default 0 comment '是否停用，0：否，1：是',
-                remark varchar(255) comment '描述',
-                white_ips varchar(255) comment '应用白名单',
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) not null comment '创建用户',
-                create_time timestamp default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time timestamp on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            name varchar(255) not null comment '名称',
+            secret varchar(255) not null comment '密钥',
+            disabled int(1) default 0 comment '是否停用，0：否，1：是',
+            remark varchar(255) comment '描述',
+            white_ips varchar(255) comment '应用白名单',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) not null comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             )
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-d_client_api" author="codeGenerator">
+        <sql>
+            create table d_client_api(
+            id varchar(64) not null primary key comment '主键',
+            client_id varchar(255) comment '客户端id',
+            api_id varchar(255) comment '接口id',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) not null comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet id="alter-table-base_client" author="codeGenerator">
+        <sql>
+            alter table base_client add column limit_in_second int not null default 500 comment '每s支持的请求数';
+            alter table base_client add column with_all_apis int(1) not null default 0 comment '是否可调用所有接口';
         </sql>
     </changeSet>
 </databaseChangeLog>

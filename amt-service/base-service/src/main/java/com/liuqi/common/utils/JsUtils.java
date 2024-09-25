@@ -1,4 +1,4 @@
-package com.liuqi.common;
+package com.liuqi.common.utils;
 
 import com.alibaba.fastjson2.JSON;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;

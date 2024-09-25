@@ -193,7 +193,7 @@ public class ScheduleTaskExecutor {
                 finalParams.put(k, value);
             });
 
-            duaService.execute(api.getId(), finalParams);
+            duaService.execute(api, finalParams);
         };
     }
 

@@ -97,10 +97,10 @@
         <mxCell id="xSThs0vWAS3E4zNTi9Bs-12" value="MQ监听管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0a30a;fontColor=#FFFFFF;strokeColor=#BD7000;" parent="73CrSDkAPKUB9IUhtg6c-3" vertex="1">
           <mxGeometry x="510" y="30" width="95" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="fzGO5nSWQXrbNnpkwKlt-1" value="客户端接口授权" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0a30a;strokeColor=#BD7000;fontColor=#FFFFFF;" vertex="1" parent="73CrSDkAPKUB9IUhtg6c-3">
+        <mxCell id="fzGO5nSWQXrbNnpkwKlt-1" value="客户端接口授权" style="rounded=1;whiteSpace=wrap;html=1;" parent="73CrSDkAPKUB9IUhtg6c-3" vertex="1">
           <mxGeometry x="145" y="120" width="95" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="4tHlc-rJ9kxKQWhEn0bO-1" value="游客模式" style="rounded=1;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;flipV=1;" vertex="1" parent="1">
+        <mxCell id="4tHlc-rJ9kxKQWhEn0bO-1" value="游客模式" style="rounded=1;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;flipV=1;" parent="1" vertex="1">
           <mxGeometry x="605" y="770" width="80" height="37.5" as="geometry" />
         </mxCell>
       </root>

@@ -1,4 +1,4 @@
-package com.liuqi.common;
+package com.liuqi.common.filter;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.liuqi.common.utils.WebUtils;

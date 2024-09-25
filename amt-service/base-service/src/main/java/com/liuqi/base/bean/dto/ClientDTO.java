@@ -1,5 +1,6 @@
 package com.liuqi.base.bean.dto;
 
+import com.liuqi.common.annotations.Comment;
 import com.liuqi.common.base.bean.dto.BaseDTO;
 import lombok.Data;
 
@@ -11,7 +12,9 @@ import lombok.Data;
 public class ClientDTO extends BaseDTO {
     private String name;
     private String secret;
-    private boolean disabled;
+    private Boolean disabled;
     private String remark;
     private String whiteIps;
+    private Integer limitInSecond;
+    private Boolean withAllApis;
 }

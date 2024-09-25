@@ -13,4 +13,6 @@ public class ClientUpdateReq {
     private String remark;
     private Boolean disabled;
     private String whiteIps;
+    private Integer limitInSecond;
+    private Boolean withAllApis;
 }

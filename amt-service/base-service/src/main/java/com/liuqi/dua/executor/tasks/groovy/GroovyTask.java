@@ -1,6 +1,6 @@
 package com.liuqi.dua.executor.tasks.groovy;
 
-import com.liuqi.common.GroovyUtils;
+import com.liuqi.common.utils.GroovyUtils;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.AbstractDagTask;

@@ -1,5 +1,6 @@
 package com.liuqi.dua.web;
 
+import com.liuqi.common.ApiHolder;
 import com.liuqi.dua.service.DuaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,20 +26,18 @@ public class DuaTestController {
     public Object execute(
             @RequestParam Map<String, Object> params
     ) {
-        String key = request.getRequestURI().substring(10);
-        return duaService.test(key, params);
+        return duaService.test(ApiHolder.getOrThrow(), params);
     }
 
     @RequestMapping(value = "**", method = {RequestMethod.POST, RequestMethod.PUT})
     public Object executePost(
             @RequestBody(required = false) Map<String, Object> body) {
-        String key = request.getRequestURI().substring(10);
         Map<String, Object> finalParams = new HashMap<>(16);
 
         if (null != body) {
             finalParams.putAll(body);
         }
 
-        return duaService.test(key, finalParams);
+        return duaService.test(ApiHolder.getOrThrow(), finalParams);
     }
 }

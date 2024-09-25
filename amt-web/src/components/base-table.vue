@@ -2,13 +2,13 @@
     <!-- 基础数据表格 -->
     <el-table :data="rows" row-key="id" :default-expand-all="defaultExpandAll != false" border @rowClick="onRowClick"
         ref="tableRef">
-        <el-table-column width="52px" label="序号" type="index" fixed />
+        <el-table-column width="52px" label="序号" type="index" fixed v-if="showIndex != false"/>
 
         <el-table-column v-for="field in fields" :prop="field.prop" :key="field.prop" :label="field.label"
-            :fixed="field.fixed" :width="field.width" :type="field.type == 'expand' ? 'expand' : 'default'"
+            :fixed="field.fixed" :width="field.width" :type="(field.type == 'expand' || field.type == 'selection') ? field.type : 'default'"
             :min-width="field.minWidth">
 
-            <template #default="{ row, $index }">
+            <template v-if="field.type != 'selection'" #default="{ row, $index }">
                 <base-table-column :row="row" :field="field" :index="$index"/>
             </template>
         </el-table-column>
@@ -24,7 +24,7 @@
 import { ref, onMounted } from 'vue'
 import baseTableColumn from './base-table-column.vue';
 
-const props = defineProps(["dataSupplier", "fields", "params", "pageable", "defaultExpandAll"])
+const props = defineProps(["dataSupplier", "fields", "params", "pageable", "defaultExpandAll", "showIndex"])
 const total = ref(0)
 const rows = ref([])
 const pageNo = ref(0)
@@ -104,8 +104,13 @@ function toggleRowExpansion(row, expanded) {
     tableRef.value.toggleRowExpansion(row, expanded)
 }
 
+function getSelectionRows() {
+    return tableRef.value.getSelectionRows()
+}
+
 defineExpose({
     reload,
-    toggleRowExpansion
+    toggleRowExpansion,
+    getSelectionRows
 })
 </script>
