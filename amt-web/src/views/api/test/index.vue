@@ -15,6 +15,7 @@
 
         <div class="text-center mb-4">
             <el-button type="primary" @click="doTest">测试</el-button>
+            <el-button @click="saveTestData">保存测试数据</el-button>
         </div>
 
         <div v-if="testResult" class="result mt-8 mb-8">
@@ -133,7 +134,91 @@ function doSaveExample() {
     let params = jsonUtils.loadJsonSchema(result)
     model.value.output = params || []
     model.value.outputExample = JSON.stringify(result)
-    emits('save', false)
+    emits('save', true)
+}
+
+// 保存测试数据
+function saveTestData() {
+    let inputParams = model.value.inputParams
+
+    if (!inputParams || !inputParams.length) {
+        inputParams = model.value.inputParams = []
+
+        // 没有配置输入参数时，使用测试参数进行填充
+        let method = props.apiInfo.method
+        let testData = model.value.testData
+        if (testData) {
+            if (method == 'get' && testData.queryParams) {
+                testData.queryParams.forEach(param => {
+                    let value = param.value
+                    let type = 'string'
+                    if (_.isInteger(value)) {
+                        type = 'int'
+                    } else if (_.isNumber(value)) {
+                        type = 'float'
+                    }
+
+                    inputParams.push({
+                        code: param.code,
+                        name: param.code,
+                        default: param.value,
+                        type
+                    })
+                })
+            } else if (method == 'post' && testData.body) {
+                let arr = parseInputParamsFromJson(testData.body)
+                inputParams.splice(0, 0, arr)
+            }
+        }
+    }
+
+    emits('save', true)
+}
+
+function parseInputParamsFromJson(obj) {
+    obj = JSON.parse(obj)
+
+    if (_.isArray(obj)) {
+        // 暂只解析第一级
+        let item = {
+            code: '*',
+            name: '*',
+            type: 'array',
+            default: JSON.stringify(obj)
+        }
+
+        return item
+    } else if (_.isObject(obj)) {
+        // 对象
+        let children = []
+        let item = {
+            code: '*',
+            name: '*',
+            type: 'object',
+            children: children
+        }
+
+        _.forEach(obj, (value, key) => {
+            let subItem = parseInputParamsFromJson(value)
+            subItem.name = key
+            subItem.code = key
+            children.push(subItem)
+        })
+
+        return item
+    } else {
+        // 不是数组也不是对象，是直接值
+        let type = 'string'
+        if (_.isInteger(obj)) {
+            type = 'int'
+        } else if (_.isNumber(obj)) {
+            type = 'float'
+        }
+        return {
+            type,
+            default: obj
+        }
+    }
 }
 </script>
 

@@ -205,13 +205,17 @@ function doSave() {
 }
 
 // 保存测试参数
-function doSaveTest() {
+function doSaveTest(changeStatus) {
     let newData = _.cloneDeep(formModel.value)
     let content = newData.content
     newData.content = JSON.stringify(content)
-    newData.changeStatus = false
-    entityApis.save('/base/api-draft', newData).then(() => {
+    newData.changeStatus = changeStatus
+    entityApis.save('/base/api-draft', newData).then((resp) => {
         ElMessage.success('操作成功')
+
+        if (changeStatus) {
+            formModel.value.status = resp.status
+        }
     })
 }
 

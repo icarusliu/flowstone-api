@@ -22,6 +22,13 @@
             </div>
         </el-descriptions-item>
 
+        <el-descriptions-item label="调用示例" :span="2">
+            <div class="p-4">
+                {{ curlTest }}
+                <div class="mt-2">实际调用中请替换token</div>
+            </div>
+        </el-descriptions-item>
+
         <el-descriptions-item label="输出示例" :span="2">
             <monacoEditor language="json" v-model="apiConfig.outputExample" :editorOptions="{ readOnly: true }"
                 height="500px" />
@@ -40,6 +47,39 @@ const router = useRouter()
 
 const id = computed(() => {
     return router.currentRoute.value.query.id
+})
+
+const host = computed(() => {
+    let href = window.location.href.replace('http://', '')
+    let idx = href.indexOf('/')
+    href = href.substring(0, idx)
+    return href
+})
+const curlTest = computed(() => {
+    let {method, path} = apiInfo.value
+    let {testData} = apiConfig.value
+
+    let result = `curl -X ${method} http://${host.value}/api/dua/${path}`
+
+    if (!testData) {
+        return result
+    }
+
+    if (method == 'post') {
+        if (testData.body) {
+            result += ` -d '${testData.body}' -H 'Content-Type: application/json'`
+        } 
+    } else {
+        if (testData.queryParams && testData.queryParams.length) {
+            let str = testData.queryParams.map(({code, value}) => code + '=' + value)
+                .reduce((s1, s2) => s1 + '&' + s2)
+            result += '?' + str
+        }
+    }
+
+    result += ` -H 'Authorization: token'`
+
+    return result;
 })
 
 const outputFields = ref([

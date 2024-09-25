@@ -1,7 +1,10 @@
 package com.liuqi.common;
 
 import com.liuqi.dua.bean.dto.ApiDTO;
+import com.liuqi.dua.bean.dto.ApiDraftDTO;
+import com.liuqi.dua.bean.query.ApiDraftQuery;
 import com.liuqi.dua.bean.query.ApiQuery;
+import com.liuqi.dua.service.ApiDraftService;
 import com.liuqi.dua.service.ApiService;
 import jakarta.el.MethodNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +23,9 @@ public class GuestApiRequestMatcher implements RequestMatcher {
     @Autowired
     private ApiService apiService;
 
+    @Autowired
+    private ApiDraftService apiDraftService;
+
     /**
      * Decides whether the rule implemented by the strategy matches the supplied request.
      *
@@ -33,15 +39,24 @@ public class GuestApiRequestMatcher implements RequestMatcher {
             return false;
         }
 
-        int idx = 5;
-        if (uri.startsWith("/dua-test/")) {
-            idx = 10;
+        if (uri.startsWith("/dua/")) {
+            String key = uri.substring(5);
+            ApiQuery q = new ApiQuery();
+            q.setKey(key);
+            ApiDTO api = apiService.findOne(q).orElse(null);
+            if (null == api) {
+                return true;
+            }
+            return api.getGuestMode();
+        } else {
+            String key = uri.substring(10);
+            ApiDraftQuery q = new ApiDraftQuery();
+            q.setKey(key);
+            ApiDraftDTO api = apiDraftService.findOne(q).orElse(null);
+            if (null == api) {
+                return true;
+            }
+            return api.getGuestMode();
         }
-
-        String key = uri.substring(idx);
-        ApiQuery q = new ApiQuery();
-        q.setKey(key);
-        ApiDTO api = apiService.findOne(q).orElseThrow(MethodNotFoundException::new);
-        return api.getGuestMode();
     }
 }
