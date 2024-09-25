@@ -9,7 +9,12 @@ import com.liuqi.dua.domain.mapper.SupplierMapper;
 import com.liuqi.dua.service.SupplierService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Optional;
 
 /**
  * 接入方服务实现
@@ -39,5 +44,72 @@ public class SupplierServiceImpl extends AbstractBaseService<SupplierEntity, Sup
                 .in(null != query.getIds(), "id", query.getIds())
                 .eq("deleted", false)
                 .orderByDesc("create_time");
+    }
+
+    /**
+     * 根据id查找记录
+     *
+     * @param id id
+     * @return id对应的记录
+     */
+    @Override
+    @Cacheable(cacheNames = "supplierInfo")
+    public Optional<SupplierDTO> findById(String id) {
+        return super.findById(id);
+    }
+
+    /**
+     * 更新记录
+     *
+     * @param dto 待更新记录内容，id不能为空
+     */
+    @Override
+    @CacheEvict(cacheNames = "supplierInfo", key = "#dto.id")
+    public void update(SupplierDTO dto) {
+        super.update(dto);
+    }
+
+    /**
+     * 逻辑删除
+     *
+     * @param id 待删除记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "supplierInfo", key = "#id")
+    public void delete(String id) {
+        super.delete(id);
+    }
+
+    /**
+     * 批量逻辑删除
+     *
+     * @param ids 待删除记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "supplierInfo", allEntries = true)
+    public void delete(Collection<String> ids) {
+        super.delete(ids);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param id 记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "supplierInfo", key = "#id")
+    public void deletePhysical(String id) {
+        super.deletePhysical(id);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param ids 记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "supplierInfo", allEntries = true)
+    public void deletePhysical(Collection<String> ids) {
+        super.deletePhysical(ids);
     }
 }
