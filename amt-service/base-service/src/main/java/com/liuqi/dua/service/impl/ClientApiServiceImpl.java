@@ -9,11 +9,13 @@ import com.liuqi.dua.bean.query.ClientApiQuery;
 import com.liuqi.dua.domain.entity.ClientApiEntity;
 import com.liuqi.dua.domain.mapper.ClientApiMapper;
 import com.liuqi.dua.service.ClientApiService;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -46,6 +48,82 @@ public class ClientApiServiceImpl extends AbstractBaseService<ClientApiEntity, C
     }
 
     @Override
+    @Cacheable(cacheNames = "clientApis")
+    public List<ClientApiDTO> findByClient(String clientId) {
+        ClientApiQuery query = new ClientApiQuery();
+        query.setClientId(clientId);
+        return this.query(query);
+    }
+
+    /**
+     * 实体插入操作
+     *
+     * @param dto 插入的数据对象
+     * @return 插入完成后的对象，包含有生成的id
+     */
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
+    public ClientApiDTO insert(ClientApiDTO dto) {
+        return super.insert(dto);
+    }
+
+    /**
+     * 更新记录
+     *
+     * @param dto 待更新记录内容，id不能为空
+     */
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
+    public void update(ClientApiDTO dto) {
+        super.update(dto);
+    }
+
+    /**
+     * 逻辑删除
+     *
+     * @param id 待删除记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
+    public void delete(String id) {
+        super.delete(id);
+    }
+
+    /**
+     * 批量逻辑删除
+     *
+     * @param ids 待删除记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
+    public void delete(Collection<String> ids) {
+        super.delete(ids);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param id 记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
+    public void deletePhysical(String id) {
+        super.deletePhysical(id);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param ids 记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
+    public void deletePhysical(Collection<String> ids) {
+        super.deletePhysical(ids);
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "clientApis", allEntries = true)
     public void delete(String clientId, List<String> apiIds) {
         UpdateWrapper<ClientApiEntity> updateWrapper = Wrappers.<ClientApiEntity>update()
                 .eq(StringUtils.isNotBlank(clientId), "client_id", clientId)

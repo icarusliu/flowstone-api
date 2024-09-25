@@ -20,7 +20,7 @@ const tableRef = ref()
 const params = ref({})
 const fields = ref([
     { label: '接口', prop: 'apiName', width: '300px' },
-    { label: '地址', prop: 'apiPath', width: '300px', converter: val => '/dua/' + val },
+    { label: '地址', prop: 'apiPath', converter: val => '/dua/' + val },
     { label: '执行时间', prop: 'createTime', width: '150px' },
     { label: '执行状态', prop: 'status', width: '80px', type: 'tag', tagType: val => {
         if (val == 0) {
@@ -36,7 +36,7 @@ const fields = ref([
         }
     }},
     { label: '执行耗时', prop: 'spentTime', width: '80px', converter: val => val + 'ms' },
-    { label: '异常信息', prop: 'errorMsg' },
+    // { label: '异常信息', prop: 'errorMsg' },
     {
         label: '', type: 'expand', prop: 'result', render: (val, row) => {
             let arr = []

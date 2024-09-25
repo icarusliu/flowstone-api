@@ -51,6 +51,8 @@ spring:
       port: 6379
       password:
       connectTimeout: 10
+  cache:
+    type: simple
 
 knife4j:
   enable: true

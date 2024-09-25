@@ -115,7 +115,7 @@ const inputFields = ref([
     },
     { label: '参数类型', prop: 'type', width: '120px', type: 'select' },
     { label: '必需', prop: 'required', width: '60px', type: 'checkbox' },
-    { label: '默认值', prop: 'default', width: '120px' },
+    { label: '示例值', prop: 'default', width: '120px' },
     { label: '备注', prop: 'remark' }
 ])
 

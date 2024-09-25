@@ -10,7 +10,12 @@ import com.liuqi.dua.service.ApiService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Optional;
 
 /**
  * 接口服务实现
@@ -38,12 +43,81 @@ public class ApiServiceImpl extends AbstractBaseService<ApiEntity, ApiDTO, ApiMa
         return this.createQueryWrapper()
                 .eq(StringUtils.isNotBlank(query.getId()), "id", query.getId())
                 .in(null != query.getIds(), "id", query.getIds())
-                .eq("deleted", false)
                 .and(StringUtils.isNotBlank(query.getKey()), q -> {
                     q.eq("id", query.getKey())
                             .or().eq("path", query.getKey());
                 })
                 .notIn(CollectionUtils.isNotEmpty(query.getIdsNot()), "id", query.getIdsNot())
                 .orderByDesc("create_time");
+    }
+
+    /**
+     * 更新记录
+     *
+     * @param dto 待更新记录内容，id不能为空
+     */
+    @CacheEvict(cacheNames = "apiInfo", allEntries = true)
+    @Override
+    public void update(ApiDTO dto) {
+        super.update(dto);
+    }
+
+
+    /**
+     * 逻辑删除
+     *
+     * @param id 待删除记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "apiInfo", allEntries = true)
+    public void delete(String id) {
+        super.delete(id);
+    }
+
+    /**
+     * 批量逻辑删除
+     *
+     * @param ids 待删除记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "apiInfo", allEntries = true)
+    public void delete(Collection<String> ids) {
+        super.delete(ids);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param id 记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "apiInfo", allEntries = true)
+    public void deletePhysical(String id) {
+        super.deletePhysical(id);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param ids 记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "apiInfo", allEntries = true)
+    public void deletePhysical(Collection<String> ids) {
+        super.deletePhysical(ids);
+    }
+
+    /**
+     * 通过路径查找接口
+     *
+     * @param path 路径
+     * @return 接口信息
+     */
+    @Override
+    @Cacheable(cacheNames = "apiInfo")
+    public Optional<ApiDTO> findByPath(String path) {
+        ApiQuery query = new ApiQuery();
+        query.setKey(path);
+        return this.findOne(query);
     }
 }

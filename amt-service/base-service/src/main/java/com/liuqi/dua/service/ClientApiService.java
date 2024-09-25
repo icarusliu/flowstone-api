@@ -11,11 +11,12 @@ import java.util.List;
  * @author Coder Generator 2024-09-25 15:58:18 
  **/
 public interface ClientApiService extends BaseService<ClientApiDTO, ClientApiQuery> {
-    default List<ClientApiDTO> findByClient(String clientId) {
-        ClientApiQuery query = new ClientApiQuery();
-        query.setClientId(clientId);
-        return this.query(query);
-    }
+    /**
+     * 根据客户端编号查询
+     * @param clientId 客户端编号
+     * @return 客户端绑定接口列表
+     */
+    List<ClientApiDTO> findByClient(String clientId);
 
     /**
      * 删除客户端与接口绑定关系

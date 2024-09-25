@@ -2,8 +2,6 @@ package com.liuqi.common.filter;
 
 import com.liuqi.common.ApiHolder;
 import com.liuqi.dua.bean.dto.ApiDTO;
-import com.liuqi.dua.bean.query.ApiDraftQuery;
-import com.liuqi.dua.bean.query.ApiQuery;
 import com.liuqi.dua.service.ApiDraftService;
 import com.liuqi.dua.service.ApiService;
 import jakarta.servlet.*;
@@ -43,15 +41,11 @@ public class ApiLoadFilter implements Filter {
 
         if (uri.startsWith("/dua/")) {
             String key = uri.substring(5);
-            ApiQuery q = new ApiQuery();
-            q.setKey(key);
-            apiService.findOne(q).ifPresent(ApiHolder::set);
+            apiService.findByPath(key).ifPresent(ApiHolder::set);
             chain.doFilter(request, response);
         } else {
             String key = uri.substring(10);
-            ApiDraftQuery q = new ApiDraftQuery();
-            q.setKey(key);
-            apiDraftService.findOne(q).ifPresent(item -> {
+            apiDraftService.findByPath(key).ifPresent(item -> {
                 ApiDTO dto = new ApiDTO();
                 BeanUtils.copyProperties(item, dto);
                 ApiHolder.set(dto);

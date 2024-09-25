@@ -36,7 +36,6 @@ public class DsController {
         DsDTO dto = new DsDTO();
         BeanUtils.copyProperties(req, dto);
         service.insert(dto);
-       
     }
 
     @PutMapping("update")
@@ -45,7 +44,6 @@ public class DsController {
         DsDTO dto = new DsDTO();
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
-       
     }
 
     @DeleteMapping("delete/{id}")

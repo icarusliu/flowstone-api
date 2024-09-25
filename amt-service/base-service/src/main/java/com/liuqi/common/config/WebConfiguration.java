@@ -2,6 +2,7 @@ package com.liuqi.common.config;
 
 import com.liuqi.common.interceptor.ClientInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @version V1.0
  **/
 @Configuration
+@EnableCaching
 public class WebConfiguration implements WebMvcConfigurer {
     @Autowired
     private ClientInterceptor clientInterceptor;

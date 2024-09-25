@@ -17,6 +17,8 @@ import com.liuqi.common.exception.AppException;
 import com.liuqi.common.exception.AuthErrorCodes;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -142,6 +144,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
     }
 
     @Override
+    @Cacheable(cacheNames = "userInfo-username")
     public UserContext loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.findByUsername(username)
                 .map(user -> {
@@ -166,4 +169,58 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
                 }).orElseThrow(() -> AppException.of(AuthErrorCodes.USERNAME_OR_PASSWORD_ERROR));
     }
 
+    /**
+     * 更新记录
+     *
+     * @param dto 待更新记录内容，id不能为空
+     */
+    @Override
+    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
+    public void update(UserDTO dto) {
+        super.update(dto);
+    }
+
+    /**
+     * 逻辑删除
+     *
+     * @param id 待删除记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
+    public void delete(String id) {
+        super.delete(id);
+    }
+
+    /**
+     * 批量逻辑删除
+     *
+     * @param ids 待删除记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
+    public void delete(Collection<String> ids) {
+        super.delete(ids);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param id 记录id
+     */
+    @Override
+    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
+    public void deletePhysical(String id) {
+        super.deletePhysical(id);
+    }
+
+    /**
+     * 物理删除
+     *
+     * @param ids 记录id列表
+     */
+    @Override
+    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
+    public void deletePhysical(Collection<String> ids) {
+        super.deletePhysical(ids);
+    }
 }
