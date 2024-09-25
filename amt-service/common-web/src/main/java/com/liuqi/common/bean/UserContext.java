@@ -23,7 +23,7 @@ public class UserContext implements UserDetails {
 
     private String avatar;
 
-    private Boolean isSuperAdmin;
+    private Boolean isSuperAdmin = false;
 
     private String password;
 

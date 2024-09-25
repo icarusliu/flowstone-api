@@ -46,7 +46,7 @@ public class AuthUtils {
         String username = payload.getStr("username");
         String displayName = payload.getStr("displayName");
         String tenantId = payload.getStr("tenantId");
-        boolean isSuperAdmin = payload.getBool("super");
+        boolean isSuperAdmin = payload.getBool("super", false);
         UserContext userContext = new UserContext();
         userContext.setTenantId(tenantId);
         userContext.setUserId(userId);
@@ -55,6 +55,7 @@ public class AuthUtils {
         userContext.setIsSuperAdmin(isSuperAdmin);
         userContext.setAvatar(payload.getStr("avatar"));
         userContext.setIsSuperAdmin(isSuperAdmin);
+        userContext.setIsClient(payload.getBool("isClient", false));
         return userContext;
     }
 }

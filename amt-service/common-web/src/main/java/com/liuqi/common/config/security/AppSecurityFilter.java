@@ -43,7 +43,7 @@ public class AppSecurityFilter extends OncePerRequestFilter {
         }
 
         UserContext userContext = AuthUtils.parse(token);
-        if (userContext.getIsClient()) {
+        if (!userContext.getIsClient()) {
             String username = userContext.getUsername();
             userContext = (UserContext) userDetailsService.loadUserByUsername(username);
             UserContextHolder.set(userContext);

@@ -16,7 +16,7 @@
 
 # 3. 系统架构
 ## 3.1 系统功能架构
-<img src="https://github.com/user-attachments/assets/c029748e-16eb-4dfe-8281-bc98bc2162f0" width="500"/>
+<img src="https://github.com/user-attachments/assets/538fd84d-d5cf-43c5-a910-b47e41fb39d7" width="500"/>
 
 其中标黄部分暂未实现；
 
