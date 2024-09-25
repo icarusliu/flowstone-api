@@ -117,7 +117,7 @@ watch(() => router.currentRoute.value.query?.id, val => {
 })
 
 function goBack() {
-    router.back()
+    router.push('/apis/list')
 }
 
 // 获取接口详情

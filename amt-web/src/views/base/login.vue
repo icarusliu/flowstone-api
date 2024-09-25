@@ -73,7 +73,7 @@ onMounted(() => {
 function goNextPage() {
     // 如果链接中带有next，则跳转next，否则跳转首页
     const next = router.currentRoute.value.query?.next
-    if (!next) {
+    if (!next || next.startsWith('/login')) {
         router.push('/')
     } else {
         router.push(next)

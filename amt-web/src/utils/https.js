@@ -47,7 +47,7 @@ function goLogin() {
     sysStore.setUserInfo(null)
 
     if (path == '/login') {
-        next = router.removeRoute.value.query.next
+        path = router.currentRoute.value.query.next
     }
 
     // 跳转路由

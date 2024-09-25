@@ -24,7 +24,7 @@
 
         <el-descriptions-item label="调用示例" :span="2">
             <div class="p-4">
-                {{ curlTest }}
+                <div>{{ curlTest }}</div>
                 <div class="mt-2">实际调用中请替换token</div>
             </div>
         </el-descriptions-item>
