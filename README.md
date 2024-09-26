@@ -36,14 +36,14 @@
 - 注意Token域名默认是localhost，端启动后打开页面localhost:3000即可访问页面；默认用户密码：admin/admin123
 
 ## 4.2 使用docker直接启动现有镜像
-镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
+镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.3
 
 镜像内已集成mariadb/nginx，直接启动后即可通过浏览器打开页面进行测试；
 
 启动命令示例：
 
 ```cmd
-docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
+docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.3
 ```
 
 注意：
@@ -52,12 +52,21 @@ docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhua
 - 通过浏览器打开localhost:3001即可使用相关功能；默认登录用户与密码：admin/admin123
 - SPRING_SECURITY_DOMAIN可以修改域名，如不指定，默认是localhost，以下命令将域名修改成test.com
     ```cmd
-    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.2
+    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.0.3
     ```
    修改成test.com或者其它域名后（即所有非localhost的域名），如果未做域名解析，需要本地配置hosts才可正常访问；
 
-## 4.3 构建、部署与运行
-### 4.3.1 前端
+## 4.3 docker打包全量（前端与后端、DB打包到一个镜像中）
+进入项目build目录，执行build.bat + 版本号，比如
+```cmd
+.\build.bat v1.0.3
+```
+生成的docker镜像为：amt-service:v1.0.3，通过docker images可以看到对应镜像，然后使用4.2中的命令启动镜像即可；
+
+注意需要npm /mvn 可通过命令行执行，并且启动docker程序，否则无法构建；
+
+## 4.4 构建、部署与运行
+### 4.4.1 前端
 前端构建直接使用npm run build命令，然后将dist目录传到服务器，并配置nginx即可，nginx示例如下：
 ```nginx
  server {
@@ -89,15 +98,15 @@ docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhua
 ```
 注意端口是按要按实际情况进行修改，同时如果线上部署需要配置相应域名；
 
-### 4.3.2 后端
-#### 4.3.2.1 准备
+### 4.4.2 后端
+#### 4.4.2.1 准备
 项目依赖MySql或者MariaDB，在启动后端前需要先准备好，并创建对应的数据库；
 
 建表等通过liquibase直接进行，不需要额外处理；
 
 注意修改配置文件application-dev.yaml中的数据库连接信息，生产环境建议复制该文件创建新的环境配置文件然后进行修改，比如application-prd.yaml；
 
-#### 4.3.2.1 编译与打包
+#### 4.4.2.1 编译与打包
 第一步进入项目根目录；
 
 第二步使用以下命令编译（或者在idea中直接点击mvn相应按钮进行编译）：
@@ -106,17 +115,17 @@ mvn clean package
 ```
 此时会在/base-service/target下生成对应的jar包；
 
-#### 4.3.2.2 运行
+#### 4.4.2.2 运行
 一般有两种方式运行后端服务
 
-##### 4.3.2.2.1 直接运行
+##### 4.4.2.2.1 直接运行
 进入生成的jar的目录，或者将jar复制到指定目录，输入以下命令可直接运行
 ```cmd
 java -jar base-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 ```
 dev可以修改成自己的环境名称，比如如果想要使用application-prd.yaml配置文件，则替换为prd
 
-##### 4.3.2.2.2 docker运行
+##### 4.4.2.2.2 docker运行
 - dockerfile目录：/base-service/src/main/docker
 - 将生成的jar复制到该目录；
 - 启动docker，进入docker目录，执行构建命令：
@@ -192,6 +201,9 @@ curl 'http://localhost:3000/api/dua/test/js' \
 
 # 8. 版本变更记录
 ## 主分支
+
+
+## v1.0.3 
 - 接口可配置成游客模式进行免登录调用；
 - 增加发布接口调用白名单控制功能；
 - 增加限流功能；默认使用guava实现限流，如果有配置redis时使用redisson进行限流
