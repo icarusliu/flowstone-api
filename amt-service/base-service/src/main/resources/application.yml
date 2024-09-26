@@ -65,7 +65,7 @@ knife4j:
 
 logging:
   level:
-    org.springframework.security: trace
+    org.springframework.security: error
 
 api:
   # 白名单
