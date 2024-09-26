@@ -56,6 +56,79 @@ docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhua
     ```
    修改成test.com或者其它域名后（即所有非localhost的域名），如果未做域名解析，需要本地配置hosts才可正常访问；
 
+## 4.3 构建、部署与运行
+### 4.3.1 前端
+前端构建直接使用npm run build命令，然后将dist目录传到服务器，并配置nginx即可，nginx示例如下：
+```nginx
+ server {
+  listen 80;
+
+  location / {
+          root /root/html;
+          index index.html;
+          try_files $uri $uri/ /index.html;
+  }
+
+  location /api/ {
+          proxy_pass http://localhost:8080/;
+  }
+
+  location /ws/front {
+          proxy_pass http://localhost:8080;
+          proxy_http_version 1.1;
+          proxy_read_timeout 360s;
+          proxy_redirect off;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade"; #配置连接为升级连接
+          proxy_set_header Host $host:$server_port;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header REMOTE-HOST $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}
+```
+注意端口是按要按实际情况进行修改，同时如果线上部署需要配置相应域名；
+
+### 4.3.2 后端
+#### 4.3.2.1 准备
+项目依赖MySql或者MariaDB，在启动后端前需要先准备好，并创建对应的数据库；
+
+建表等通过liquibase直接进行，不需要额外处理；
+
+注意修改配置文件application-dev.yaml中的数据库连接信息，生产环境建议复制该文件创建新的环境配置文件然后进行修改，比如application-prd.yaml；
+
+#### 4.3.2.1 编译与打包
+第一步进入项目根目录；
+
+第二步使用以下命令编译（或者在idea中直接点击mvn相应按钮进行编译）：
+```cmd
+mvn clean package
+```
+此时会在/base-service/target下生成对应的jar包；
+
+#### 4.3.2.2 运行
+一般有两种方式运行后端服务
+
+##### 4.3.2.2.1 直接运行
+进入生成的jar的目录，或者将jar复制到指定目录，输入以下命令可直接运行
+```cmd
+java -jar base-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+```
+dev可以修改成自己的环境名称，比如如果想要使用application-prd.yaml配置文件，则替换为prd
+
+##### 4.3.2.2.2 docker运行
+- dockerfile目录：/base-service/src/main/docker
+- 将生成的jar复制到该目录；
+- 启动docker，进入docker目录，执行构建命令：
+  ```cmd
+  docker build -t amt-service:1.0.3 .
+  ```
+- 使用docker启动项目：
+  ```cmd
+  docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 8080:8080 amt-service:1.0.3
+  ```
+  具体参数根据实际场景修改
+
 # 5. 界面
 接口文档
 ![image](https://github.com/user-attachments/assets/eb8aa31e-370b-4278-a9ea-bfd8d788ec1f)
