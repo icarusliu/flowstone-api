@@ -12,7 +12,7 @@
 import { ref, h } from "vue"
 import { ElMessage, ElLink, ElMessageBox } from "element-plus";
 import * as entityApis from '@/apis/entity.js'
-import * as managerApis from '@/apis/manager.js'
+import * as clientApis from '@/apis/client.js'
 import useClipboard from 'vue-clipboard3'
 import { useRouter } from "vue-router";
 
@@ -41,7 +41,7 @@ const fields = ref([
 					type: 'primary',
 					onClick: () => {
 						ElMessageBox.confirm('确定重置当前密钥？').then(() => {
-							managerApis.resetClientSecret(row.id).then(resp => {
+							clientApis.resetClientSecret(row.id).then(resp => {
 								ElMessage.success('重置成功')
 								row.secret = resp
 							})

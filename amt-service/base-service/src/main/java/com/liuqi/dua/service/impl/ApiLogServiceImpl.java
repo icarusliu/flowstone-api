@@ -2,6 +2,7 @@ package com.liuqi.dua.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.base.bean.dto.ClientDTO;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.utils.ExceptionUtils;
 import com.liuqi.common.bean.UserContextHolder;
@@ -45,8 +46,8 @@ public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogD
         return this.createQueryWrapper()
                 .eq(StringUtils.isNotBlank(query.getId()), "id", query.getId())
                 .in(null != query.getIds(), "id", query.getIds())
-                .eq("deleted", false)
                 .eq(null != query.getStatus(), "status", query.getStatus())
+                .eq(StringUtils.isNotBlank(query.getClientId()), "client_id", query.getClientId())
                 .and(StringUtils.isNotBlank(query.getKey()), qr -> qr.like("api_path", query.getKey())
                         .or(q -> q.like("api_name", query.getKey())))
                 .orderByDesc("create_time");
@@ -56,14 +57,19 @@ public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogD
      * 添加异常日志
      *
      * @param api      接口信息
+     * @param client   客户端信息
      * @param params   请求参数
      * @param errorMsg 异常信息
      */
     @Override
-    public void addErrorLog(ApiDTO api, Map<String, Object> params, String errorMsg) {
+    public void addErrorLog(ApiDTO api, ClientDTO client, Map<String, Object> params, String errorMsg) {
         ApiLogDTO log = apiToLog(api, params);
         log.setStatus(1);
         log.setErrorMsg(errorMsg);
+        if (null != client) {
+            log.setClientId(client.getId());
+            log.setClientName(client.getName());
+        }
         this.insertAsync(log, UserContextHolder.getUserId().orElse("guest"));
     }
 
@@ -99,10 +105,14 @@ public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogD
      * @param exceptions    异常详细信息
      */
     @Override
-    public void addErrorLog(ApiDTO api, Map<String, Object> requestParams, String errorMsg, List<Exception> exceptions) {
+    public void addErrorLog(ApiDTO api, ClientDTO client, Map<String, Object> requestParams, String errorMsg, List<Exception> exceptions) {
         ApiLogDTO log = apiToLog(api, requestParams);
         log.setStatus(1);
         log.setErrorMsg(errorMsg);
+        if (null != client) {
+            log.setClientId(client.getId());
+            log.setClientName(client.getName());
+        }
 
         // 组装异常信息
         String detail = ExceptionUtils.asString(exceptions);
@@ -115,13 +125,18 @@ public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogD
      * 接口执行成功日志
      *
      * @param api           接口信息
+     * @param client        客户端信息
      * @param requestParams 请求参数
      * @param result        执行结果
-     * @param spentTime 执行时间
+     * @param spentTime     执行时间
      */
     @Override
-    public void addSuccessLog(ApiDTO api, Map<String, Object> requestParams, Object result, long spentTime) {
+    public void addSuccessLog(ApiDTO api, ClientDTO client, Map<String, Object> requestParams, Object result, long spentTime) {
         ApiLogDTO log = apiToLog(api, requestParams);
+        if (null != client) {
+            log.setClientId(client.getId());
+            log.setClientName(client.getName());
+        }
         log.setStatus(0);
         log.setResult(JSON.toJSONString(result));
         log.setSpentTime((int) spentTime);

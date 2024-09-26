@@ -18,7 +18,7 @@
 </template>
 <script setup>
 import { ref, h } from "vue"
-import * as managerApis from '@/apis/manager.js'
+import * as clientApis from '@/apis/client.js'
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 
@@ -40,7 +40,7 @@ const selectRef = ref()
 const tableRef = ref()
 
 function dataSupplier(params) {
-	return managerApis.loadClientApis({
+	return clientApis.loadClientApis({
 		clientId: clientId.value,
 		...params
 	});
@@ -48,7 +48,7 @@ function dataSupplier(params) {
 
 // 加载未绑定的接口列表
 function loadNotBindApis(params) {
-	return managerApis.loadClientNotBindApis({
+	return clientApis.loadClientNotBindApis({
 		clientId: clientId.value,
 		...params
 	})
@@ -68,7 +68,7 @@ function doBind() {
 	}
 
 	let apiIds = selection.map(item => item.id)
-	managerApis.bindClientAndApis({
+	clientApis.bindClientAndApis({
 		clientId: clientId.value,
 		apiIds
 	}).then(() => {
@@ -88,7 +88,7 @@ function doDelete() {
 	}
 	let apiIds = selection.map(item => item.id)
 	ElMessageBox.confirm('确定删除所选择的记录？').then(() => {
-		managerApis.deleteClientAndApis({
+		clientApis.deleteClientAndApis({
 			clientId: clientId.value,
 			apiIds
 		}).then(() => {

@@ -12,4 +12,5 @@ import lombok.Data;
 public class ApiLogQuery extends BaseQuery {
     private Integer status;
     private String key;
+    private String clientId;
 }

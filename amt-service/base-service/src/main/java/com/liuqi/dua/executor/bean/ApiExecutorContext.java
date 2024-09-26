@@ -1,6 +1,7 @@
 package com.liuqi.dua.executor.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.liuqi.base.bean.dto.ClientDTO;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.ws.WebSocketMsg;
@@ -75,6 +76,10 @@ public class ApiExecutorContext {
     // 用户上下文
     @JsonIgnore
     private UserContext userContext;
+
+    // 执行的客户端
+    @JsonIgnore
+    private ClientDTO client;
 
     /**
      * 推送常规消息

@@ -30,4 +30,10 @@ public class ApiLogEntity extends BaseEntity {
 
     @Comment("存储结果或异常详细信息")
     private String result;
+
+    @Comment("客户端id")
+    private String clientId;
+
+    @Comment("客户端名称")
+    private String clientName;
 }

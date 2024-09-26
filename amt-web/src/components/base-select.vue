@@ -1,5 +1,5 @@
 <template>
-    <el-select v-model="model" @change="doChanged" :value-key="valueKey">
+    <el-select v-model="model" @change="doChanged" :value-key="valueKey" clearable>
         <el-option v-for="option in finalOptions" 
             :value="option.value || option.id" 
             :label="option.label || option.name" 

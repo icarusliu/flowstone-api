@@ -33,7 +33,6 @@ public class $T$ServiceImpl extends AbstractBaseService<$T$Entity, $T$DTO, $T$Ma
         return this.createQueryWrapper()            
             \n.eq(StringUtils.isNotBlank(query.getId()), \"id\", query.getId())
             \n.in(null != query.getIds(), \"id\", query.getIds())
-            \n.eq(\"deleted\", false)
             \n.orderByDesc(\"create_time\");
     }
   }"

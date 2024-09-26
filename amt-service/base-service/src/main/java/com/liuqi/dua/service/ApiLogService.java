@@ -1,5 +1,6 @@
 package com.liuqi.dua.service;
 
+import com.liuqi.base.bean.dto.ClientDTO;
 import com.liuqi.common.base.service.BaseService;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiLogDTO;
@@ -18,10 +19,11 @@ public interface ApiLogService extends BaseService<ApiLogDTO, ApiLogQuery> {
      * 添加异常日志
      *
      * @param api      接口信息
+     * @param client   客户端信息
      * @param params   请求参数
      * @param errorMsg 异常信息
      */
-    void addErrorLog(ApiDTO api, Map<String, Object> params, String errorMsg);
+    void addErrorLog(ApiDTO api, ClientDTO client, Map<String, Object> params, String errorMsg);
 
     /**
      * 添加异常日志
@@ -31,15 +33,16 @@ public interface ApiLogService extends BaseService<ApiLogDTO, ApiLogQuery> {
      * @param errorMsg      异常信息
      * @param exceptions    异常详细信息
      */
-    void addErrorLog(ApiDTO api, Map<String, Object> requestParams, String errorMsg, List<Exception> exceptions);
+    void addErrorLog(ApiDTO api, ClientDTO client, Map<String, Object> requestParams, String errorMsg, List<Exception> exceptions);
 
     /**
      * 接口执行成功日志
      *
      * @param api           接口信息
+     * @param client        客户端信息
      * @param requestParams 请求参数
      * @param result        执行结果
-     * @param spentTime
+     * @param spentTime     执行时间
      */
-    void addSuccessLog(ApiDTO api, Map<String, Object> requestParams, Object result, long spentTime);
+    void addSuccessLog(ApiDTO api, ClientDTO client, Map<String, Object> requestParams, Object result, long spentTime);
 }

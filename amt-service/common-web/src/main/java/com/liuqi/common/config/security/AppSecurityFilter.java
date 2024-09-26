@@ -39,6 +39,7 @@ public class AppSecurityFilter extends OncePerRequestFilter {
 
         if (StringUtils.isBlank(token)) {
             filterChain.doFilter(request, response);
+            UserContextHolder.set(null);
             return;
         }
 

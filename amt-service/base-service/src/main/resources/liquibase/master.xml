@@ -346,4 +346,11 @@
             alter table base_client add column with_all_apis int(1) not null default 0 comment '是否可调用所有接口';
         </sql>
     </changeSet>
+
+    <changeSet id="alter-table-d_api_log" author="codeGenerator">
+        <sql>
+            alter table d_api_log add column client_id varchar(64) comment '客户端id';
+            alter table d_api_log add column client_name varchar(255) comment '客户端名称';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

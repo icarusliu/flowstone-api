@@ -3,6 +3,7 @@ package com.liuqi.common.interceptor;
 import com.liuqi.base.bean.dto.ClientDTO;
 import com.liuqi.base.service.ClientService;
 import com.liuqi.common.ApiHolder;
+import com.liuqi.common.ClientHolder;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.common.bean.UserContextHolder;
 import com.liuqi.dua.bean.dto.ApiDTO;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -61,6 +63,8 @@ public class ClientInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        ClientHolder.set(client);
+
         if (client.getWithAllApis()) {
             return HandlerInterceptor.super.preHandle(request, response, handler);
         }
@@ -74,5 +78,11 @@ public class ClientInterceptor implements HandlerInterceptor {
         log.error("客户端无权限调用相应接口，clientId: {}, api: {}, {}", client.getId(), api.getId(), api.getName());
         response.setStatus(401);
         return false;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+        ClientHolder.set(null);
     }
 }

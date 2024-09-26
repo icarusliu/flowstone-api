@@ -1,5 +1,6 @@
 package com.liuqi.dua.bean.dto;
 
+import com.liuqi.common.annotations.Comment;
 import com.liuqi.common.base.bean.dto.BaseDTO;
 import lombok.Data;
 
@@ -18,4 +19,6 @@ public class ApiLogDTO extends BaseDTO {
     private String errorMsg;
     private String result;
     private Integer spentTime;
+    private String clientId;
+    private String clientName;
 }

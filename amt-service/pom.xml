@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.liuqi</groupId>
-	<artifactId>aapi-service-parent</artifactId>
+	<artifactId>service-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>aapi-service-parent</name>
+	<name>service-parent</name>
 	<description>流石API管理工具</description>
 	<modules>
 		<module>common-web</module>

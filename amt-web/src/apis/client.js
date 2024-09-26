@@ -44,3 +44,10 @@ export function bindClientAndApis(params) {
 export function deleteClientAndApis(params) {
     return https.post('/base/client-api/delete', params)
 }
+
+/**
+ * 查询所有客户端信息
+ */
+export function getAllClients() {
+    return https.post('/base/client/query', {})
+}

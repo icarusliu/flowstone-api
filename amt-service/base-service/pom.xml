@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.liuqi</groupId>
-        <artifactId>aapi-service-parent</artifactId>
+        <artifactId>service-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
