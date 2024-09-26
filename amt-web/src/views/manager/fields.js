@@ -11,8 +11,9 @@ export const dsFields = [
     {
         label: '类型', prop: 'type', required: true,
         default: 'mysql',
-        type: 'radio', options: [
-            { label: 'mysql', value: 'mysql' }
+        type: 'radioGroup', options: [
+            { label: 'mysql', value: 'mysql' },
+            { label: 'SqlServer', value: 'sqlserver' }
         ],
         width: '80px'
     },

@@ -33,6 +33,7 @@
             <div class="text-right">
                 <el-link type="primary" class="mr-2" @click="visible = false">取消</el-link>
                 <el-button type="primary" @click="doSave">保存</el-button>
+                <slot name="formButtons" :model="formModel"></slot>
             </div>
         </template>
     </el-drawer>

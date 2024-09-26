@@ -23,4 +23,14 @@ public class StringTest {
         }
         System.out.println(url);
     }
+
+    @Test
+    public void test1() {
+        String url = "jdbc:sqlserver://localhost:3306aaaaaa;databaseName=test;aabbeeee";
+        Pattern pattern = Pattern.compile("(?<=databaseName=).*(?=;)");
+        pattern.matcher(url).results().forEach(result -> {
+            System.out.println(result.group());
+        });
+        System.out.println(pattern.matcher(url).group());;
+    }
 }

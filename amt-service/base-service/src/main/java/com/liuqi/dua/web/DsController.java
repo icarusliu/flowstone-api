@@ -88,4 +88,9 @@ public class DsController {
     public List<String> getTableFields(String ds, String table) {
         return service.getTableFields(ds, table);
     }
+
+    @PostMapping("test")
+    public void test(@RequestBody DsDTO ds) {
+        service.testConnect(ds);
+    }
 }
