@@ -5,7 +5,7 @@
         </el-descriptions-item>
     </el-descriptions>
 
-    <scriptDialog lang="javascript" v-model:visible="visible" v-model="model.groovy" :readonly="readonly"></scriptDialog>
+    <scriptDialog lang="groovy" v-model:visible="visible" v-model="model.groovy" :readonly="readonly"></scriptDialog>
 </template>
 
 <script setup>

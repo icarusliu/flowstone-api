@@ -37,7 +37,7 @@ watch(() => model.value, (val, oldVal) => {
     }
 }`
         } else if (lang == 'groovy') {
-            val = `def fun(params) {
+            val = `def func(params) {
     return [
         a: 1
     ]

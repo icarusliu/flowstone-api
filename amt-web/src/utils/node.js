@@ -16,8 +16,16 @@ export const nodeTypes = [
             batch: false
         }
     },
-    { label: 'js', code: 'js', icon: 'icon-js' },
-    { label: 'groovy', code: 'groovy', icon: 'icon-icon_Groovy' }
+    { label: 'js', code: 'js', icon: 'icon-js', default: {
+        js: `function func(params) { 
+    return "hello world" 
+}`
+    } },
+    { label: 'groovy', code: 'groovy', icon: 'icon-icon_Groovy', default: {
+        groovy: `def func(params) { 
+    return "hello world" 
+}`
+    } }
 ]
 
 // 加载通用的节点配置参数（使用NodeParam组件配置的参数）

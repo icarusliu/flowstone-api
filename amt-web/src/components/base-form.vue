@@ -4,7 +4,7 @@
     <div>
         <el-form :model="form" :label-position="labelPosition" :label-width="labelWidth" class="base-form" ref="formRef"
             :validate-on-rule-change="false" :rules="rules">
-            <template v-for="field in fields">
+            <template v-for="field,index in fields">
                 <el-form-item :label="field.label" :required="field.required"
                     v-if="field.type != 'operations' && showField(field)" :prop="field.prop">
                     <!-- 下拉 -->
@@ -38,10 +38,10 @@
 
                     <!-- 子表格 -->
                     <template v-else-if="field.type == 'table'">
-                        <div class="buttons mb-2" v-if="field.editable == false || readonly">
+                        <div class="buttons mb-2" v-if="field.editable == false || !readonly">
                             <el-button type="primary" @click="showNew(field)">新增</el-button>
                         </div>
-                        <base-table :columns="getColumns(field)" :rows="form[field.prop]"></base-table>
+                        <data-table :fields="getColumns(field)" v-model="form[field.prop]"></data-table>
                     </template>
 
                     <!-- 子可编辑表格 -->
@@ -50,7 +50,7 @@
                     </template>
 
                     <!-- testarea -->
-                    <el-input v-else-if="field.type == 'textarea'" type="textarea" :rows="field.rows"
+                    <el-input v-else-if="field.type == 'textarea'" type="textarea"
                         v-model="form[field.prop]" :disabled="field.editable == false || readonly"
                         @change="val => onFieldChange(field, val)">
                     </el-input>
@@ -90,7 +90,8 @@ import * as _ from 'lodash';
 import BaseSelect from './base-select.vue'
 import baseTreeSelect from './base-tree-select.vue'
 import CronEditor from './cron-editor.vue';
-import EditTable from '@/components/edit-table.vue'
+import EditTable from './edit-table.vue'
+import DataTable from './data-table.vue'
 
 const form = defineModel();
 const rules = ref({});
@@ -143,7 +144,9 @@ function doSaveField() {
             return;
         }
 
-        const field = drawerField.value.prop || drawerField.value.field
+        console.log(form.value)
+
+        const field = drawerField.value.prop
         let rows = form.value[field]
         if (!rows) {
             rows = form.value[field] = []
