@@ -337,7 +337,7 @@ function validateParams(params, name) {
             return error(name, '路径参数中节点未选择')
         }
 
-        if (!param.code) {
+        if (!param.key) {
             return error(name, '参数不能为空')
         }
     }
