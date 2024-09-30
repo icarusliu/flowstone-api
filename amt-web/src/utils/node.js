@@ -160,8 +160,6 @@ export function loadParams(method, nodes, testData) {
         return callback(false)
     }
 
-debugger
-
     let params = []
     nodes.forEach(node => {
         // 根据节点类型进行处理
