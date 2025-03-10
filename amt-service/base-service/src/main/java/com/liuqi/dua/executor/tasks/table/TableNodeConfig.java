@@ -26,5 +26,5 @@ public class TableNodeConfig {
     private NodeParam pageNo;
 
     // 分页记录数参数
-    private NodeParam PageSize;
+    private NodeParam pageSize;
 }

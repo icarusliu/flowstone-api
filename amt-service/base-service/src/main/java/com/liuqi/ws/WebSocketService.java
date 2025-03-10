@@ -105,7 +105,7 @@ public class WebSocketService {
     }
 
     @Async
-    private static void sendInternal(Session session, WebSocketMsg msg) {
+    private synchronized static void sendInternal(Session session, WebSocketMsg msg) {
         try {
             session.getBasicRemote().sendText(JSON.toJSONString(msg));
         } catch (IOException e) {

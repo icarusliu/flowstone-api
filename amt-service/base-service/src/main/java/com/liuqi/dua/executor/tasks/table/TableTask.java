@@ -49,7 +49,23 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
             // 处理分页参数
             Map<String, Object> params = new HashMap<>(16);
             if (null != config.getPageable() && config.getPageable()) {
+                // 需要处理默认的分页参数
                 NodeParam pageNoParam = config.getPageNo();
+                if (null == pageNoParam) {
+                    pageNoParam = new NodeParam();
+                    pageNoParam.setKey("pageNo");
+                    pageNoParam.setType("request");
+                    pageNoParam.setValue("pageNo");
+                }
+
+                if (null == config.getPageSize()) {
+                    NodeParam pageSizeParam = new NodeParam();
+                    pageSizeParam.setKey("pageSize");
+                    pageSizeParam.setType("request");
+                    pageSizeParam.setValue("pageSize");
+                    config.setPageSize(pageSizeParam);
+                }
+
                 Object pageNo = this.getNodeParamValue(pageNoParam).getKey();
                 Object pageSize = this.getNodeParamValue(config.getPageSize()).getKey();
                 if (null != pageNo) {
