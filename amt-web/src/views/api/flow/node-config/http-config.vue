@@ -28,9 +28,18 @@
             </el-radio-group>
         </el-descriptions-item>
 
-        <!-- <el-descriptions-item label="请求体" v-if="model.method == 'post' || model.method == 'put'">
-            <el-link type="primary" @click="visible = true">编辑</el-link>
-        </el-descriptions-item> -->
+        <el-descriptions-item label="请求格式(ContentType)">
+            <el-select v-model="model.contentType" :disabled="readonly" placeholder="请选择请求格式" value-key="contentType" allow-create clearable filterable>
+                <el-option value="application/json">application/json</el-option>
+                <el-option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</el-option>
+                <el-option value="text/html">text/html</el-option>
+                <el-option value="multipart/form-data">multipart/form-data</el-option>
+            </el-select>
+            <div class="remark">
+                默认格式为application/json，如果在请求头中定义有Content-Type的请求头，则会以请求头中定义的为准
+            </div>
+        </el-descriptions-item>
+
         <el-descriptions-item label="启用批量处理">
             <el-checkbox v-model="model.batch" :disabled="readonly" @change="refreshParams" />
             <div class="color-remark text-normal">

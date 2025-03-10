@@ -18,6 +18,8 @@ public class HttpNodeConfig  extends NodeConfig {
     private String path;
     private String method;
 
+    private String contentType;
+
     // 超时时间
     private Long timeoutInSecond;
 

@@ -82,8 +82,15 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
      * @return 组装的请求头
      */
     private Map<String, String> getRequestHeaders(RequestContext requestContext) {
-        Map<String, Object> headers = this.getNodeParamValues(nodeConfig.getHeaders());
         Map<String, String> finalHeaders = new HashMap<>(16);
+        
+        // 处理contentType
+        String contentType = this.getNodeConfig().getContentType();
+        if (StringUtils.isNotBlank(contentType)) {
+            finalHeaders.put("Content-Type", contentType);
+        }
+
+        Map<String, Object> headers = this.getNodeParamValues(nodeConfig.getHeaders());
         headers.forEach((k, v) -> {
             if (null == v) {
                 return;
