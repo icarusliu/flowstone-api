@@ -30,7 +30,7 @@ watch(visible, (val) => {
 watch(() => model.value, (val, oldVal) => {
     if (!val) {
         let lang = props.lang
-        if (lang == 'js') {
+        if (lang == 'js' || lang == 'javascript') {
             val = `function func(params) {
     return {
         a: 1

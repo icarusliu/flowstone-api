@@ -3,7 +3,6 @@ package com.liuqi.dua.executor.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.liuqi.base.bean.dto.ClientDTO;
 import com.liuqi.common.bean.UserContext;
-import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.ws.WebSocketMsg;
 import com.liuqi.ws.WebSocketService;
 import jakarta.servlet.http.Cookie;
@@ -81,6 +80,10 @@ public class ApiExecutorContext {
     @JsonIgnore
     private ClientDTO client;
 
+    // 节点执行状态，1：本节点不执行，2：本节点未执行并且后续节点都不需要执行
+    @JsonIgnore
+    private Map<String, Integer> nodeExecuteState = new HashMap<>(16);
+
     /**
      * 推送常规消息
      *
@@ -88,6 +91,15 @@ public class ApiExecutorContext {
      */
     public void info(String title) {
         this.info(title, null);
+    }
+
+    /**
+     * 添加节点执行状态
+     * @param key 节点编码
+     * @param state 节点状态，1：本节点不执行；2：本节点及后续节点都不执行；
+     */
+    public void addNodeExecuteState(String key, Integer state) {
+        this.nodeExecuteState.put(key, state);
     }
 
     /**

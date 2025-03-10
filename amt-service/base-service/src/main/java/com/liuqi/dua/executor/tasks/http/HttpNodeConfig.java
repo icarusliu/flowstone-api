@@ -1,6 +1,7 @@
 package com.liuqi.dua.executor.tasks.http;
 
 import com.liuqi.dua.executor.bean.NodeParam;
+import com.liuqi.dua.executor.tasks.NodeConfig;
 import lombok.Data;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @version V1.0
  **/
 @Data
-public class HttpNodeConfig {
+public class HttpNodeConfig  extends NodeConfig {
     private String supplier;
     private String path;
     private String method;

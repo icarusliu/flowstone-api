@@ -1,5 +1,6 @@
 package com.liuqi.dua.executor.tasks.js;
 
+import com.liuqi.dua.executor.tasks.NodeConfig;
 import lombok.Data;
 
 /**
@@ -9,6 +10,6 @@ import lombok.Data;
  * @version V1.0
  **/
 @Data
-public class JsTaskConfig {
+public class JsTaskConfig  extends NodeConfig {
     private String js;
 }

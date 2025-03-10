@@ -1,6 +1,7 @@
 package com.liuqi.dua.executor.tasks.table;
 
 import com.liuqi.dua.executor.bean.NodeParam;
+import com.liuqi.dua.executor.tasks.NodeConfig;
 import lombok.Data;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @version V1.0
  **/
 @Data
-public class TableNodeConfig {
+public class TableNodeConfig  extends NodeConfig {
     private String ds;
     private String table;
 

@@ -2,12 +2,15 @@ package com.liuqi.dua.executor;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONPath;
+import com.github.dexecutor.core.task.ExecutionResult;
+import com.github.dexecutor.core.task.ExecutionResults;
 import com.github.dexecutor.core.task.Task;
 import com.liuqi.common.utils.GroovyUtils;
 import com.liuqi.common.utils.JsUtils;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.bean.NodeParam;
+import com.liuqi.dua.executor.tasks.NodeConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.CollectionUtils;
@@ -21,7 +24,7 @@ import java.util.*;
  * @author LiuQi 2024/8/9-9:47
  * @version V1.0
  **/
-public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
+public abstract class AbstractDagTask<T extends NodeConfig> extends Task<NodeInput, Object> {
     // 节点个性配置
     protected T nodeConfig;
 
@@ -37,6 +40,46 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
             Class<T> clazz = (Class<T>) type.getActualTypeArguments()[0];
             this.nodeConfig = JSON.parseObject(JSON.toJSONString(config), clazz);
         }
+    }
+
+    /**
+     * 节点是否需要执行
+     * @param parentResults parent execution results
+     *
+     * @return true/false
+     */
+    @Override
+    public boolean shouldExecute(ExecutionResults<NodeInput, Object> parentResults) {
+        String code = this.getId().getNodeInfo().getCode();
+        // 先判断，如果有一个父节点执行状态是2，那么本节点不需要执行
+        List<ExecutionResult<NodeInput, Object>> parents = parentResults.getAll();
+        Map<String, Integer> nodeExecuteState = executorContext.getNodeExecuteState();
+        for (ExecutionResult<NodeInput, Object> parent : parents) {
+            String parentCode = parent.getId().getNodeInfo().getCode();
+            Integer parentState = nodeExecuteState.get(parentCode);
+            if (parentState == 2) {
+                executorContext.addNodeExecuteState(code, 2);
+                return false;
+            }
+        }
+
+        String condition = this.getNodeConfig().getCondition();
+        if (StringUtils.isBlank(condition)) {
+            return true;
+        }
+
+        Object result = JsUtils.execute(condition, this.getNodeExecuteParams());
+        if (null == result) {
+            return true;
+        }
+
+        int resultValue = Integer.parseInt(result.toString());
+        if (1 != resultValue && 2 != resultValue) {
+            return true;
+        }
+
+        executorContext.addNodeExecuteState(code, resultValue);
+        return false;
     }
 
     /**
@@ -111,7 +154,6 @@ public abstract class AbstractDagTask<T> extends Task<NodeInput, Object> {
         // 需要补充整个请求的参数
         Map<String, Object> params = new HashMap<>(outputs);
         Map<String, Object> requestParams = Objects.requireNonNullElseGet(context.getRequestParams(), HashMap::new);
-//        params.put("params", requestParams);
         params.put("request", requestParams);
         params.put("headers", context.getRequestHeaders());
         params.put("cookie", context.getRequestCookies());

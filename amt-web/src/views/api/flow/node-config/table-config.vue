@@ -9,7 +9,7 @@
             </el-select>
         </el-descriptions-item>
         <el-descriptions-item label="启用分页">
-            <el-checkbox v-model="model.pageable" />
+            <el-checkbox v-model="model.pageable" :disabled="!editing"/>
             <div class="remark">
                 不启用分页时，节点返回的数据为列表类型的数据，如果启用分页，返回的数据将会是对象类型，其中total存储总记录数，records存储记录列表
             </div>

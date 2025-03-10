@@ -1,5 +1,6 @@
 package com.liuqi.dua.executor.tasks.groovy;
 
+import com.liuqi.dua.executor.tasks.NodeConfig;
 import lombok.Data;
 
 /**
@@ -9,6 +10,6 @@ import lombok.Data;
  * @version V1.0
  **/
 @Data
-public class GroovyTaskConfig {
+public class GroovyTaskConfig  extends NodeConfig {
     private String groovy;
 }
