@@ -204,6 +204,9 @@ curl 'http://localhost:3000/api/dua/test/js' \
 - 数据源增加SQLServer支持；
 - Groovy、JS脚本增加初始示例；
 - Groovy脚本执行问题处理；
+- 节点增加条件控制功能；
+- http节点增加ContentType快捷配置项；
+- Table节点增加分页查询功能；
 
 ## v1.0.3 
 - 接口可配置成游客模式进行免登录调用；
