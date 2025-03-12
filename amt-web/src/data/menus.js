@@ -2,7 +2,7 @@ import { Switch, Tickets, Setting, Operation, Guide } from '@element-plus/icons-
 
 export default [
     {
-        name: '接口管理',
+        name: '数据接口管理',
         path: '/',
         icon: markRaw(Switch),
         children: [
@@ -23,7 +23,7 @@ export default [
             },
         ]
     }, {
-        name: '数据加工',
+        name: '数据集成&加工',
         path: '/etl',
         icon: markRaw(Operation),
         children: [
