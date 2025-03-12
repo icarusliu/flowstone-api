@@ -2,7 +2,9 @@
 <template>
     <div class="space-between v-center mb-2">
         <div class="page-title">
-            <span>{{ title }}</span>
+            <span>
+                <slot>{{ title }}</slot>                
+            </span>
             <span class="color-remark font-sm ml-4 font-normal">
                 <slot name="remark">
                     {{ remark }}

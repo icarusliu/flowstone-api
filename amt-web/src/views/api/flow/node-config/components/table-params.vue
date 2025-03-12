@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import editTable from '@/components/edit-table.vue';
+import editTable from '@/components/edit-table/index.vue';
 import * as apiApis from '@/apis/api.js'
 
 const data = defineModel()

@@ -1,9 +1,7 @@
 <template>
-    <el-select v-model="model" @change="doChanged" :value-key="valueKey" clearable>
-        <el-option v-for="option in finalOptions" 
-            :value="option.value || option.id" 
-            :label="option.label || option.name" 
-            ></el-option>
+    <el-select v-model="model" @change="doChanged" :value-key="valueKey" clearable :multiple="multiple">
+        <el-option v-for="option in finalOptions" :value="parseValue(option)"
+            :label="parseLabel(option)"></el-option>
     </el-select>
 </template>
 
@@ -11,7 +9,7 @@
 import { defineProps, defineEmits, ref, onMounted } from 'vue'
 import * as _ from 'lodash'
 
-const props = defineProps(["options", "valueKey"])
+const props = defineProps(["options", "valueKey", "multiple"])
 const model = defineModel()
 const emits = defineEmits(["change"])
 const finalOptions = ref([])
@@ -32,6 +30,29 @@ if (_.isArray(props.options)) {
     }, {
         deep: true
     })
+}
+
+function parseLabel(option) {
+    if (option.label || option.label == 0) {
+        return option.label 
+    }
+    if (option.name || option.name == 0) {
+        return option.name
+    }
+
+    return option;
+}
+
+function parseValue(option) {
+    if (option.value || option.value == 0) {
+        return option.value
+    }
+
+    if (option.id || option.id == 0) {
+        return option.id
+    }
+
+    return option
 }
 
 function loadOptions() {
@@ -64,7 +85,7 @@ function loadOptions() {
 
 function doChanged(val) {
     // 需要匹配到整个对象，作为第二个参数
-    let item = _.find(finalOptions.value, item => item.value||item.id == val)
+    let item = _.find(finalOptions.value, item => item.value == val || item.id == val)
 
     emits('change', val, item)
 }

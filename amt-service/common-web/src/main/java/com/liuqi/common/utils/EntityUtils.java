@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @version V1.0
  **/
 public class EntityUtils {
-    /**
+     /**
      * 将对象转换成树
      * 树节点本身就是对象，只是在其基础上增加children字段
      */

@@ -35,7 +35,7 @@
         <httpConfig v-else-if="currentNode.type == 'http'" v-model="currentNode.config" :dag="dag" :readonly="!editing"
             :inputParams="inputParams" />
 
-        <ScriptDialog lang="javascript" v-model:visible="visible" v-model="currentNode.config.condition" :readonly="readonly"></ScriptDialog>
+        <ScriptDialog lang="javascript" v-model:visible="visible" v-model="currentNode.config.condition" :readonly="!editing"></ScriptDialog>
     </div>
 </template>
 

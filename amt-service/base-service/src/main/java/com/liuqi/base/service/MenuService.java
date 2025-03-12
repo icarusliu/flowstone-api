@@ -16,5 +16,5 @@ public interface MenuService extends BaseService<MenuDTO, MenuQuery> {
      *
      * @return 树形菜单
      */
-    List<Tree<MenuDTO>> getTree();
+    List<Tree<MenuDTO>> getTree(Boolean withHide);
 }

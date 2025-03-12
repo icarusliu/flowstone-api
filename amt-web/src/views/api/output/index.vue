@@ -8,7 +8,7 @@
 
     <div id="listParams">
         <edit-table v-model="data" :fields="fields" :defRow="defRow" :readonly="!editing" :showNew="false" rowKey="id"
-            operationWidth="100px" ref="tableRef">
+        operationsWidth="100px" ref="tableRef">
             <template #buttons="{ row }">
                 <el-link v-if="row.type == 'object'" type="primary" class="mr-2" @click="newSubField(row)">新增</el-link>
             </template>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import editTable from '@/components/edit-table.vue';
+import editTable from '@/components/edit-table/index.vue';
 import monacoEditor from '../../../components/monaco-editor.vue';
 import * as _ from 'lodash'
 import * as uuid from 'uuid'

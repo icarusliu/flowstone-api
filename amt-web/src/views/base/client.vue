@@ -1,5 +1,4 @@
 <template>
-	<div class="page-title">客户端管理</div>
 	<entity-manager :fields="fields" apiPrefix="/base/client" :tree="false" operationsWidth="200px">
 		<template #prefixButtons="{ row }">
 			<el-link class="mr-2" type="primary" :disabled="row.withAllApis" @click="goApiAuth(row)">接口授权</el-link>

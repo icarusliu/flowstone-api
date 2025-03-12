@@ -35,10 +35,6 @@ public class WebUtils {
                             .orElse(null);
                 });
 
-        if (log.isDebugEnabled()) {
-            log.debug("Token, {}", token);
-        }
-
         return Optional.ofNullable(token);
     }
 

@@ -1,5 +1,4 @@
 <template>
-    <div class="page-title">定时任务</div>
     <entity-manager apiPrefix="/base/schedule-task" :fields="fields" operationsWidth="200px">
         <template #prefixButtons="{ row }">
             <el-link type="primary" v-show="!row.started && row.status" @click="start(row)" class="mr-2">启动</el-link>
@@ -11,7 +10,6 @@
 </template>
 
 <script setup>
-import EntityManager from '@/components/entity-manager.vue'
 import * as apiApis from '@/apis/api.js'
 import * as taskApis from '@/apis/task'
 import { ElMessage } from 'element-plus'

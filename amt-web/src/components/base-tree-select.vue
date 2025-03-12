@@ -1,6 +1,9 @@
 <template>
     <el-tree-select v-model="model" 
         :data="finalOptions"
+        :disabled="disabled"
+        check-strictly
+        default-expand-all	
         @change="doChanged" :value-key="valueKey" node-key="id" :props="{ label: 'name'}">
     </el-tree-select>
 </template>
@@ -8,7 +11,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, onMounted } from 'vue'
 
-const props = defineProps(["options"])
+const props = defineProps(["options", "disabled"])
 const model = defineModel()
 const emits = defineEmits(["change"])
 const finalOptions = ref([])

@@ -1,6 +1,5 @@
 <template>
     <div class="h-100">
-        <div class="page-title">接口管理</div>
         <div class="type-list mr-4 f-left">
             <div class="title p-2 font-bold">分类</div>
             <base-tree class="tree" apiPrefix="/base/api-type" @currentChange="selectType">

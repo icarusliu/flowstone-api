@@ -97,8 +97,12 @@ public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, Me
      * @return 树形菜单
      */
     @Override
-    public List<Tree<MenuDTO>> getTree() {
-        List<MenuDTO> menus = this.findAll();
+    public List<Tree<MenuDTO>> getTree(Boolean withHide) {
+        MenuQuery query = MenuQuery.builder()
+                .hide(!withHide ? false : null)
+                .build();
+        List<MenuDTO> menus = this.query(query);
+
         if (CollectionUtils.isEmpty(menus)) {
             return new ArrayList<>(0);
         }

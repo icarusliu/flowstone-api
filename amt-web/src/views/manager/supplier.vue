@@ -1,5 +1,4 @@
 <template>
-    <div class="page-title">接入方管理</div>
     <entity-manager :fields="fields" apiPrefix="/base/supplier">
         <template #prefixButtons="{row}">
             <el-link type="primary" class="mr-2" @click="configAuth(row)">鉴权</el-link>

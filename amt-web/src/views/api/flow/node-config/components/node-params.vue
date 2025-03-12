@@ -10,13 +10,13 @@
             </template>
         </title-bar>
         <edit-table v-model="data" :fields="fields" :defRow="defRow" :readonly="readonly" :showNew="false" rowKey="id"
-            :showOperations="showOperations" operationWidth="60px" ref="tableRef">
+            :showOperations="showOperations" operationsWidth="60px" ref="tableRef">
         </edit-table>
     </div>
 </template>
 
 <script setup>
-import editTable from '@/components/edit-table.vue';
+import editTable from '@/components/edit-table/index.vue';
 
 const props = defineProps(['readonly', "dag", "title", "remark", "showAdd", "showOperations", "inputParams"])
 const data = defineModel()

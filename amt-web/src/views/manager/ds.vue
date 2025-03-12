@@ -1,5 +1,4 @@
 <template>
-    <div class="page-title">数据源</div>
     <entity-manager :fields="fields" apiPrefix="/base/ds" operationsWidth="100px">
         <template #formButtons="{ model }">
             <el-button @click="doTest(model)">测试</el-button>

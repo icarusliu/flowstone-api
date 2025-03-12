@@ -40,4 +40,19 @@ public class JsTask extends AbstractDagTask<JsTaskConfig> {
 
         return JsUtils.execute(js, params);
     }
+
+    public static void main(String[] args) {
+        String comment = """
+                /**
+                * 测试
+                **/
+                """;
+
+        comment = comment.replace("/**", "")
+                .replace("**/", "")
+                .replaceAll("\\*", "")
+                .replaceAll("[\r\n]", "")
+                .trim();
+        System.out.print(comment);
+    }
 }

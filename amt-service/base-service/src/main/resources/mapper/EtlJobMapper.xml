@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuqi.etl.domain.mapper.EtlJobMapper">
+    <select id="query" parameterType="com.liuqi.etl.bean.query.EtlJobQuery" resultType="com.liuqi.etl.bean.dto.EtlJobDTO">
+        select
+        type_id
+        ,code
+        ,name
+        ,parent_task
+        ,enabled
+        ,sort
+        ,auto_trigger
+        ,config
+        ,metadata
+        ,id
+        ,tenant_id
+        ,create_user
+        ,create_time
+        ,update_user
+        ,update_time
+        ,deleted
+        from b_etl_task
+        where deleted = 0
+        <if test="null != id and '' != id">
+            and id = #{id}
+        </if>
+        <if test="null != ids">
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="null != orderBy and '' != orderBy"> order by ${orderBy}</if>
+        <if test="null == orderBy or '' == orderBy"> order by create_time desc
+        </if>
+    </select>
+</mapper>

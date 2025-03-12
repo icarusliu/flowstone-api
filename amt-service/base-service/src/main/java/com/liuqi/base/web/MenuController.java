@@ -65,6 +65,6 @@ public class MenuController {
     @GetMapping("tree")
     @Operation(summary = "获取树形结构")
     public List<Tree<MenuDTO>> getTree() {
-        return service.getTree();
+        return service.getTree(false);
     }
 }

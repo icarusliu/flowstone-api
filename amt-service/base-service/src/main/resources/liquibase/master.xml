@@ -353,4 +353,129 @@
             alter table d_api_log add column client_name varchar(255) comment '客户端名称';
         </sql>
     </changeSet>
+
+
+    <changeSet id="create-table-b_etl_job_type" author="codeGenerator">
+        <sql>
+            create table b_etl_job_type(
+            id varchar(64) not null primary key comment '主键',
+            code varchar(64) comment '分类编码',
+            name varchar(255) comment '分类名称',
+            sort varchar(32) comment '分类排序',
+            parent_id varchar(64) comment '父分类id',
+            remark varchar(255) comment '说明',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            ) comment '任务分类'
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-b_etl_log" author="codeGenerator">
+        <sql>
+            create table b_etl_log(
+            id varchar(64) not null primary key comment '主键',
+            job_id varchar(64) comment '执行的任务id',
+            execute_time timestamp comment '执行时间',
+            params varchar(255) comment '执行参数',
+            status integer default 0 comment '执行状态，0：成功；1：失败；',
+            result varchar(255) comment '执行结果',
+            error_msg varchar(1024) comment '异常消息',
+            spent_time integer default 0 comment '消耗时间',
+            job_code varchar(64) comment '任务编码',
+            job_name varchar(255) comment '任务名称',
+            data_date date comment '执行的数据日期',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            ) comment 'ETL执行日志'
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-b_etl_job" author="codeGenerator">
+        <sql>
+            create table b_etl_job(
+            id varchar(64) not null primary key comment '主键',
+            type_id varchar(64) comment '分类id',
+            type varchar(64) comment '任务类型，sync:数据同步任务；process：数据处理任务',
+            code varchar(64) comment '任务编码',
+            name varchar(255) comment '任务名称',
+            enabled int(1) default 1 comment '是否启用',
+            sort varchar(64) comment '排序序号',
+            auto_trigger int(1) default 1 comment '是否自动触发，即当期依赖的任务执行完成后是否自动触发',
+            used_tables varchar(512) comment '使用表清单',
+            updated_tables varchar(512) comment '操作表清单',
+            cron varchar(16) comment 'Cron表达式',
+            config text comment '任务运行配置',
+            metadata varchar(512) comment '任务其它配置',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            ) comment 'ETL任务'
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-b_etl_job_depend" author="codeGenerator">
+        <sql>
+            create table b_etl_job_depend(
+            id varchar(64) not null primary key comment '主键',
+            job_id varchar(64) not null comment '当前任务id',
+            parent_job_id varchar(64) not null comment '父级任务id',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            ) comment '任务依赖'
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-b_etl_job_finished" author="codeGenerator">
+        <sql>
+            create table b_etl_job_state(
+            id varchar(64) not null primary key comment '主键',
+            job_id varchar(64) comment '任务id',
+            execute_date date comment '执行日期',
+            state int default 0 comment '0未执行，1正在执行，2已完成，3异常',
+            run_sub int default 0 comment '是否执行子任务',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time timestamp default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time timestamp on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除',
+            unique key key_finished(job_id, execute_date)
+            ) comment '执行完成任务记录'
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-b_etl_job_published" author="codeGenerator">
+        <sql>
+            create table b_etl_job_published(
+            id varchar(64) not null primary key comment '主键',
+            type varchar(32) comment '任务类型，sync:数据同步任务；process：数据处理任务',
+            code varchar(64) comment '任务编码',
+            name varchar(255) comment '任务名称',
+            auto_trigger int(1) default 0 comment '是否自动触发，即当期依赖的任务执行完成后是否自动触发',
+            config text comment '任务运行配置',
+            metadata varchar(512) comment '任务其它配置',
+            cron varchar(16) comment '定时执行的表达式',
+            published_version integer default 0 comment '已发布版本',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time datetime default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time datetime on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            ) comment 'ETL已发布任务';
+
+            alter table b_etl_job add column version integer default 0 comment '当前版本';
+            alter table b_etl_job add column published_version integer default 0 comment '已发布版本';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

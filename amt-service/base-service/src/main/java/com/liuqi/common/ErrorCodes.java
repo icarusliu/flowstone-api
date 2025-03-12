@@ -59,6 +59,8 @@ public enum ErrorCodes implements BaseErrorCodes {
     DS_TABLE_NOT_EXISTS("D01007", "表不存在"),
 
     API_SUPPLIER_NOT_EXISTS("D01008", "接入方不存在"),
+
+    ETL_JOB_NOT_EXISTS("E01001", "任务不存在");
     ;
 
     private final String code;

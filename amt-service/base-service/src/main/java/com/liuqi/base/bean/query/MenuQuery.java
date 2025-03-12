@@ -12,4 +12,6 @@ public class MenuQuery extends BaseQuery {
     private String code;
 
     private String parentId;
+
+    private Boolean hide;
 }

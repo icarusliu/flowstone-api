@@ -1,9 +1,8 @@
 <template>
-    <el-menu router :default-openeds="opened" class="left-menu h-100" :collapse="menuFolded" :collapse-transition="false"
-        :default-active="active" unique-opened>
+    <el-menu router class="left-menu h-100" :collapse="menuFolded" :collapse-transition="false" :default-active="active" unique-opened>
         <div class="p-4 font-bold title text-center">
             <i class="iconfont icon-liushuixian-liushuixianx" />
-            <span class="ml-4" v-if="!menuFolded">流石接口管理工具</span>
+            <span class="ml-4" v-if="!menuFolded">流石数据管理工具</span>
         </div>
         <el-sub-menu v-for="menu in menus" :key="menu.path" :index="menu.path">
             <template #title>
@@ -13,7 +12,7 @@
                 <template v-if="!menuFolded">{{ menu.name }}</template>
             </template>
             <el-menu-item v-for="child in menu.children" :key="child.path" :index="child.path">{{ child.name
-            }}</el-menu-item>
+                }}</el-menu-item>
         </el-sub-menu>
     </el-menu>
 </template>
@@ -28,9 +27,6 @@ const menuFolded = computed(() => {
     return useSysStore().getMenuFolded()
 })
 const menus = ref(allMenus);
-const opened = computed(() => {
-    return allMenus.map(item => item.path)
-})
 const active = computed(() => {
     return router.currentRoute.value.fullPath
 })

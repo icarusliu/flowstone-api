@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import editTable from '@/components/edit-table.vue';
+import editTable from '@/components/edit-table/index.vue';
 
 const props = defineProps(['readonly', "dag"])
 const data = defineModel()

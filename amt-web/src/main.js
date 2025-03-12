@@ -3,15 +3,16 @@ import './styles/index.scss'
 import App from './App.vue'
 import elementPlus from 'element-plus';
 import router from './router';
-import BaseTable from './components/base-table.vue'
-import BaseForm from './components/base-form.vue'
-import EntityManager from './components/entity-manager.vue'
+import BaseTable from './components/base-table/index.vue'
+import BaseForm from './components/base-form/index.vue'
+import EntityManager from './components/entity-manager/index.vue'
 import TitleBar from './components/title-bar.vue'
 import { createPinia } from 'pinia'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { startWebSocket } from '@/utils/ws.js'
 import { useSysStore } from './store'
 import * as loginApis from '@/apis/login'
+import { directives } from './utils/directives';
 
 const app = createApp(App)
 
@@ -26,6 +27,7 @@ app
     .component('EntityManager', EntityManager)
     .component('titleBar', TitleBar)
     .use(pinia)
+    .use(directives)
 
 
 // 获取初始化信息

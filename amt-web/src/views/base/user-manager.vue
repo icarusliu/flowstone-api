@@ -1,5 +1,4 @@
 <template>
-    <div class="page-title">用户管理</div>
     <entity-manager apiPrefix="/base/user" :fields="fields" ref="entityManagerRef">
         <template #rowButtons="{row}">
             <el-link type="primary" v-show="!row.isSuperAdmin" @click="goEdit(row)" class="mr-2">编辑</el-link>
@@ -15,8 +14,6 @@
 </template>
 
 <script setup>
-import EntityManager from '@/components/entity-manager.vue'
-
 const fields = [
     { label: '用户名', prop: 'username', required: true },
     { label: '昵称', prop: 'nickname', required: true },

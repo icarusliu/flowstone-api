@@ -46,3 +46,7 @@
         height: 1px;
     }
 }
+
+.el-tooltip__trigger:focus {
+    outline: none;
+}

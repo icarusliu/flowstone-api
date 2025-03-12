@@ -1,6 +1,6 @@
 <!-- cron表达式编辑 -->
 <template>
-    <el-input v-model="model" @change="onChange">
+    <el-input v-model="model" @change="onChange" :disabled="disabled">
         <template #append>
             <el-popover width="400px" @hide="popoverHided" trigger="click" :visible="visible">
                 <el-form v-model="config" label-position="top">
@@ -13,11 +13,11 @@
                     </el-form-item>
 
                     <el-form-item :label="timesLabel">
-                        <el-time-select v-if="config.type == 'everyDay'" v-model="config.times" :teleported="false"
-                            @change="timeChanged" start="00:00" end="11:55" step="00:15"></el-time-select>
+                        <el-time-select v-if="config.type == 'everyDay'" v-model="config.times" :teleported="false" @change="timeChanged"
+                            start="00:00" end="11:55" step="00:15"></el-time-select>
 
-                        <el-select v-else-if="config.type == 'everyHour'" v-model="config.times" :teleported="false"
-                            multiple @change="timeChanged">
+                        <el-select v-else-if="config.type == 'everyHour'" v-model="config.times" :teleported="false" multiple
+                            @change="timeChanged">
                             <el-option v-for="minute in minutes" :label="minute" :value="minute"></el-option>
                         </el-select>
 
@@ -34,7 +34,7 @@
                 </div>
 
                 <template #reference>
-                    <el-link type="primary" @click="visible = true">编辑</el-link>
+                    <el-link type="primary" @click="visible = true" :disabled="disabled">编辑</el-link>
                 </template>
             </el-popover>
         </template>
@@ -51,6 +51,9 @@ const config = ref({
     type: 'everyDay',
 })
 const visible = ref(false)
+const props = defineProps({
+    disabled: { type: Boolean }
+})
 
 for (var i = 0; i <= 23; i++) {
     hours.value.push((i < 10 ? '0' + i : i) + '点')

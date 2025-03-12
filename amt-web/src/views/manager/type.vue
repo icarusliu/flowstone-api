@@ -1,5 +1,4 @@
 <template>
-    <div class="page-title">分类管理</div>
     <entity-manager :fields="fields" apiPrefix="/base/api-type" :tree="true"></entity-manager>
 </template>
 

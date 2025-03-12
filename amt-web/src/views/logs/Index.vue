@@ -1,5 +1,4 @@
 <template>
-    <title-bar title="运行日志"></title-bar>
     <SearchForm v-model="params" :fields="queryFields" @query="reload"></SearchForm>
     <!-- <div class="d-flex my-2">
         <el-input placeholder="请输入接口信息" class="mr-2 input" clearable v-model="params.key" @change="reload" />

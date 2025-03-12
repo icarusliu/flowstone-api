@@ -89,33 +89,11 @@ function request(func, url, params, config) {
         }
         result
             .then(resp => {
-                const res = resp.data
-                const code = res.code
-
-                // 也可以没code
-                if (!code) {
-                    resolve(res)
-                    return
-                }
-
-                if (code == 200 || code == '200') {
-                    resolve(res)
-                    return
-                } else if (code == '401' && url.indexOf('dua-test') == -1) {
-                    // dua-test接口不处理401，否则如果是源系统返回401，会导致工具跳登录页面
-                    ElMessage.error("会话超时，请重新登录")
-                    goLogin()
-                    return
-                }
-
-                // 是否要展示异常信息，也可以在此不提示，而在调用处进行提示
-                if (config.alertError != false) {
-                    ElMessage.error(res.msg)
-                }
-                reject(res)
+                resolve(resp.data)
             }, reject)
             .catch(reject);
     })
+
 }
 
 //返回一个Promise(发送post请求)

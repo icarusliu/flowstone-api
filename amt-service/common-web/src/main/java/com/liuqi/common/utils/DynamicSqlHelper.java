@@ -13,6 +13,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -25,12 +26,71 @@ import java.util.stream.Collectors;
 /**
  * 动态SQL实现
  *
- * @author  LiuQi 2024/8/8-11:44
+ * @author LiuQi 2024/8/8-11:44
  * @version V1.0
  **/
 @Slf4j
 public class DynamicSqlHelper {
     private static final XMLLanguageDriver xmlLangDriver = new XMLLanguageDriver();
+
+    /**
+     * 批量插入
+     * @param key 关键字
+     * @param sql 执行的SQL
+     * @param dataList 数据列表
+     * @return 插入记录数
+     */
+    public static Object batchInsert(String key, String sql, List<Map<String, Object>> dataList) {
+        if (StringUtils.isBlank(sql) || CollectionUtils.isEmpty(dataList)) {
+            return null;
+        }
+
+        // 添加执行脚本到上下文中
+        SqlSessionFactory sqlSessionFactory = SqlHelper.FACTORY;
+        MybatisConfiguration configuration = (MybatisConfiguration) sqlSessionFactory.getConfiguration();
+        synchronized (configuration.getMappedStatements()) {
+            // 后续可以考虑做成自动刷新，而不是每次执行的时候刷新
+            configuration.getMappedStatementNames().removeIf(s -> s.equals(key));
+            configuration.addMappedStatement(createMappedStatement(configuration, sql, key));
+        }
+
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
+            dataList.forEach(data -> {
+                sqlSession.insert(key, data);
+            });
+            sqlSession.flushStatements();
+        }
+
+        return dataList.size();
+    }
+
+    /**
+     * 执行SQL语句
+     * 支持分号分隔的多条语句
+     * @param key mybatis 语句key
+     * @param sql SQL语句
+     * @param params 参数
+     * @return 执行结果
+     */
+    public static Object executeSql(String key, String sql, Map<String, Object> params) {
+        if (StringUtils.isBlank(sql)) {
+            return null;
+        }
+
+        // 执行SQL语句，按;进行分隔分别执行，需要防止出现 &lt;&gt;&quot;&apos;&amp;这种情况；
+        String[] sqls = sql.split("(?<!&lt|&gt|&quot|&apos|&amp);");
+        Object result = null;
+        for (int i = 0; i < sqls.length; i++) {
+            String subSql = sqls[i].trim();
+            if (StringUtils.isBlank(subSql)) {
+                continue;
+            }
+
+            result = executeSqlInternal(key + "_" + i, subSql, params);
+        }
+
+        return result;
+    }
 
     /**
      * 执行SQL语句
@@ -39,7 +99,7 @@ public class DynamicSqlHelper {
      * @param params 参数
      * @return 执行结果
      */
-    public static Object executeSql(String key, String sql, Map<String, Object> params) {
+    private static Object executeSqlInternal(String key, String sql, Map<String, Object> params) {
         // 添加执行脚本到上下文中
         SqlSessionFactory sqlSessionFactory = SqlHelper.FACTORY;
         MybatisConfiguration configuration = (MybatisConfiguration) sqlSessionFactory.getConfiguration();
@@ -121,14 +181,11 @@ public class DynamicSqlHelper {
                 }).collect(Collectors.toList());
                 result.setRecords(list);
 
-                return  result;
+                return result;
             }
 
             // 查询
             List<Map<String, Object>> map = sqlSession.selectList(key, params);
-            if (log.isDebugEnabled()) {
-                log.debug("查询结果：{}", map);
-            }
 
             return map.stream().map(item -> {
                 Map<String, Object> newMap = new HashMap<>(16);
