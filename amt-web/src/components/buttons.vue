@@ -1,15 +1,18 @@
 <template>
     <span class="buttons">
-        <el-link v-for="button in disButtons" :type="button.type || 'primary'" @click="button.action(data)" class="button">{{ button.label
-            }}</el-link>
+        <el-link v-for="button in disButtons" :type="button.type || 'primary'" @click="button.action(data)" class="button"
+            :disabled="button.finalDisabled">
+            {{ button.label }}
+        </el-link>
         <el-dropdown v-if="hideButtons.length">
             <el-icon class="cursor-pointer">
                 <MoreFilled />
             </el-icon>
             <template #dropdown>
                 <el-dropdown-item v-for="button in hideButtons">
-                    <el-link :type="button.type || 'primary'" @click="button.action(data)" class="button">{{
-                        button.label }}</el-link>
+                    <el-link :type="button.type || 'primary'" @click="button.action(data)" class="button" :disabled="button.finalDisabled">
+                        {{ button.label }}
+                    </el-link>
                 </el-dropdown-item>
             </template>
         </el-dropdown>
@@ -32,6 +35,16 @@ const finalButtons = computed(() => {
             return true
         }
         return button.display(props.data)
+    }).map(button => {
+        if (button.disabled == true) {
+            button.finalDisabled = true
+        } else if (!button.disabled) {
+            button.finalDisabled = false
+        } else {
+            button.finalDisabled = button.disabled(props.data)
+            console.log(button.finalDisabled)
+        }
+        return button
     });
 })
 

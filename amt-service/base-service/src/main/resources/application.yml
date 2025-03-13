@@ -34,7 +34,7 @@ spring:
               none-base-statement-allow: true
       datasource:
         master:
-          url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.db}?useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull
+          url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.db}?useUnicode=true&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&rewriteBatchedStatements=true
           username: ${mysql.user}
           password: ${mysql.pwd}
 

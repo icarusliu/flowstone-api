@@ -108,6 +108,8 @@ public class EtlDependCheckService {
                 .stream()
                 // 不自动执行的任务不需要处理
                 .filter(EtlJobPublishedDTO::getAutoTrigger)
+                // 实时任务不需要处理
+                .filter(item -> !item.getType().equals("mq"))
                 .toList();
 
         List<EtlJobPublishedDTO> toExecuteJobs = new ArrayList<>(16);

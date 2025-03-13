@@ -1,10 +1,7 @@
 <template>
-    <div class="h-100">
-        <div class="type-list mr-4 f-left">
-            <div class="title p-2 font-bold">分类</div>
-            <base-tree class="tree" apiPrefix="/base/api-type" @currentChange="selectType">
-            </base-tree>
-        </div>
+    <div class="h-100 d-flex">
+        <base-tree class="tree" title="分类" apiPrefix="/base/api-type" @currentChange="selectType">
+        </base-tree>
         <div class="content f-left">
             <div class="mb-4 space-between">
                 <div>
@@ -45,8 +42,8 @@ const fields = ref([
         }
     },
     { label: '备注', prop: 'remark' },
-    {label: '添加时间', prop: 'createTime', width: '150px', system: true}, 
-    {label: '修改时间', prop: 'updateTime', width: '150px', system: true}, 
+    { label: '添加时间', prop: 'createTime', width: '150px', system: true },
+    { label: '修改时间', prop: 'updateTime', width: '150px', system: true },
     {
         label: '操作', type: 'operations', width: '150px', buttons: [
             { label: '详情', type: 'primary', action: goEdit },
@@ -124,25 +121,12 @@ function goDoc(row) {
 </script>
 
 <style lang="scss" scoped>
-.type-list {
-    min-width: 200px;
-    width: 200px;
-    background-color: #fafafa;
-    border: 1px solid #f1f1f1;
-    height: calc(100% - 32px);
-    overflow: auto;
-
-    .title {
-        border-bottom: 1px solid #f1f1f1;
-        padding-bottom: 4px;
-    }
-
-    .tree {
-        background-color: transparent;
-    }
+.tree {
+    min-width: 240px;
+    width: 240px;
 }
 
 .content {
-    width: calc(100% - 218px);
+    width: calc(100% - 258px);
 }
 </style>

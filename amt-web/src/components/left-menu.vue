@@ -41,7 +41,14 @@ const active = computed(() => {
     --el-menu-hover-bg-color: #242e4e;
 
     border-right: none;
+
+    :deep() {
+        .el-menu--inline {
+            background-color: #242e4eaa;
+        }
+    }
 }
+
 
 .left-menu:not(.el-menu--collapse) {
     width: 240px;

@@ -22,6 +22,37 @@ import java.util.regex.Pattern;
  * @version V1.0
  **/
 public class JsUtils {
+    public static Object execute(String js, Object params, Object param1) {
+        if (StringUtils.isBlank(js)) {
+            return null;
+        }
+
+        js = normalize(js).trim();
+
+        HostAccess access = HostAccess.newBuilder(HostAccess.ALL)
+                .targetTypeMapping(Value.class, Object.class, Value::hasArrayElements, v -> new LinkedList<>(v.as(List.class)))
+                .targetTypeMapping(Value.class, Object.class, Value::hasMembers, v -> new HashMap<>(v.as(Map.class)))
+                .build();
+        ScriptEngine engine = GraalJSScriptEngine.create(null, Context.newBuilder("js")
+                .allowHostAccess(access).allowAllAccess(true));
+        String proxyFunc = " function proxyFunc(params, params1) { params = JSON.parse(params); return func(params, JSON.parse(params1); }";
+        if (js.contains("func(")) {
+            js = js + proxyFunc;
+        } else if (js.startsWith("(")) {
+            js = "const func = " + js + "; " + proxyFunc;
+        } else {
+            js = "function func(params, params1) { " + js + "} " + proxyFunc;
+        }
+
+        try {
+            engine.eval(js);
+            Invocable invocable = (Invocable) engine;
+            return invocable.invokeFunction("proxyFunc", JSON.toJSONString(params), JSON.toJSONString(param1));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * 执行JS脚本
      *
@@ -29,7 +60,7 @@ public class JsUtils {
      * @param params 参数
      * @return 执行结果
      */
-    public static Object execute(String js, Map<String, Object> params) {
+    public static Object execute(String js, Object params) {
         if (StringUtils.isBlank(js)) {
             return null;
         }

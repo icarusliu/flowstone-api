@@ -6,7 +6,7 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.base.service.SysConfigService;
 import com.liuqi.common.utils.DynamicSqlHelper;
-import com.liuqi.etl.bean.dto.EtlDataSyncConfig;
+import com.liuqi.etl.service.executors.config.EtlDataSyncConfig;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.service.EtlJobService;
 import com.liuqi.etl.service.EtlLogService;

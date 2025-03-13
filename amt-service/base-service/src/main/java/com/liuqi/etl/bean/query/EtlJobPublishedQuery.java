@@ -11,4 +11,5 @@ import lombok.Data;
 public class EtlJobPublishedQuery extends BaseQuery {
     private Boolean autoTrigger;
     private Boolean cronNotNull;
+    private String type;
 }

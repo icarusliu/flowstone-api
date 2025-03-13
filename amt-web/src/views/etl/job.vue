@@ -24,7 +24,7 @@
 import newJob from './job-detail.vue'
 import jobDepend from './job-depend.vue'
 import typeTree from './type-tree.vue'
-import { ElMessageBox, ElMessage, ElTag, ElIcon } from 'element-plus'
+import { ElMessageBox, ElMessage, ElTag, ElIcon, ElLoading } from 'element-plus'
 import { Warning } from '@element-plus/icons-vue'
 import https from '@/utils/https'
 import buttons from '@/components/buttons.vue';
@@ -45,6 +45,10 @@ const fields = ref([
     },
     {
         label: '触发规则', prop: 'autoTrigger', width: '140px', align: 'center', render: (val, row) => {
+            if (row.type == 'mq') {
+                return h(ElTag, () => '数据监听')
+            }
+
             if (!val) {
                 return h(ElTag, () => '定时触发')
             }
@@ -53,7 +57,7 @@ const fields = ref([
             const b = !row.depends || !row.depends.length;
             if (b) {
                 return h('span', [
-                    h(ElIcon, { style: { marginRight: '2px', fontSize: '14px', verticalAlign: 'middle' } }, [
+                    h(ElIcon, { style: { marginRight: '2px', fontSize: '14px', verticalAlign: 'middle' } }, () => [
                         h(Warning, { color: 'red' })
                     ]),
                     h(ElTag, { type: 'danger' }, () => '请配置依赖')
@@ -83,7 +87,7 @@ const editingJob = ref({})
 const entityManagerRef = ref()
 const rowButtons = ref([
     { label: '详情', action: goEdit },
-    { label: '任务依赖', action: showDepend },
+    { label: '任务依赖', action: showDepend, disabled: row => row.type == 'mq' },
     { label: '发布', action: publish, type: 'success', display: row => row.version != row.publishedVersion || !row.publishedVersion },
     { label: '下线', action: offline, type: 'danger', display: row => row.version == row.publishedVersion && row.publishedVersion },
     { label: '血缘分析', action: showBlood },
@@ -134,9 +138,14 @@ function showBlood() {
 }
 
 function publish(job) {
+    let loading = ElLoading.service({
+        text: '发布中'
+    })
     https.get('/etl/job/publish', { jobId: job.id }).then(() => {
         job.publishedVersion = job.version
         ElMessage.success('操作成功')
+    }).finally(() => {
+        loading.close()
     })
 }
 

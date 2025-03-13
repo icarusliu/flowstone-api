@@ -1,4 +1,4 @@
-package com.liuqi.etl.bean.dto;
+package com.liuqi.etl.service.executors.config;
 
 import lombok.Data;
 

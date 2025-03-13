@@ -15,14 +15,15 @@
 
                     <el-form-item label="任务类型" required prop="type">
                         <el-radio-group v-model="model.type" :disabled="!editing" @change="typeChanged">
-                            <el-radio value="sync">数据抽取</el-radio>
-                            <el-radio value="sql">数据加工</el-radio>
+                            <el-radio-button value="sync">数据抽取</el-radio-button>
+                            <el-radio-button value="sql">数据加工</el-radio-button>
+                            <el-radio-button value="mq">实时数据</el-radio-button>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="触发规则" required prop="autoTrigger">
-                        <el-radio-group v-model="model.autoTrigger" :disabled="!editing">
-                            <el-radio :value="true">依赖触发</el-radio>
-                            <el-radio :value="false">定时触发</el-radio>
+                        <el-radio-group v-model="model.autoTrigger" :disabled="!editing || model.type == 'mq'">
+                            <el-radio-button :value="true">依赖触发</el-radio-button>
+                            <el-radio-button :value="false">定时触发</el-radio-button>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="定时执行规则" required prop="cron" v-if="!model.autoTrigger">
@@ -32,10 +33,11 @@
                 <el-tab-pane label="运行信息" name="run">
                     <sync-config v-if="model.type == 'sync'" v-model="model.config" :dses="dses" ref="syncRef" :disabled="!editing">
                     </sync-config>
-
-                    <sql-config v-else v-model="model.config.nodes[0].config" :dses="dses" ref="sqlRef" :disabled="!editing" />
+                    <sql-config v-else-if="model.type == 'sql'" v-model="model.config.nodes[0].config" :dses="dses" ref="sqlRef"
+                        :disabled="!editing" />
+                    <mq-config v-else v-model="model.config" :dses="dses" ref="mqRef" :disabled="!editing" />
                 </el-tab-pane>
-                <el-tab-pane label="任务测试" name="test" v-if="!editing">
+                <el-tab-pane label="任务测试" name="test" v-if="!editing && model.type != 'mq'">
                     <job-test :job="model" />
                 </el-tab-pane>
             </el-tabs>
@@ -56,9 +58,9 @@
 <script setup>
 import treeSelect from '@/components/base-tree-select.vue'
 import https from '@/utils/https'
-import monacoEditor from '@/components/monaco-editor.vue'
-import syncConfig from './sync-config.vue'
-import sqlConfig from './sql-config.vue'
+import syncConfig from './config-sync.vue'
+import sqlConfig from './config-sql.vue'
+import mqConfig from './config-mq.vue'
 import * as uuid from 'uuid'
 import { ElMessage } from 'element-plus'
 import * as _ from 'lodash'
@@ -154,6 +156,9 @@ function typeChanged() {
     if (model.value.type == 'sync') {
         // 如果是数据抽取，一定是要指定时间
         model.value.autoTrigger = false
+    } else if (model.value.type == 'mq') {
+        // 实时数据一定是依赖触发
+        model.value.autoTrigger = true
     }
 }
 
@@ -178,6 +183,7 @@ function cancelEdit() {
 const formRef = ref()
 const syncRef = ref()
 const sqlRef = ref()
+const mqRef = ref()
 function doSave() {
     formRef.value.validate(res => {
         if (!res) {
@@ -185,25 +191,24 @@ function doSave() {
             return
         }
 
+        let validate
+
         if (model.value.type == 'sync') {
-            syncRef.value.validate(res => {
-                if (!res) {
-                    currentTab.value = 'run'
-                    return
-                }
-
-                save()
-            })
-        } else {
-            sqlRef.value.validate(res => {
-                if (!res) {
-                    currentTab.value = 'run';
-                    return
-                }
-
-                save()
-            })
+            validate = syncRef.value.validate
+        } else if (model.value.type == 'sql') {
+            validate = sqlRef.value.validate
+        } else if (model.value.type == 'mq') {
+            validate = mqRef.value.validate
         }
+
+        validate(res => {
+            if (!res) {
+                currentTab.value = 'run'
+                return
+            }
+
+            save()
+        })
     })
 }
 

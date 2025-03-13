@@ -1,7 +1,12 @@
 <!-- 脚本编辑 -->
 <template>
     <!-- 脚本编辑器 -->
-    <el-dialog v-model="visible" :title="'脚本编辑_' + lang" :append-to-body="true" width="80%">
+    <el-dialog v-model="visible" :title="'脚本编辑_' + lang" :append-to-body="true" width="80%" destroy-on-close>
+        <template #header>
+            <span class="font-bold mr-2">脚本编辑——{{ lang }}</span>
+            <slot name="header"></slot>
+        </template>
+
         <monacoEditor height="65vh" v-model="script" :language="lang" />
         <template #footer>
             <div>

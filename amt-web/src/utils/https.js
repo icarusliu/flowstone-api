@@ -6,7 +6,7 @@ import router from '../router';
 import { useSysStore } from '../store'
 import * as tokenUtils from './token'
 
-axios.defaults.timeout = 20000; //响应时间
+axios.defaults.timeout = 50000; //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; //配置请求头
 axios.defaults.baseURL = '/api'; //配置接口地址
 
@@ -64,7 +64,7 @@ axios.interceptors.response.use((res) => {
     if (status === 401 || status === 402) {
         goLogin()
     } else if (status === 500) {
-        var msg = resp.data.msg || '系统内部异常'
+        var msg = resp.data.msg || resp.data || '系统内部异常'
         ElMessage.error(msg);
     } else if (status === 403) {
         ElMessage.error('权限不足')

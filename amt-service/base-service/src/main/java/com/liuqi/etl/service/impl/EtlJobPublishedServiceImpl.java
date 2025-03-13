@@ -38,6 +38,7 @@ public class EtlJobPublishedServiceImpl extends AbstractBaseService<EtlJobPublis
                 .in(null != query.getIds(), "id", query.getIds())
                 .eq(null != query.getAutoTrigger(), "auto_trigger", query.getAutoTrigger())
                 .isNotNull(null != query.getCronNotNull() && query.getCronNotNull(), "cron")
+                .eq(null != query.getType(), "type", query.getType())
                 .orderByDesc("create_time");
     }
 

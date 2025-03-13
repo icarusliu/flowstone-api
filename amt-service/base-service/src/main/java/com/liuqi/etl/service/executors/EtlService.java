@@ -13,6 +13,7 @@ import com.liuqi.etl.service.EtlJobPublishedService;
 import com.liuqi.etl.service.EtlJobService;
 import com.liuqi.etl.service.EtlJobStateService;
 import com.liuqi.etl.service.EtlLogService;
+import com.liuqi.etl.service.executors.config.EtlNodeInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -55,22 +55,29 @@ defineExpose({ reload: load })
 
 <style lang="scss" scoped>
 .tree-panel {
-    background-color: #fff;
+    background-color: #fefefe;
+    border: 1px solid #f1f1f1;
+    height: 100%;
+    overflow: auto;
+    margin-right: 16px;
+    border-radius: 5px;
 }
 
 .top-bar {
     align-items: center;
     border-bottom: 1px solid #eee;
-    padding-bottom: 8px;
+    padding: 8px;
     margin-bottom: 4px;
 
     .title {
         font-weight: bold;
     }
+    
 }
 
 .tree {
     --el-tree-node-content-height: 36px;
+    background: #fefefe;
 
     :deep() {
         .el-tree-node {

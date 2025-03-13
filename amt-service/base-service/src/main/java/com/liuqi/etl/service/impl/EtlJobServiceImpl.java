@@ -20,13 +20,15 @@ import com.liuqi.etl.service.EtlJobDependService;
 import com.liuqi.etl.service.EtlJobPublishedService;
 import com.liuqi.etl.service.EtlJobService;
 import com.liuqi.etl.service.executors.EtlJobScheduler;
-import com.liuqi.etl.service.executors.EtlNodeInfo;
+import com.liuqi.etl.service.executors.config.EtlNodeInfo;
+import com.liuqi.etl.service.executors.job.EtlMqService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -53,6 +55,10 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
     @Autowired
     @Lazy
     private EtlJobDependService dependService;
+
+    @Autowired
+    @Lazy
+    private EtlMqService mqService;
 
     @Override
     public EtlJobDTO toDTO(EtlJobEntity entity) {
@@ -207,10 +213,14 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
      * @param jobId 任务id
      */
     @Override
+    @Transactional
     public void publish(String jobId) {
         // 发布时，更新发布表，并且更新版本号
         EtlJobDTO job = this.findById(jobId).orElseThrow(() -> AppException.of(ErrorCodes.ETL_JOB_NOT_EXISTS));
 
+        if (null == job.getVersion() || 0 == job.getVersion()) {
+            job.setVersion(1);
+        }
         job.setPublishedVersion(job.getVersion());
         this.update(job);
 
@@ -218,6 +228,11 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
         BeanUtils.copyProperties(job, publishedDTO);
         publishedService.deletePhysical(jobId);
         publishedService.insert(publishedDTO);
+
+        // 如果是mq类型，需要启动mq进行监听
+        if (job.getType().equals("mq")) {
+            mqService.startJob(job);
+        }
 
         // 如果是定时任务，提交定时执行
         if (!publishedDTO.getAutoTrigger() && StringUtils.isNotBlank(publishedDTO.getCron())) {
@@ -241,5 +256,8 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
 
         publishedService.deletePhysical(jobId);
         etlJobScheduler.stopJob(jobId);
+
+        // 停止实时任务
+        mqService.stopJob(jobId);
     }
 }
