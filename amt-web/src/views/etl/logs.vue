@@ -1,7 +1,7 @@
 <template>
     <div class="page-content">
         <search-form :fields="queryFields" v-model="params" @query="doQuery"></search-form>
-        <base-table :fields="fields" :params="params" ref="tableRef" :dataSupplier="loadData"></base-table>
+        <base-table :fields="fields" :params="params" ref="tableRef" :dataSupplier="loadData" :pageSimple="true"></base-table>
     </div>
 </template>
 <script setup>
@@ -30,7 +30,7 @@ function loadData(params) {
         params.beginDate = params.dates[0]
         params.endDate = params.dates[1]
     }
-    return https.post('/etl/log/page-query', params)
+    return https.post('/etl/log/query', params)
 }
 
 function doQuery() {

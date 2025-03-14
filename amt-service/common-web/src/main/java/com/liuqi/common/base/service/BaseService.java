@@ -70,4 +70,23 @@ public interface BaseService<D extends BaseDTO, Q extends BaseQuery> {
      * 查找所有记录
      */
     List<D> findAll();
+
+    /**
+     * 查找所有记录，根据指定字段排序
+     *
+     * @param orderByColumn 字段
+     * @param isAsc         是否升级
+     * @return 结果
+     */
+    List<D> findAll(String orderByColumn, boolean isAsc);
+
+    /**
+     * 查找所有记录，按指定字段升级
+     *
+     * @param orderByColumn 排序字段
+     * @return 结果
+     */
+    default List<D> findAll(String orderByColumn) {
+        return this.findAll(orderByColumn, true);
+    }
 }

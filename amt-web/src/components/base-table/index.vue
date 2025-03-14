@@ -20,8 +20,8 @@
             <slot name="append"></slot>
         </el-table>
 
-        <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo" layout="prev, pager, next" @change="pageChanged" background
-            size="small" class="mt-2" />
+        <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo" :layout="pageSimple ? 'prev, next' : 'prev, pager, next'"
+            @change="pageChanged" background size="small" class="mt-2" />
     </div>
 </template>
 
@@ -29,10 +29,10 @@
 import { ref, onMounted } from 'vue'
 import baseTableColumn from './base-table-column.vue';
 
-const props = defineProps(["dataSupplier", "fields", "params", "pageable", "defaultExpandAll", "showIndex"])
+const props = defineProps(["dataSupplier", "fields", "params", "pageable", "pageSimple", "defaultExpandAll", "showIndex"])
 const total = ref(0)
 const rows = ref([])
-const pageNo = ref(0)
+const pageNo = ref(1)
 const pageSize = ref(10)
 const emits = defineEmits(["rowClick"])
 const tableRef = ref()
@@ -90,14 +90,27 @@ function loadData() {
             rows.value = resp.records
             total.value = resp.total
         } else {
+            // 如果是简易分页时，没有总记录数，但又需要能点击下一页；
+            if (props.pageSimple) {
+                if (!resp.length || resp.length < pageSize.value) {
+                    // 说明没有记录了；
+                    total.value = (pageNo.value - 1) * pageSize.value + resp.length
+                } else {
+                    // 还有记录，需要能取下一页，因此总记录数要比当前记录数要多；
+                    total.value = (pageNo.value + 1) * pageSize.value
+                }
+            } else {
+                total.value = resp?.length || 0
+            }
+
             rows.value = resp
-            total.value = resp?.length || 0
         }
     })
 }
 
 function reload() {
-    pageNo.value = 0
+    pageNo.value = 1
+    total.value = 0
     loadData()
 }
 

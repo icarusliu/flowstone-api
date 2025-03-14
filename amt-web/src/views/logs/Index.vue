@@ -1,23 +1,12 @@
 <template>
     <SearchForm v-model="params" :fields="queryFields" @query="reload"></SearchForm>
-    <!-- <div class="d-flex my-2">
-        <el-input placeholder="请输入接口信息" class="mr-2 input" clearable v-model="params.key" @change="reload" />
-        <el-select placeholder="请选择客户端" class="mr-2 input" clearable v-model="params.clientId" @change="reload">
-            <el-option v-for="client in clients" :label="client.name" :value="client.id"></el-option>
-        </el-select>
-        <el-select placeholder="请选择执行状态" class="input" clearable v-model="params.status" @change="reload">
-            <el-option label="成功" value="0" />
-            <el-option label="失败" value="1" />
-        </el-select>
-    </div> -->
-    <base-table :fields="fields" :dataSupplier="dataSupplier" :defaultExpandAll="false" @rowClick="onRowClick"
+    <base-table :fields="fields" :dataSupplier="dataSupplier" :defaultExpandAll="false" @rowClick="onRowClick" :pageSimple="true"
         ref="tableRef" :params="params" />
 </template>
 
 <script setup>
 import * as entityApis from '@/apis/entity.js'
-import { ref, h, onMounted } from 'vue'
-import { ElTag } from 'element-plus'
+import { ref, onMounted } from 'vue'
 import * as clientApis from '@/apis/client'
 import SearchForm from '../../components/search-form.vue';
 import * as logFields from './fields'

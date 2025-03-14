@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.liuqi.common.base.bean.dto.BaseDTO;
 import com.liuqi.common.base.bean.query.BaseQuery;
 import com.liuqi.common.base.bean.query.DynamicQuery;
@@ -12,19 +14,25 @@ import com.liuqi.common.base.bean.query.Filter;
 import com.liuqi.common.base.bean.query.FilterOp;
 import com.liuqi.common.base.domain.entity.BaseEntity;
 import com.liuqi.common.base.domain.mapper.BaseMapper;
+import com.liuqi.common.bean.UserContextHolder;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.exception.CommErrorCodes;
-import com.liuqi.common.bean.UserContextHolder;
 import liquibase.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -135,6 +143,14 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     }
 
     /**
+     * 查询后处理
+     *
+     * @param list 查询结果
+     */
+    protected void processAfterQuery(List<D> list) {
+    }
+
+    /**
      * 执行查询操作
      *
      * @param q 查询对象
@@ -142,8 +158,53 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      */
     @Override
     public List<D> query(Q q) {
-        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
-        return this.toDTO(this.list(queryWrapper));
+        return this.queryInternal(q, null);
+    }
+
+    /**
+     * 执行XML中的方法并进行分页处理
+     *
+     * @param query 查询对象
+     * @param func  执行方法
+     * @param <D1>  返回数据对象
+     * @param <Q1>  查询对象类型
+     * @return 查询结果
+     */
+    protected <D1 extends BaseDTO, Q1 extends BaseQuery> IPage<D1> pageQueryByXml(Q1 query, Function<Q1, List<D1>> func) {
+        PageHelper.startPage(query.getPageNo().intValue(), query.getPageSize().intValue());
+        PageInfo<D1> pageInfo = new PageInfo<>(func.apply(query));
+        Page<D1> page = new Page<>();
+        page.setTotal(pageInfo.getTotal());
+        page.setRecords(pageInfo.getList());
+        return page;
+    }
+
+    /**
+     * 查询实现
+     *
+     * @param q         查询对象，可为空
+     * @param processor 查询附加处理器，可为空
+     * @return 查询结果
+     */
+    private List<D> queryInternal(Q q, Consumer<QueryWrapper<E>> processor) {
+        QueryWrapper<E> queryWrapper;
+        if (null != q) {
+            queryWrapper = this.queryToWrapper(q);
+
+            if (null != q.getPageNo() && null != q.getPageSize()) {
+                long start = (q.getPageNo() - 1) * q.getPageSize();
+                queryWrapper.last(" limit " + start + "," + q.getPageSize());
+            }
+
+        } else {
+            queryWrapper = this.createQueryWrapper();
+        }
+        if (processor != null) {
+            processor.accept(queryWrapper);
+        }
+        List<D> list = this.toDTO(this.list(queryWrapper));
+        this.processAfterQuery(list);
+        return list;
     }
 
     /**
@@ -153,7 +214,19 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      */
     @Override
     public List<D> findAll() {
-        return this.toDTO(this.list(this.createQueryWrapper()));
+        return this.query(null);
+    }
+
+    /**
+     * 查找所有记录，根据传入字段进行排序
+     *
+     * @param orderByColumn 排序字段
+     * @param isAsc         是否升序
+     * @return 所有记录
+     */
+    @Override
+    public List<D> findAll(String orderByColumn, boolean isAsc) {
+        return this.queryInternal(null, queryWrapper -> queryWrapper.orderBy(true, isAsc, orderByColumn));
     }
 
     /**
@@ -164,7 +237,7 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      */
     @Override
     public Optional<D> findById(String id) {
-        return this.toDTO(this.list(this.createQueryWrapper().eq("id", id)))
+        return this.queryInternal(null, queryWrapper -> queryWrapper.eq("id", id))
                 .stream().findAny();
     }
 
@@ -218,6 +291,7 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
         finalResult.setPages(result.getPages());
         finalResult.setRecords(this.toDTO(result.getRecords()));
 
+        this.processAfterQuery(finalResult.getRecords());
         return finalResult;
     }
 
@@ -343,6 +417,8 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
         finalResult.setPages(result.getPages());
         finalResult.setRecords(this.toDTO(result.getRecords()));
 
+        this.processAfterQuery(finalResult.getRecords());
+
         return finalResult;
     }
 
@@ -423,15 +499,46 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
         return this.toDTO(this.list(this.createQueryWrapper().in("id", ids)));
     }
 
-    protected abstract D toDTO(E e);
+
+    protected D toDTO(E e) {
+        D d = createDTO();
+        BeanUtils.copyProperties(e, d);
+        return d;
+    }
 
     List<D> toDTO(List<E> e) {
         return e.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    protected abstract E toEntity(D dto);
+    protected E toEntity(D dto) {
+        E e = this.createEntity();
+        BeanUtils.copyProperties(dto, e);
+        return e;
+    }
 
     List<E> toEntity(List<D> d) {
         return d.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
+    private <T> T createBean(int idx) {
+        Type[] types = ((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments();
+        Class<T> queryClass = (Class<T>) types[idx];
+        try {
+            return queryClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private E createEntity() {
+        return this.createBean(0);
+    }
+
+    private D createDTO() {
+        return this.createBean(1);
+    }
+
+    private Q createQuery() {
+        return this.createBean(3);
     }
 }
