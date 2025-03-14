@@ -21,7 +21,7 @@ import com.liuqi.etl.service.EtlJobPublishedService;
 import com.liuqi.etl.service.EtlJobService;
 import com.liuqi.etl.service.executors.EtlJobScheduler;
 import com.liuqi.etl.service.executors.config.EtlNodeInfo;
-import com.liuqi.etl.service.executors.job.EtlMqService;
+import com.liuqi.etl.service.executors.job.EtlMqJobService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -58,7 +58,7 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
 
     @Autowired
     @Lazy
-    private EtlMqService mqService;
+    private EtlMqJobService mqService;
 
     @Override
     public EtlJobDTO toDTO(EtlJobEntity entity) {

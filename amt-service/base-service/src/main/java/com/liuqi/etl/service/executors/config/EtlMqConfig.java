@@ -32,6 +32,11 @@ public class EtlMqConfig {
      */
     private Integer reconnectDelay = 30;
 
+    /**
+     * 最大重连次数，30次，每次延迟时间根据重试次数增加，第一次30S，第二次60S，第三次120S，至最多600S；
+     */
+    private Integer maxReconnectTimes = 30;
+
     public static EtlMqConfig parse(Map<String, Object> config) {
         return JSONObject.parseObject(JSON.toJSONString(config), EtlMqConfig.class);
     }

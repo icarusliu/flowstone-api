@@ -61,6 +61,11 @@ axios.interceptors.response.use((res) => {
     let resp = error.response
     let status = resp.status
 
+    if (status == 400) {
+        ElMessage.error('系统参数异常')
+        return;
+    }
+
     if (status === 401 || status === 402) {
         goLogin()
     } else if (status === 500) {

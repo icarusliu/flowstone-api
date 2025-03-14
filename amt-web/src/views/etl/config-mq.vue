@@ -5,7 +5,7 @@
                 <el-form-item label="数据类型" required class="field" prop="type">
                     <el-radio-group v-model="model.type" :disabled="disabled">
                         <el-radio-button value="mqtt">MQTT</el-radio-button>
-                        <el-radio-button value="kafka" disabled>Kafka</el-radio-button>
+                        <el-radio-button value="kafka">Kafka</el-radio-button>
                     </el-radio-group>
                 </el-form-item>
             </el-col>

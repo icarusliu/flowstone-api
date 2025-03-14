@@ -21,10 +21,14 @@ import java.util.List;
  **/
 @Service
 @Slf4j
-public class EtlMqService {
+public class EtlMqJobService {
     @Autowired
     @Lazy
-    private MqttJobService mqttJobService;
+    private MqttJob mqttJob;
+
+    @Autowired
+    @Lazy
+    private KafkaJob kafkaJob;
 
     @Autowired
     @Lazy
@@ -50,16 +54,20 @@ public class EtlMqService {
         String type = config.getType();
         if ("mqtt".equals(type)) {
             try {
-                mqttJobService.startListener(job, config);
+                mqttJob.startListener(job, config);
             } catch (MqttException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            // TODO
+            try {
+                kafkaJob.startListener(job, config);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public void stopJob(String jobId) {
-        mqttJobService.stopListener(jobId);
+        mqttJob.stopListener(jobId);
     }
 }

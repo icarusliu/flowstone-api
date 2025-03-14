@@ -1,4 +1,4 @@
-package com.liuqi.etl.service.executors;
+package com.liuqi.etl.service.executors.job;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -6,6 +6,7 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.base.service.SysConfigService;
 import com.liuqi.common.utils.DynamicSqlHelper;
+import com.liuqi.etl.service.executors.EtlParamUtils;
 import com.liuqi.etl.service.executors.config.EtlDataSyncConfig;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.service.EtlJobService;
@@ -32,7 +33,7 @@ import java.util.function.Supplier;
  **/
 @Service
 @Slf4j
-public class EtlDataSyncService {
+public class DataSyncJob {
 
     @Autowired
     private EtlJobService dataSyncService;

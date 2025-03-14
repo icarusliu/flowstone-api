@@ -20,6 +20,7 @@
 </template>
 <script setup>
 import { computed } from 'vue';
+import * as _ from 'lodash'
 
 const props = defineProps({
     buttons: { type: Array, required: true },
@@ -28,7 +29,9 @@ const props = defineProps({
 })
 
 const finalButtons = computed(() => {
-    return props.buttons.filter(button => {
+    const buttons = _.cloneDeep(props.buttons)
+
+    return buttons.filter(button => {
         if (button.display == false) {
             return false
         } else if (!button.display) {
@@ -42,7 +45,6 @@ const finalButtons = computed(() => {
             button.finalDisabled = false
         } else {
             button.finalDisabled = button.disabled(props.data)
-            console.log(button.finalDisabled)
         }
         return button
     });

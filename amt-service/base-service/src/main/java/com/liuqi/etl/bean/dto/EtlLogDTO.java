@@ -53,4 +53,13 @@ public class EtlLogDTO extends BaseDTO {
      */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataDate;
+
+    public static EtlLogDTO fromJob(EtlJobPublishedDTO job) {
+        EtlLogDTO dto = new EtlLogDTO();
+        dto.setExecuteTime(LocalDateTime.now());
+        dto.setJobId(job.getId());
+        dto.setJobName(job.getName());
+        dto.setJobCode(job.getCode());
+        return dto;
+    }
 }
