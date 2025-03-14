@@ -1,12 +1,10 @@
 package com.liuqi.etl.service.executors;
 
-import com.liuqi.etl.bean.dto.EtlJobDTO;
 import com.liuqi.etl.bean.dto.EtlJobDependDTO;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.bean.dto.EtlJobStateDTO;
 import com.liuqi.etl.service.EtlJobDependService;
 import com.liuqi.etl.service.EtlJobPublishedService;
-import com.liuqi.etl.service.EtlJobService;
 import com.liuqi.etl.service.EtlJobStateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

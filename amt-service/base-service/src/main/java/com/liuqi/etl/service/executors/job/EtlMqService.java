@@ -41,6 +41,8 @@ public class EtlMqService {
                 log.error("启动任务失败", ex);
             }
         });
+
+        log.info("MQ任务自动启动完成");
     }
 
     public void startJob(EtlJobPublishedDTO job) {

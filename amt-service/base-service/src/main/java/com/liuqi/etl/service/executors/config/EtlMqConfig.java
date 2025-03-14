@@ -27,6 +27,11 @@ public class EtlMqConfig {
     private String destDs;
     private String destSql;
 
+    /**
+     * 重连间隔
+     */
+    private Integer reconnectDelay = 30;
+
     public static EtlMqConfig parse(Map<String, Object> config) {
         return JSONObject.parseObject(JSON.toJSONString(config), EtlMqConfig.class);
     }
