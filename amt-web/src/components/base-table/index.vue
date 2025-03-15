@@ -29,7 +29,7 @@
 import { ref, onMounted } from 'vue'
 import baseTableColumn from './base-table-column.vue';
 
-const props = defineProps(["dataSupplier", "fields", "params", "pageable", "pageSimple", "defaultExpandAll", "showIndex", "initLoad"])
+const props = defineProps(["dataSupplier", "fields", "params", "pageable", "pageSimple", "defaultExpandAll", "showIndex", "initLoad", "pageSize"])
 const total = ref(0)
 const rows = ref([])
 const pageNo = ref(1)
@@ -39,6 +39,7 @@ const tableRef = ref()
 
 onMounted(() => {
     props.initLoad != false && loadData()
+    pageSize.value = props.pageSize || 10
 })
 
 function pageChanged(currentPage, size) {

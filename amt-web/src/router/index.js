@@ -124,7 +124,7 @@ const routes = [
                         }
                     }, {
                         path: '/base/model-data',
-                        component: () => import('../views/base/model/model-data.vue'),
+                        component: () => import('../views/base/model-data/index.vue'),
                         meta: {
                             title: '数据模型管理'
                         }

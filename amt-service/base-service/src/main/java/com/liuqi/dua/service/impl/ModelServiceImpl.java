@@ -43,6 +43,7 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
     private ModelConfigService modelConfigService;
 
     private static final List<String> innerFields = Arrays.asList("id", "createTime", "createUser", "updateTime", "updateUser");
+    private static final List<String> innerColumns = Arrays.asList("id", "create_time", "create_user", "update_time", "update_user");
 
     @Override
     public ModelDTO toDTO(ModelEntity entity) {
@@ -65,6 +66,7 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
                 .in(null != query.getIds(), "id", query.getIds())
                 .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode())
                 .eq(StringUtils.isNotBlank(query.getName()), "name", query.getName())
+                .eq(StringUtils.isNotBlank(query.getTypeId()), "type_id", query.getTypeId())
                 .orderByDesc("create_time");
     }
 
@@ -106,7 +108,8 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
                     return field;
                 }).toList();
 
-        modelFieldService.insert(fields);
+        fields = modelFieldService.insert(fields);
+        dto.setFields(fields);
         return dto;
     }
 
@@ -234,6 +237,14 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
         ModelPublishedDTO publishedDTO = new ModelPublishedDTO();
         BeanUtils.copyProperties(model, publishedDTO);
         publishedDTO.setFields(fields);
+
+        modelConfigService.findById(model.getId()).ifPresent(config -> {
+            publishedDTO.setListFields(config.getListFields());
+            publishedDTO.setListConfig(config.getListConfig());
+            publishedDTO.setFormFields(config.getFormFields());
+            publishedDTO.setFormConfig(config.getFormConfig());
+        });
+
         publishedService.deletePhysical(model.getId());
         publishedService.insert(publishedDTO);
     }
@@ -293,7 +304,7 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
         });
 
         columns.forEach(column -> {
-            if (restColumns.contains(column) || innerFields.contains(column)) {
+            if (restColumns.contains(column) || innerColumns.contains(column)) {
                 return;
             }
 

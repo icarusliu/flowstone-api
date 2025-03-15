@@ -58,8 +58,9 @@ public class ClientServiceImpl extends AbstractBaseService<ClientEntity, ClientD
     }
 
     @Override
-    public void insert(List<ClientDTO> dtos) {
+    public List<ClientDTO> insert(List<ClientDTO> dtos) {
         super.insert(dtos);
+        return null;
     }
 
     /**

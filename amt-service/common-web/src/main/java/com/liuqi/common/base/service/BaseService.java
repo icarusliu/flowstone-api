@@ -3,18 +3,16 @@ package com.liuqi.common.base.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.common.base.bean.dto.BaseDTO;
 import com.liuqi.common.base.bean.query.DynamicQuery;
-import com.liuqi.common.base.domain.entity.BaseEntity;
 import com.liuqi.common.base.bean.query.BaseQuery;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public interface BaseService<D extends BaseDTO, Q extends BaseQuery> {
     D insert(D dto);
 
-    void insert(List<D> dtos);
+    List<D> insert(List<D> dtos);
 
     void update(D dto);
 

@@ -5,11 +5,11 @@
                 <base-info v-model="form" :editing="editing" ref="baseRef" />
             </el-tab-pane>
 
-            <el-tab-pane label="列表视图配置" v-if="form.id" name="list">
+            <el-tab-pane label="列表视图配置" name="list" v-if="form.listConfig">
                 <list-config :model="form" :editing="editing" />
             </el-tab-pane>
 
-            <el-tab-pane label="表单视图配置" v-if="form.id" name="form">
+            <el-tab-pane label="表单视图配置" name="form" v-if="form.formConfig">
                 <form-config :model="form" :editing="editing" />
             </el-tab-pane>
 
@@ -97,14 +97,24 @@ onMounted(() => {
         form.value = {
             status: 0,
             fields: [
-                { code: 'id', name: 'id', primaryKey: true, dataType: 'varchar', dataConfig: '(64)', nullable: false, readonly: true, listConfig: { show: false } },
-                { code: 'createTime', name: '创建时间', dataType: 'datetime', dataConfig: '', defaultValue: 'current_timestamp()', readonly: true, nullable: true, listConfig: { width: '160px' } },
-                { code: 'createUser', name: '创建用户', dataType: 'varchar', dataConfig: '(255)', readonly: true, nullable: true, listConfig: { show: false } },
-                { code: 'updateTime', name: '更新时间', dataType: 'datetime', dataConfig: '', defaultValue: 'current_timestamp()', readonly: true, nullable: true, listConfig: { width: '160px' } },
-                { code: 'updateUser', name: '更新用户', dataType: 'varchar', dataConfig: '(255)', readonly: true, nullable: true, listConfig: { show: false } },
+                { code: 'id', name: 'id', primaryKey: true, dataType: 'varchar', dataConfig: '(64)', nullable: false, readonly: true},
+                { code: 'createTime', name: '创建时间', dataType: 'datetime', dataConfig: '', defaultValue: 'current_timestamp()', readonly: true, nullable: true, },
+                { code: 'createUser', name: '创建用户', dataType: 'varchar', dataConfig: '(255)', readonly: true, nullable: true },
+                { code: 'updateTime', name: '更新时间', dataType: 'datetime', dataConfig: '', defaultValue: 'current_timestamp()', readonly: true, nullable: true },
+                { code: 'updateUser', name: '更新用户', dataType: 'varchar', dataConfig: '(255)', readonly: true, nullable: true, },
             ],
-            listConfig: {},
-            formConfig: {},
+            listConfig: {
+                pagination: true,
+                withNew: true,
+                withDelete: true,
+                withEdit: true,
+                withImport: false,
+                withExport: false,
+                pageSize: 10
+            },
+            formConfig: {
+                displayType: 'drawer'
+            },
             listFields: [],
             formFields: []
         }
@@ -137,6 +147,7 @@ function save() {
             https.post('/dua/model/add', form.value).then((resp) => {
                 ElMessage.success('操作成功')
                 form.value.id = resp.id
+                form.value.fields = resp.fields
                 editing.value = false;
             })
         }

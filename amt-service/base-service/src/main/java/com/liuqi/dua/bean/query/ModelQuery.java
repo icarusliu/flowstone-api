@@ -9,6 +9,7 @@ import lombok.Data;
  **/
 @Data
 public class ModelQuery extends BaseQuery {
+    private String typeId;
     private String code;
     private String name;
 }

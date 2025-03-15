@@ -16,7 +16,7 @@ import java.util.Map;
  * @version V1.0
  **/
 @Data
-@TableName(value = "b_model_config", autoResultMap = true)
+@TableName(value = "d_model_config", autoResultMap = true)
 public class ModelConfigEntity extends BaseEntity {
     /**
      * 列表配置

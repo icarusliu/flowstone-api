@@ -2,12 +2,16 @@ package com.liuqi.dua.web;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.bean.query.DynamicQuery;
+import com.liuqi.common.exception.AppException;
 import com.liuqi.dua.bean.dto.ModelDTO;
 import com.liuqi.dua.bean.dto.ModelDetailDTO;
+import com.liuqi.dua.bean.dto.ModelPublishedDTO;
 import com.liuqi.dua.bean.query.ModelQuery;
 import com.liuqi.dua.bean.req.ModelAddReq;
 import com.liuqi.dua.bean.req.ModelUpdateReq;
+import com.liuqi.dua.service.ModelPublishedService;
 import com.liuqi.dua.service.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +34,9 @@ import java.util.List;
 public class ModelController {
     @Autowired
     private ModelService service;
+
+    @Autowired
+    private ModelPublishedService publishedService;
 
     @PostMapping("add")
     @Operation(summary = "新增")
@@ -81,5 +88,10 @@ public class ModelController {
     @GetMapping("offline")
     public void offline(String id) {
         service.offline(id);
+    }
+
+    @GetMapping("published/{id}")
+    public ModelPublishedDTO getPublished(@PathVariable("id") String id) {
+        return publishedService.findById(id).orElseThrow(AppException.supplier(ErrorCodes.DUA_MODEL_NOT_PUBLISHED));
     }
 }

@@ -557,9 +557,9 @@
             ) comment '已发布模型'
         </sql>
     </changeSet>
-    <changeSet id="create-table-b_model_config" author="codeGenerator">
+    <changeSet id="create-table-d_model_config" author="codeGenerator">
         <sql>
-            create table b_model_config(
+            create table d_model_config(
                 id varchar(64) not null primary key comment '主键',
                 list_config varchar(512) comment '列表配置',
                 list_fields text comment '列表字段配置',

@@ -1,9 +1,11 @@
 package com.liuqi.dua.bean.dto;
 
 import com.liuqi.common.base.bean.dto.BaseDTO;
+import com.liuqi.dua.bean.req.ModelFieldAddReq;
 import liquibase.util.StringUtil;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +38,11 @@ public class ModelDTO extends BaseDTO {
      * 元数据
      */
     private Map<String, Object> metadata;
+
+    /**
+     * 模型字段
+     */
+    private List<ModelFieldDTO> fields;
 
     public String getTableName() {
         return "td_" + StringUtil.toKabobCase(code).replace("-", "");

@@ -27,10 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -81,13 +78,18 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public void insert(List<D> dtos) {
+    public List<D> insert(List<D> dtos) {
         // 框架层实现，一条条处理，如果需要批量处理并讲究效率，请使用saveBatch
         if (CollectionUtils.isEmpty(dtos)) {
-            return;
+            return dtos;
         }
 
-        dtos.forEach(this::insert);
+        List<D> result = new ArrayList<>(16);
+        dtos.forEach(dto -> {
+            dto = this.insert(dto);
+            result.add(dto);
+        });
+        return result;
     }
 
     /**
