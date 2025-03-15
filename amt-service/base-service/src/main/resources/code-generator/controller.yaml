@@ -51,8 +51,8 @@ template: "@RestController
   
   @PostMapping(\"save\")
   @Operation(summary = \"保存\")
-  public $T$DTO update(@RequestBody @Validated $T$DTO req) {
-  if (StringUtils.isNotBlank(req.getId()) {
+  public $T$DTO save(@RequestBody @Validated $T$DTO req) {
+  if (StringUtils.isNotBlank(req.getId())) {
     return service.insert(req);
   }
   service.update(req);

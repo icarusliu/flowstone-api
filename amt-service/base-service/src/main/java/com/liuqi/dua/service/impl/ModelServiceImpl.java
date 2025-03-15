@@ -1,5 +1,6 @@
 package com.liuqi.dua.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.service.AbstractBaseService;
@@ -7,6 +8,7 @@ import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.dua.bean.dto.ModelDTO;
 import com.liuqi.dua.bean.dto.ModelFieldDTO;
+import com.liuqi.dua.bean.dto.ModelPublishedDTO;
 import com.liuqi.dua.bean.query.ModelQuery;
 import com.liuqi.dua.bean.req.ModelAddReq;
 import com.liuqi.dua.bean.req.ModelFieldAddReq;
@@ -15,7 +17,9 @@ import com.liuqi.dua.bean.req.ModelUpdateReq;
 import com.liuqi.dua.domain.entity.ModelEntity;
 import com.liuqi.dua.domain.mapper.ModelMapper;
 import com.liuqi.dua.service.ModelFieldService;
+import com.liuqi.dua.service.ModelPublishedService;
 import com.liuqi.dua.service.ModelService;
+import org.apache.catalina.users.SparseUserDatabase;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +38,9 @@ import java.util.*;
 public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO, ModelMapper, ModelQuery> implements ModelService {
     @Autowired
     private ModelFieldService modelFieldService;
+
+    @Autowired
+    private ModelPublishedService publishedService;
 
     private static final List<String> innerFields = Arrays.asList("id", "createTime", "createUser", "updateTime", "updateUser");
 
@@ -213,6 +220,13 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
 
         model.setStatus(1);
         this.update(model);
+
+        // 更新发布模型表
+        ModelPublishedDTO publishedDTO = new ModelPublishedDTO();
+        BeanUtils.copyProperties(model, publishedDTO);
+        publishedDTO.setFields(fields);
+        publishedService.deletePhysical(model.getId());
+        publishedService.insert(publishedDTO);
     }
 
     /**
@@ -286,6 +300,6 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
         dto.setStatus(3);
         this.update(dto);
 
-        // 模型下线时不能删除表
+        modelFieldService.deletePhysical(id);
     }
 }

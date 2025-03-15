@@ -32,4 +32,10 @@ public class ModelDataController {
                      @RequestBody Map<String, Object> body) {
         return modelDataService.save(modelId, body);
     }
+
+    @DeleteMapping("{modelId}/delete")
+    public void delete(@PathVariable("modelId") String modelId,
+                       @RequestParam Map<String, Object> params) {
+        modelDataService.delete(modelId, params);
+    }
 }

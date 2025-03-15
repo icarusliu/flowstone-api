@@ -145,6 +145,7 @@ export function postUrlParams(url, param, config = {}) {
 }
 
 export default {
+    del,
     post,
     put,
     get,

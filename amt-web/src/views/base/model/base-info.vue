@@ -77,7 +77,7 @@ const fieldFields = ref([
     },
     { label: '字段配置', prop: 'dataConfig' },
     { label: '是否可为空', prop: 'nullable', type: 'checkbox', align: 'center', width: '100px' },
-    { label: '是否主键', prop: 'isPrimary', type: 'checkbox', disabled: true, align: 'center', width: '100px' },
+    { label: '是否主键', prop: 'primaryKey', type: 'checkbox', disabled: true, align: 'center', width: '100px' },
     { label: '默认值', prop: 'defaultValue' }
 ])
 const formRef = ref()

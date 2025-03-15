@@ -27,6 +27,12 @@ public class ModelFieldUpdateReq {
      * 是否可为空
      */
     private Boolean nullable;
+
+    /**
+     * 是否主键
+     */
+    private Boolean primaryKey;
+
     /**
      * 数据配置（如varchar后的长度等）
      */

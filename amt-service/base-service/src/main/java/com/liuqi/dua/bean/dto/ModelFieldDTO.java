@@ -34,6 +34,12 @@ public class ModelFieldDTO extends BaseDTO {
      * 是否可为空
      */
     private Boolean nullable;
+
+    /**
+     * 是否主键
+     */
+    private Boolean primaryKey;
+
     /**
      * 数据配置（如varchar后的长度等）
      */
@@ -64,7 +70,7 @@ public class ModelFieldDTO extends BaseDTO {
      * @return 表字段名称
      */
     public String getColumnName() {
-        return StringUtil.toKabobCase(code).replace("-", "");
+        return StringUtil.toKabobCase(code).replace("-", "_");
     }
 
     /**

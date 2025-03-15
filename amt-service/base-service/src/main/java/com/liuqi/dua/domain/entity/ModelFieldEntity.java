@@ -41,6 +41,11 @@ public class ModelFieldEntity extends BaseEntity {
     private Boolean nullable;
 
     /**
+     * 是否主键
+     */
+    private Boolean primaryKey;
+
+    /**
      * 数据配置（如varchar后的长度等）
      */
     private String dataConfig;

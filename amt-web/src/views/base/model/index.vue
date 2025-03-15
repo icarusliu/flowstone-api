@@ -76,7 +76,7 @@ function selectType(type) {
 
 function doDelete(row) {
     ElMessageBox.confirm('确定删除当前记录？').then(() => {
-        https.del('/etl/model/delete/' + row.id).then(() => {
+        https.del('/dua/model/delete/' + row.id).then(() => {
             entityManagerRef.value.reload()
             ElMessage.success('删除成功')
         })
@@ -97,7 +97,7 @@ function publish(model) {
     let loading = ElLoading.service({
         text: '发布中'
     })
-    https.get('/etl/model/publish', { modelId: model.id }).then(() => {
+    https.get('/dua/model/publish', { id: model.id }).then(() => {
         model.publishedVersion = model.version
         ElMessage.success('操作成功')
     }).finally(() => {
@@ -107,7 +107,7 @@ function publish(model) {
 
 function offline(model) {
     ElMessageBox.confirm('确定下线当前任务？').then(() => {
-        https.get('/etl/model/offline', { modelId: model.id }).then(() => {
+        https.get('/dua/model/offline', { id: model.id }).then(() => {
             model.publishedVersion = 0
             ElMessage.success('操作成功')
         })
