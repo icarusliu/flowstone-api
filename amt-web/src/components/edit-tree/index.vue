@@ -1,8 +1,8 @@
 <template>
     <div>
-        <base-tree apiPrefix="/etl/job-type" class="tree mr-4" title="任务分类" ref="treeRef" :showRoot="true" @currentChange="selectType">
+        <base-tree :apiPrefix="apiPrefix" class="tree mr-4" :title="title" ref="treeRef" :showRoot="showRoot" @currentChange="selectNode">
             <template #buttons>
-                <el-link type="primary" @click="showNewType">新增分类</el-link>
+                <el-link type="primary" @click="showNew">新增</el-link>
             </template>
 
             <template #default="{ node, data }">
@@ -27,29 +27,35 @@
             </template>
         </base-tree>
 
-        <new-type v-model:visible="visible" v-model="editingRow" @change="reloadTree" :parent="currentType"></new-type>
+        <new-item v-model:visible="visible" v-model="editingRow" @change="reloadTree" :parent="currentNode" :apiPrefix="apiPrefix" :fields="newFields"></new-item>
     </div>
 </template>
 <script setup>
 import BaseTree from '@/components/base-tree.vue'
-import newType from './new-type.vue'
+import newItem from './new.vue'
 import https from '@/utils/https'
 import * as _ from 'lodash'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
-const currentType = defineModel()
+const props = defineProps({
+    apiPrefix: {type: String, required: true},
+    title: {type: String},
+    showRoot: {type: Boolean, default: true},
+    newFields: {type: Array}
+})
+const currentNode = defineModel()
 const visible = ref(false)
 const emits = defineEmits(['select'])
 const editingRow = ref({})
 const treeRef = ref()
 
-function showNewType() {
+function showNew() {
     editingRow.value = {}
     visible.value = true
 }
 
-function selectType(type) {
-    currentType.value = type
+function selectNode(type) {
+    currentNode.value = type
     emits('select', type)
 }
 
@@ -59,7 +65,7 @@ function reloadTree() {
 
 function doDelete(row) {
     ElMessageBox.confirm('确定删除当前记录？').then(() => {
-        https.del('/etl/job-type/delete/' + row.id).then(() => {
+        https.del(props.apiPrefix + '/delete/' + row.id).then(() => {
             ElMessage.success('删除成功')
             reloadTree()
         })

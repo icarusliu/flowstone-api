@@ -2,8 +2,6 @@ name: $T$Controller
 dir: web
 comment: "控制器"
 imports:
-  - $T$AddReq
-  - $T$UpdateReq
   - $T$DTO
   - $T$Query
   - $T$Service
@@ -35,18 +33,14 @@ template: "@RestController
   
   @PostMapping(\"add\")
   @Operation(summary = \"新增\")
-  public void add(@RequestBody @Validated $T$AddReq req) {
-  $T$DTO dto = new $T$DTO();
-  BeanUtils.copyProperties(req, dto);
-  service.insert(dto);
+  public void add(@RequestBody @Validated $T$DTO req) {
+  service.insert(req);
   }
   
   @PutMapping(\"update\")
   @Operation(summary = \"更新\")
-  public void update(@RequestBody @Validated $T$UpdateReq req) {
-  $T$DTO dto = new $T$DTO();
-  BeanUtils.copyProperties(req, dto);
-  service.update(dto);
+  public void update(@RequestBody @Validated $T$DTO req) {
+  service.update(req);
   }
   
   @PostMapping(\"save\")

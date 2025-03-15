@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="visible" title="新增/编辑分类" width="600px" destroy-on-close>
+    <el-dialog v-model="visible" title="新增/编辑" width="600px" destroy-on-close>
         <base-form :fields="fields" v-model="form" ref="formRef" />
         <template #footer>
             <el-button type="primary" @click="doSave">确定</el-button>
@@ -11,18 +11,12 @@
 import https from '@/utils/https'
 import { ElMessage } from 'element-plus'
 
-const props = defineProps(["parent"])
+const props = defineProps({
+    parent: {type: Object},
+    fields: {type: Array},
+    apiPrefix: {type: String, required: true}
+})
 const visible = defineModel("visible")
-const fields = [
-    {
-        label: '分类编码', prop: 'code', required: true, autofocus: true, change: (val, form) => {
-            if (!form.name) {
-                form.name = val
-            }
-        }
-    },
-    { label: '分类名称', prop: 'name', required: true }
-]
 const form = defineModel({
     default: () => {
         return {}
@@ -41,7 +35,7 @@ function doSave() {
             form.value.parentId = props.parent?.id || null
         }
 
-        let url = '/etl/job-type/'
+        let url = props.apiPrefix
         let func
         if (form.value.id) {
             url += '/update'

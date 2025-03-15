@@ -1,0 +1,72 @@
+package com.liuqi.dua.domain.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.liuqi.common.base.domain.entity.BaseEntity;
+import lombok.Data;
+
+import java.util.Map;
+
+/**
+ * 模型字段
+ *
+ * @author  LiuQi 2025/3/14-12:46
+ * @version V1.0
+ **/
+@Data
+@TableName("d_model_field")
+public class ModelFieldEntity extends BaseEntity {
+    /**
+     * 所属模型
+     */
+    private String modelId;
+
+    /**
+     * 编码
+     */
+    private String code;
+
+    /**
+     * 字段名称
+     */
+    private String name;
+
+    /**
+     * 数据类型
+     */
+    private String dataType;
+
+    /**
+     * 是否可为空
+     */
+    private Boolean nullable;
+
+    /**
+     * 数据配置（如varchar后的长度等）
+     */
+    private String dataConfig;
+
+    /**
+     * 默认值
+     */
+    private String defaultValue;
+
+    /**
+     * 表单配置
+     */
+    private Map<String, Object> formConfig;
+
+    /**
+     * 列表配置
+     */
+    private Map<String, Object> listConfig;
+
+    /**
+     * 其它元数据配置
+     */
+    private Map<String, Object> metadata;
+
+    /**
+     * 排序
+     */
+    private String sort;
+}

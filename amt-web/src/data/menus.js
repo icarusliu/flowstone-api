@@ -43,7 +43,10 @@ export default [
         children: [
             {
                 name: '数据源管理',
-                path: '/manager/ds',
+                path: '/base/ds',
+            }, {
+                name: '数据模型管理',
+                path: '/base/model',
             },
         ]
     },

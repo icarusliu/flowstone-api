@@ -44,12 +44,6 @@ const routes = [
                     title: '分类管理'
                 }
             }, {
-                path: '/manager/ds',
-                component: Ds,
-                meta: {
-                    title: '数据源管理'
-                }
-            }, {
                 path: '/manager/supplier',
                 component: () => import('../views/manager/supplier.vue'),
                 meta: {
@@ -67,7 +61,7 @@ const routes = [
                 meta: {
                     title: '客户端管理'
                 }
-            },{
+            }, {
                 path: '/manager/client-apis/:id',
                 component: () => import('../views/base/client-apis.vue'),
                 meta: {
@@ -77,10 +71,12 @@ const routes = [
             {
                 path: '/logs',
                 children: [
-                    { path: '/logs/run', component: LogIndex,
+                    {
+                        path: '/logs/run', component: LogIndex,
                         meta: {
                             title: '运行日志'
-                        } }
+                        }
+                    }
                 ]
             }, {
                 path: '/base/user',
@@ -103,11 +99,28 @@ const routes = [
                         meta: {
                             title: '任务管理'
                         }
-                    },{
+                    }, {
                         path: '/etl/logs',
                         component: () => import('../views/etl/logs.vue'),
                         meta: {
                             title: '执行日志'
+                        }
+                    }
+                ]
+            }, {
+                path: '/base',
+                children: [
+                    {
+                        path: '/base/ds',
+                        component: Ds,
+                        meta: {
+                            title: '数据源管理'
+                        }
+                    }, {
+                        path: '/base/model',
+                        component: () => import('../views/base/model/index.vue'),
+                        meta: {
+                            title: '数据模型管理'
                         }
                     }
                 ]

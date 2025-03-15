@@ -1,5 +1,7 @@
 package com.liuqi.common.exception;
 
+import java.util.function.Supplier;
+
 /**
  * 应用异常
  */
@@ -20,6 +22,10 @@ public class AppException extends RuntimeException{
         appException.fields = fields;
 
         return appException;
+    }
+
+    public static Supplier<AppException> supplier(BaseErrorCodes code, Object...fields) {
+        return () -> AppException.of(code, fields);
     }
 
     private AppException(Exception ex) {

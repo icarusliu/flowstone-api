@@ -1,7 +1,7 @@
 <template>
     <!-- 任务列表 -->
     <div class="d-flex page-content">
-        <type-tree v-model="currentType" class="tree" @select="selectType" />
+        <edit-tree v-model="currentType" class="tree" @select="selectType" apiPrefix="/etl/job-type" title="任务分类" :newFields="typeFields" />
 
         <div class="flex-auto">
             <entity-manager apiPrefix="/etl/job" :fields="fields" :queryFields="queryFields" ref="entityManagerRef" :params="params"
@@ -23,7 +23,7 @@
 <script setup>
 import newJob from './job-detail.vue'
 import jobDepend from './job-depend.vue'
-import typeTree from './type-tree.vue'
+import editTree from '@/components/edit-tree/index.vue'
 import { ElMessageBox, ElMessage, ElTag, ElIcon, ElLoading } from 'element-plus'
 import { Warning } from '@element-plus/icons-vue'
 import https from '@/utils/https'
@@ -64,7 +64,7 @@ const fields = ref([
                 ])
             }
 
-            return h(ElTag, {type: 'success'}, () => '依赖触发')
+            return h(ElTag, { type: 'success' }, () => '依赖触发')
         }
     },
     {
@@ -82,6 +82,16 @@ const fields = ref([
     { label: '修改时间', prop: 'updateTime', width: '200px' }
 ])
 const queryFields = [{ label: '关键字', prop: 'key', placeholder: '请输入关键字进行查询' }]
+const typeFields = [
+    {
+        label: '分类编码', prop: 'code', required: true, autofocus: true, change: (val, form) => {
+            if (!form.name) {
+                form.name = val
+            }
+        }
+    },
+    { label: '分类名称', prop: 'name', required: true }
+]
 const params = ref({})
 const editingJob = ref({})
 const entityManagerRef = ref()

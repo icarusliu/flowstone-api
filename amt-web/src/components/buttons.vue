@@ -78,7 +78,7 @@ const hideButtons = computed(() => {
     align-items: center;
 
     .button:not(:last-child) {
-        margin-right: 16px;
+        margin-right: 8px;
     }
 }
 </style>

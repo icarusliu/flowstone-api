@@ -60,7 +60,12 @@ public enum ErrorCodes implements BaseErrorCodes {
 
     API_SUPPLIER_NOT_EXISTS("D01008", "接入方不存在"),
 
-    ETL_JOB_NOT_EXISTS("E01001", "任务不存在");
+    ETL_JOB_NOT_EXISTS("E01001", "任务不存在"),
+
+    DUA_MODEL_NOT_EXISTS("F01001", "模型不存在"),
+    DUA_MODEL_FIELDS_EMPTY("F01002", "模型字段为空"),
+    DUA_MODEL_CODE_EXISTS("F01003", "模型编码重复"),
+    DUA_MODEL_TABLE_EXISTS("F01004", "模型编码对应的表已存在，请修改模型编码");
     ;
 
     private final String code;

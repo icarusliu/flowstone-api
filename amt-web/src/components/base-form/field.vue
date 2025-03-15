@@ -35,6 +35,11 @@
             :type="field.dateType"></el-date-picker>
     </template>
 
+    <template v-else-if="field.type == 'timePicker'">
+        <el-time-picker v-model="model" @change="onFieldChange" :format="field.format" :value-format="field.format"
+            :type="field.dateType"></el-time-picker>
+    </template>
+
     <!-- 图标选择 -->
     <icon-selector v-else-if="field.type == 'iconSelector'" v-model="model"></icon-selector>
 
