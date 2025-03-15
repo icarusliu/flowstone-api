@@ -38,4 +38,21 @@ public class ModelUpdateReq {
      * 字段
      */
     private List<ModelFieldUpdateReq> fields;
+
+    /**
+     * 列表配置
+     */
+    private Map<String, Object> listConfig;
+    /**
+     * 列表字段配置
+     */
+    private List<Map<String, Object>> listFields;
+    /**
+     * 表单配置
+     */
+    private Map<String, Object> formConfig;
+    /**
+     * 表单字段配置
+     */
+    private List<Map<String, Object>> formFields;
 }

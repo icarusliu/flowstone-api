@@ -2,6 +2,7 @@ package com.liuqi.dua.service;
 
 import com.liuqi.common.base.service.BaseService;
 import com.liuqi.dua.bean.dto.ModelDTO;
+import com.liuqi.dua.bean.dto.ModelDetailDTO;
 import com.liuqi.dua.bean.query.ModelQuery;
 import com.liuqi.dua.bean.req.ModelAddReq;
 import com.liuqi.dua.bean.req.ModelUpdateReq;
@@ -34,4 +35,11 @@ public interface ModelService extends BaseService<ModelDTO, ModelQuery> {
      * @param id 模型id
      */
     void publish(String id);
+
+    /**
+     * 获取模型详情，包含有模型配置信息
+     * @param id 模型id
+     * @return 模型详情信息
+     */
+    ModelDetailDTO getDetail(String id);
 }

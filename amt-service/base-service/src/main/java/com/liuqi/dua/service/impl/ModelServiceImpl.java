@@ -1,14 +1,11 @@
 package com.liuqi.dua.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.DynamicSqlHelper;
-import com.liuqi.dua.bean.dto.ModelDTO;
-import com.liuqi.dua.bean.dto.ModelFieldDTO;
-import com.liuqi.dua.bean.dto.ModelPublishedDTO;
+import com.liuqi.dua.bean.dto.*;
 import com.liuqi.dua.bean.query.ModelQuery;
 import com.liuqi.dua.bean.req.ModelAddReq;
 import com.liuqi.dua.bean.req.ModelFieldAddReq;
@@ -16,10 +13,10 @@ import com.liuqi.dua.bean.req.ModelFieldUpdateReq;
 import com.liuqi.dua.bean.req.ModelUpdateReq;
 import com.liuqi.dua.domain.entity.ModelEntity;
 import com.liuqi.dua.domain.mapper.ModelMapper;
+import com.liuqi.dua.service.ModelConfigService;
 import com.liuqi.dua.service.ModelFieldService;
 import com.liuqi.dua.service.ModelPublishedService;
 import com.liuqi.dua.service.ModelService;
-import org.apache.catalina.users.SparseUserDatabase;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +38,9 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
 
     @Autowired
     private ModelPublishedService publishedService;
+
+    @Autowired
+    private ModelConfigService modelConfigService;
 
     private static final List<String> innerFields = Arrays.asList("id", "createTime", "createUser", "updateTime", "updateUser");
 
@@ -154,6 +154,12 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
         }
         this.update(dto);
 
+        // 更新模型配置
+        ModelConfigDTO configDTO = new ModelConfigDTO();
+        BeanUtils.copyProperties(req, configDTO);
+        modelConfigService.deletePhysical(req.getId());
+        modelConfigService.insert(configDTO);
+
         // 更新模型字段列表
         List<ModelFieldUpdateReq> reqs = req.getFields();
         if (CollectionUtils.isEmpty(reqs)) {
@@ -186,7 +192,10 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
     @Override
     @Transactional
     public void publish(String id) {
-        ModelDTO model = this.findById(id).orElseThrow(AppException.supplier(ErrorCodes.DUA_MODEL_NOT_EXISTS));
+        ModelDTO model = this.getDetail(id);
+        if (null == model) {
+            throw AppException.of(ErrorCodes.DUA_MODEL_NOT_EXISTS);
+        }
 
         // 处理字段
         List<ModelFieldDTO> fields = modelFieldService.findByModel(id);
@@ -230,6 +239,33 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
     }
 
     /**
+     * 获取模型详情，包含有模型配置信息
+     *
+     * @param id 模型id
+     * @return 模型详情信息
+     */
+    @Override
+    public ModelDetailDTO getDetail(String id) {
+        ModelDTO modelDTO = this.findById(id).orElse(null);
+        if (null == modelDTO) {
+            return null;
+        }
+
+
+        // 补充模型配置记录
+        ModelConfigDTO configDTO = modelConfigService.findById(id).orElseGet(() -> {
+            ModelConfigDTO dto = new ModelConfigDTO();
+            dto.setFormConfig(new HashMap<>());
+            dto.setListConfig(new HashMap<>());
+            return dto;
+        });
+        ModelDetailDTO detail = new ModelDetailDTO();
+        BeanUtils.copyProperties(configDTO, detail);
+        BeanUtils.copyProperties(modelDTO, detail);
+        return detail;
+    }
+
+    /**
      * 表结构更新
      */
     private void updateColumns(List<ModelFieldDTO> fields, List<String> columns, String tableName) {
@@ -257,7 +293,7 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
         });
 
         columns.forEach(column -> {
-            if (restColumns.contains(column)) {
+            if (restColumns.contains(column) || innerFields.contains(column)) {
                 return;
             }
 

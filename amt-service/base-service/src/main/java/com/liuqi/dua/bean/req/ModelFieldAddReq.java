@@ -45,14 +45,6 @@ public class ModelFieldAddReq {
      */
     private String defaultValue;
     /**
-     * 表单配置
-     */
-    private Map<String, Object> formConfig;
-    /**
-     * 列表配置
-     */
-    private Map<String, Object> listConfig;
-    /**
      * 其它元数据配置
      */
     private Map<String, Object> metadata;

@@ -9,6 +9,7 @@
                 {{ readonly ? '查看' : '编辑' }}
             </el-link>
 
+            <span v-else-if="field.converter">{{ field.converter(model, row) }}</span>
             <span v-else-if="field.type == 'text'">{{ model }}</span>
 
             <!-- 其它编辑组件 -->

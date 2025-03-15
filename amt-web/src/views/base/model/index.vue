@@ -17,7 +17,8 @@
             </entity-manager>
         </div>
 
-        <model-detail v-if="modelVisible" class="full-panel" @close="closeModel" :item="editingModel" :type="currentType"></model-detail>
+        <model-detail v-if="modelVisible" class="full-panel" @close="closeModel" :modelId="editingModel.id"
+            :type="currentType"></model-detail>
     </div>
 </template>
 <script setup>
@@ -27,7 +28,9 @@ import { ElMessageBox, ElMessage, ElTag, ElIcon, ElLoading } from 'element-plus'
 import https from '@/utils/https'
 import buttons from '@/components/buttons.vue';
 import { h } from 'vue'
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const currentType = ref({})
 const fields = ref([
     { label: '分类', prop: 'typeId', showInTable: false },
@@ -40,7 +43,7 @@ const fields = ref([
             } else if (val == 1) {
                 return h(ElTag, { type: 'success' }, () => '已应用')
             } else if (val == 2) {
-                return h(ElTag, {type: 'warning'}, () => '修改中')
+                return h(ElTag, { type: 'warning' }, () => '修改中')
             }
 
             return h(ElTag, { type: 'info' }, () => '已下线')
@@ -60,7 +63,8 @@ const rowButtons = ref([
     { label: '详情', action: goEdit },
     { label: '应用', action: publish, type: 'success', display: row => row.status != 1 },
     { label: '下线', action: offline, type: 'danger', display: row => row.status == 1 },
-    { label: '删除', type: 'danger', action: doDelete }
+    { label: '删除', type: 'danger', action: doDelete },
+    { label: '数据管理', action: showData, display: row => row.status != 0 && row.status != 3 },
 ])
 
 function goEdit(row) {
@@ -85,7 +89,7 @@ function doDelete(row) {
 
 const modelVisible = ref(false)
 function showNewModel() {
-    editingModel.value = null
+    editingModel.value = {}
     modelVisible.value = true
 }
 function closeModel(val) {
@@ -112,6 +116,10 @@ function offline(model) {
             ElMessage.success('操作成功')
         })
     })
+}
+
+function showData(row) {
+    router.push(`/base/model-data?modelId=${row.id}`)
 }
 </script>
 

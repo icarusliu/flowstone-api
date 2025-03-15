@@ -25,7 +25,7 @@ import * as _ from 'lodash'
 const props = defineProps({
     buttons: { type: Array, required: true },
     data: {},
-    showCount: { type: Number, default: 3 }
+    showCount: { type: Number, default: 4 }
 })
 
 const finalButtons = computed(() => {

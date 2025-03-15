@@ -25,6 +25,17 @@ public class ModelPublishedDTO extends BaseDTO {
      * 元数据
      */
     private Map<String, Object> metadata;
+
+    /**
+     * 表单配置
+     */
+    private Map<String, Object> formConfig;
+
+    /**
+     * 列表配置
+     */
+    private Map<String, Object> listConfig;
+
     /**
      * 模型字段
      */

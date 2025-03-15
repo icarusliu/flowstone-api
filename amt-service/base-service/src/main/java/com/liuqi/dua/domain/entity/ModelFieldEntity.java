@@ -1,6 +1,8 @@
 package com.liuqi.dua.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.liuqi.common.base.domain.entity.BaseEntity;
 import lombok.Data;
 
@@ -13,7 +15,7 @@ import java.util.Map;
  * @version V1.0
  **/
 @Data
-@TableName("d_model_field")
+@TableName(value = "d_model_field", autoResultMap = true)
 public class ModelFieldEntity extends BaseEntity {
     /**
      * 所属模型
@@ -56,18 +58,9 @@ public class ModelFieldEntity extends BaseEntity {
     private String defaultValue;
 
     /**
-     * 表单配置
-     */
-    private Map<String, Object> formConfig;
-
-    /**
-     * 列表配置
-     */
-    private Map<String, Object> listConfig;
-
-    /**
      * 其它元数据配置
      */
+    @TableField(typeHandler = FastjsonTypeHandler.class)
     private Map<String, Object> metadata;
 
     /**

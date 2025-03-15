@@ -122,6 +122,12 @@ const routes = [
                         meta: {
                             title: '数据模型管理'
                         }
+                    }, {
+                        path: '/base/model-data',
+                        component: () => import('../views/base/model/model-data.vue'),
+                        meta: {
+                            title: '数据模型管理'
+                        }
                     }
                 ]
             }

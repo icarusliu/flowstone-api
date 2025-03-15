@@ -27,18 +27,6 @@
                 </edit-table>
             </el-form-item>
         </el-form>
-
-        <div class="text-center">
-            <span v-if="!editing">
-                <el-button type="primary" @click="startEdit">编辑</el-button>
-                <el-button type="success" v-if="form.status != 1" @click="apply">应用</el-button>
-                <el-button class="ml-2" @click="close">返回</el-button>
-            </span>
-            <span v-else>
-                <el-button type="primary" @click="save">保存</el-button>
-                <el-button @click="cancelEdit">取消</el-button>
-            </span>
-        </div>
     </div>
 </template>
 <script setup>
@@ -47,11 +35,11 @@ import EditTable from '@/components/edit-table/index.vue'
 import { ElMessage } from 'element-plus'
 import https from '@/utils/https'
 import * as _ from 'lodash'
-import { nextTick } from 'vue'
 
 const form = defineModel()
-const editing = defineModel("editing")
-const emits = defineEmits(['close'])
+const props = defineProps({
+    editing: {type: Boolean, default: false}
+})
 const dataTypes = [
     { label: '字符串', value: 'varchar', config: '(255)', required: true },
     { label: '整数', value: 'bigint', config: '(32)', default: 0 },
@@ -85,62 +73,8 @@ const tableRef = ref()
 const rowSelected = ref(false)
 const innerFields = ['id', 'createTime', 'createUser', 'updateTime', 'updateUser']
 
-function save() {
-    formRef.value.validate(resp => {
-        if (!resp) {
-            return
-        }
-
-        let fields = form.value.fields
-        if (fields) {
-            for (var i in fields) {
-                fields[i].sort = i.toString().padStart(3, '0')
-            }
-        }
-
-        if (form.value.id) {
-            https.put('/dua/model/update', form.value).then(resp => {
-                ElMessage.success('操作成功')
-                editing.value = false;
-            })
-        } else {
-            https.post('/dua/model/add', form.value).then((resp) => {
-                ElMessage.success('操作成功')
-                form.value.id = resp.id
-                editing.value = false;
-            })
-        }
-    })
-}
-
 function loadTypes() {
     return https.get('/dua/model-type/table-tree');
-}
-
-let savedData
-function startEdit() {
-    savedData = _.cloneDeep(form.value)
-    editing.value = true
-}
-
-function close() {
-    emits('close')
-}
-
-function cancelEdit() {
-    if (!form.value.id) {
-        return emits('close')
-    }
-
-    form.value = savedData
-    editing.value = false
-}
-
-function apply() {
-    https.get('/dua/model/publish', { id: form.value.id }).then(() => {
-        ElMessage.success('操作成功')
-        form.value.status = 1
-    })
 }
 
 
@@ -251,6 +185,14 @@ function toBottom() {
         rows.splice(lastIdx, 0, row)
     })
 }
+
+function validate(callback) {
+    return formRef.value.validate(callback)
+}
+
+defineExpose({
+    validate
+})
 </script>
 
 <style lang='scss' scoped></style>

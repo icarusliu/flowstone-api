@@ -1,8 +1,10 @@
 package com.liuqi.dua.web;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.dua.bean.dto.ModelDTO;
+import com.liuqi.dua.bean.dto.ModelDetailDTO;
 import com.liuqi.dua.bean.query.ModelQuery;
 import com.liuqi.dua.bean.req.ModelAddReq;
 import com.liuqi.dua.bean.req.ModelUpdateReq;
@@ -49,8 +51,8 @@ public class ModelController {
 
     @GetMapping("detail/{id}")
     @Operation(summary = "根据id查找记录")
-    public ModelDTO findById(@PathVariable("id") String id) {
-        return service.findById(id).orElse(null);
+    public ModelDetailDTO findById(@PathVariable("id") String id) {
+       return service.getDetail(id);
     }
 
     @PostMapping("page-query")
