@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Index from '../views/index.vue';
 import ApiIndex from '../views/api/index.vue';
-import Type from '../views/api/type.vue';
 import Ds from '../views/base/ds.vue';
 import LogIndex from '../views/api/logs/Index.vue';
 
