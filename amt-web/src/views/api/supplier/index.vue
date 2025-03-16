@@ -20,7 +20,7 @@ const fields = ref([
 ])
 
 function configAuth(item) {
-    router.push('/base/supplier-auth/' + item.id)
+    router.push('/apis/supplier-auth/' + item.id)
 }
 
 </script>

@@ -64,7 +64,7 @@
 <script setup>
 import * as entityApis from '@/apis/entity.js'
 import { useRouter } from 'vue-router'
-import { getAuthTableFields, authFormFields } from './fields'
+import { getAuthTableFields, authFormFields } from '../../base/fields'
 import { ElMessageBox } from 'element-plus'
 import * as _ from 'lodash'
 import * as uuid from 'uuid'

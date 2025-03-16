@@ -5,7 +5,7 @@
 
         <div class="flex-auto">
             <entity-manager apiPrefix="/etl/job" :fields="fields" :queryFields="queryFields" ref="entityManagerRef" :params="params"
-                :withNew="false" operationsWidth="220px">
+                :withNew="false" operationsWidth="240px">
                 <template #rowButtons="{ row }">
                     <buttons :buttons="rowButtons" :data="row" />
                 </template>

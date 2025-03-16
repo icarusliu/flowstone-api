@@ -3,7 +3,7 @@ import Index from '../views/index.vue';
 import ApiIndex from '../views/api/index.vue';
 import Type from '../views/api/type.vue';
 import Ds from '../views/base/ds.vue';
-import LogIndex from '../views/logs/Index.vue';
+import LogIndex from '../views/api/logs/Index.vue';
 
 const routes = [
     {
@@ -11,85 +11,88 @@ const routes = [
         component: Index,
         children: [
             {
-                path: '/',
-                redirect: '/apis/list',
-                meta: {
-                    title: '接口列表'
-                }
-            },
-            {
-                path: '/apis/list',
-                component: ApiIndex,
-                meta: {
-                    title: '接口列表'
-                }
-            },
-            {
-                path: '/apis/editor',
-                component: () => import('../views/api/editor.vue'),
-                meta: {
-                    title: '接口编辑'
-                }
-            }, {
-                path: '/apis/doc',
-                component: () => import('../views/api/doc.vue'),
-                meta: {
-                    title: '接口文档'
-                }
-            },
-            {
-                path: '/base/type',
-                component: Type,
-                meta: {
-                    title: '分类管理'
-                }
-            }, {
-                path: '/base/supplier',
-                component: () => import('../views/base/supplier.vue'),
-                meta: {
-                    title: '接入方管理'
-                }
-            }, {
-                path: '/base/supplier-auth/:id',
-                component: () => import('../views/base/supplier-auth.vue'),
-                meta: {
-                    title: '鉴权管理'
-                }
-            }, {
-                path: '/sys/client',
-                component: () => import('../views/sys/client.vue'),
-                meta: {
-                    title: '客户端管理'
-                }
-            }, {
-                path: '/sys/client-apis/:id',
-                component: () => import('../views/sys/client-apis.vue'),
-                meta: {
-                    title: '客户端授权'
-                }
-            },
-            {
-                path: '/logs',
-                children: [
-                    {
-                        path: '/logs/run', component: LogIndex,
-                        meta: {
-                            title: '运行日志'
-                        }
+                path: '/apis',
+                children: [{
+                    path: '/',
+                    redirect: '/apis/list',
+                    meta: {
+                        title: '接口列表'
                     }
+                },
+                {
+                    path: '/apis/list',
+                    component: ApiIndex,
+                    meta: {
+                        title: '接口列表'
+                    }
+                },
+                {
+                    path: '/apis/editor',
+                    component: () => import('../views/api/editor.vue'),
+                    meta: {
+                        title: '接口编辑'
+                    }
+                }, {
+                    path: '/apis/doc',
+                    component: () => import('../views/api/doc.vue'),
+                    meta: {
+                        title: '接口文档'
+                    }
+                },
+                {
+                    path: '/apis/type',
+                    component: Type,
+                    meta: {
+                        title: '分类管理'
+                    }
+                }, {
+                    path: '/apis/supplier',
+                    component: () => import('../views/api/supplier/index.vue'),
+                    meta: {
+                        title: '接入方管理'
+                    }
+                }, {
+                    path: '/apis/supplier-auth/:id',
+                    component: () => import('../views/api/supplier/supplier-auth.vue'),
+                    meta: {
+                        title: '鉴权管理'
+                    }
+                }, {
+                    path: '/apis/schedule-task',
+                    component: () => import('../views/api/schedule-task.vue'),
+                    meta: {
+                        title: '定时任务'
+                    }
+                }, {
+                    path: '/apis/logs', component: LogIndex,
+                    meta: {
+                        title: '运行日志'
+                    }
+                },
                 ]
-            }, {
-                path: '/sys/user',
-                component: () => import('../views/sys/user-manager.vue'),
-                meta: {
-                    title: '用户管理'
-                }
-            }, {
-                path: '/base/schedule-task',
-                component: () => import('../views/base/schedule-task.vue'),
-                meta: {
-                    title: '定时任务'
-                }
+            },
+            {
+                path: '/sys',
+                children: [{
+                    path: '/sys/client',
+                    component: () => import('../views/sys/client.vue'),
+                    meta: {
+                        title: '客户端管理'
+                    }
+                }, {
+                    path: '/sys/client-apis/:id',
+                    component: () => import('../views/sys/client-apis.vue'),
+                    meta: {
+                        title: '客户端授权'
+                    }
+                },
+                {
+                    path: '/sys/user',
+                    component: () => import('../views/sys/user-manager.vue'),
+                    meta: {
+                        title: '用户管理'
+                    }
+                }]
             }, {
                 path: '/etl-manager',
                 children: [

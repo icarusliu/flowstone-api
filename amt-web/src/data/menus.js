@@ -8,7 +8,7 @@ export default [
         children: [
             {
                 name: '分类管理',
-                path: '/base/type',
+                path: '/apis/type',
             },
             {
                 name: '接口管理',
@@ -16,11 +16,14 @@ export default [
             },
             {
                 name: '接入方管理',
-                path: '/base/supplier',
+                path: '/apis/supplier',
+            },{
+                path: '/apis/schedule-task',
+                name: '定时任务',
             }, {
-                path: '/logs/run',
+                path: '/apis/logs',
                 name: '运行日志',
-            },
+            }, 
         ]
     }, {
         name: '数据集成&加工',
@@ -55,7 +58,7 @@ export default [
     },
     {
         name: '系统管理',
-        path: '/setting',
+        path: '/sys',
         icon: markRaw(Setting),
         children: [{
             path: '/sys/user',
@@ -63,9 +66,6 @@ export default [
         }, {
             path: '/sys/client',
             name: '客户端管理',
-        }, {
-            path: '/base/schedule-task',
-            name: '定时任务',
         }
             // {
             //     path: '/manager/export',

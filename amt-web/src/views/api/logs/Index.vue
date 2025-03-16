@@ -8,7 +8,7 @@
 import * as entityApis from '@/apis/entity.js'
 import { ref, onMounted } from 'vue'
 import * as clientApis from '@/apis/client'
-import SearchForm from '../../components/search-form.vue';
+import SearchForm from '@/components/search-form.vue';
 import * as logFields from './fields'
 
 const clients = ref([])
