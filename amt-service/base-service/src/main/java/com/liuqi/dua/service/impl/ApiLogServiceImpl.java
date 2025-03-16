@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -141,5 +142,17 @@ public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogD
         log.setResult(JSON.toJSONString(result));
         log.setSpentTime((int) spentTime);
         this.insertAsync(log, UserContextHolder.getUserId().orElse("guest"));
+    }
+
+    /**
+     * 清理指定时间之前的日志
+     *
+     * @param localDate 日志日期
+     */
+    @Override
+    public void clearLogsBefore(LocalDate localDate) {
+        QueryWrapper<ApiLogEntity> queryWrapper = this.createQueryWrapper();
+        queryWrapper.le("create_time", localDate);
+        this.remove(queryWrapper);
     }
 }

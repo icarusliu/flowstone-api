@@ -6,6 +6,7 @@ import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiLogDTO;
 import com.liuqi.dua.bean.query.ApiLogQuery;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +46,10 @@ public interface ApiLogService extends BaseService<ApiLogDTO, ApiLogQuery> {
      * @param spentTime     执行时间
      */
     void addSuccessLog(ApiDTO api, ClientDTO client, Map<String, Object> requestParams, Object result, long spentTime);
+
+    /**
+     * 清理指定时间之前的日志
+     * @param localDate 日志日期
+     */
+    void clearLogsBefore(LocalDate localDate);
 }

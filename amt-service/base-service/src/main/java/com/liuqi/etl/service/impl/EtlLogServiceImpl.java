@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 /**
  * ETL执行日志服务实现 
  * @author Coder Generator 2025-03-10 16:37:56 
@@ -59,5 +61,17 @@ public class EtlLogServiceImpl extends AbstractBaseService<EtlLogEntity, EtlLogD
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public EtlLogDTO insert(EtlLogDTO dto) {
         return super.insert(dto);
+    }
+
+    /**
+     * 日志清理
+     *
+     * @param localDate 清理指定日期前的日志
+     */
+    @Override
+    public void clearLogsBefore(LocalDate localDate) {
+        QueryWrapper<EtlLogEntity> queryWrapper = this.createQueryWrapper();
+        queryWrapper.le("create_time", localDate);
+        this.remove(queryWrapper);
     }
 }
