@@ -7,7 +7,8 @@
             </el-select>
         </el-form-item>
         <el-form-item label="表单字段配置">
-            <edit-table v-model="model.formFields" :fields="fields" :showNew="false" :withDelete="false" :border="true" :readonly="!editing">
+            <edit-table v-model="model.formFields" :fields="fields" :showNew="false" :withDelete="false" :border="true"
+                :readonly="!editing">
                 <template #appendButtons>
                     <el-button type="primary" plain :disabled="!editing" @click="syncFields">从模型同步</el-button>
                 </template>
@@ -17,6 +18,7 @@
 </template>
 <script setup>
 import editTable from '@/components/edit-table/index.vue'
+import https from '@/utils/https'
 
 const props = defineProps({
     model: { type: Object, required: true },
@@ -46,7 +48,7 @@ const fields = ref([
     {
         label: '组件', prop: 'cmp', type: 'select', options: [
             { label: '文本输入', value: 'input' },
-            { label: '数字', value: 'number' },
+            { label: '数字', value: 'number' }, 
             { label: '下拉', value: 'select' },
             { label: '单选', value: 'radio' },
             { label: '复选', value: 'checkbox' },
@@ -58,9 +60,18 @@ const fields = ref([
         ]
     },
     {
-        label: '选项', prop: 'options', disabled: (val, model) => {
-            let cmp = model.cmp 
+        label: '选项字典', prop: 'dictCode', type: 'select', disabled: (val, model) => {
+            let cmp = model.cmp
             return !['radio', 'select', 'checkbox'].includes(cmp)
+        }, options: () => {
+            return https.post('/base/dict/query').then(resp => {
+                return resp.map(item => {
+                    return {
+                        label: item.name,
+                        value: item.code
+                    }
+                })
+            })
         }
     },
     { label: '默认值', prop: 'defaultValue' },
@@ -90,6 +101,7 @@ function syncFields() {
             newItem.code = item.code
             newItem.dataType = item.dataType
             newItem.hide = innerFields.includes(item.code)
+            newItem.dictCode = item.dictCode
 
             // 编辑组件
             let dataType = item.dataType

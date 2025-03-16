@@ -54,21 +54,24 @@ public class ModelDataService {
         List<Map<String, Object>> fields = model.getListFields();
         Value<Boolean> updateTimeExists = new Value<>();
         updateTimeExists.setValue(false);
-        String orderBySql = fields.stream()
-                .peek(item -> {
-                    String code = MapUtils.getString(item, "code");
-                    if (code.equals("updateTime")) {
-                        updateTimeExists.setValue(true);
-                    }
-                })
-                .filter(map -> MapUtils.getBooleanValue(map, "sort"))
-                .map(m -> {
-                    String sortType = MapUtils.getString(m, "sortType", "asc");
-                    String code = MapUtils.getString(m, "code");
-                    String column = StringUtil.toKabobCase(code).replaceAll("-", "_");
-                    return column + " " + sortType;
-                })
-                .collect(Collectors.joining(","));
+        String orderBySql = null;
+        if (null != fields) {
+            orderBySql = fields.stream()
+                    .peek(item -> {
+                        String code = MapUtils.getString(item, "code");
+                        if (code.equals("updateTime")) {
+                            updateTimeExists.setValue(true);
+                        }
+                    })
+                    .filter(map -> MapUtils.getBooleanValue(map, "sort"))
+                    .map(m -> {
+                        String sortType = MapUtils.getString(m, "sortType", "asc");
+                        String code = MapUtils.getString(m, "code");
+                        String column = StringUtil.toKabobCase(code).replaceAll("-", "_");
+                        return column + " " + sortType;
+                    })
+                    .collect(Collectors.joining(","));
+        }
 
         // 如果没有排序，则使用更新时间进行排序
         if (StringUtils.isBlank(orderBySql) && updateTimeExists.isPresent()) {

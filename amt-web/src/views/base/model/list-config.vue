@@ -24,6 +24,7 @@
 <script setup>
 import editTable from '@/components/edit-table/index.vue'
 import * as _ from 'lodash'
+import https from '@/utils/https'
 
 const props = defineProps({
     model: { type: Object, required: true },
@@ -57,6 +58,18 @@ const fields = ref([
         ]
     },
     {
+        label: '关联字典', prop: 'dictCode', type: 'select', options: () => {
+            return https.post('/base/dict/query').then(resp => {
+                return resp.map(item => {
+                    return {
+                        label: item.name,
+                        value: item.code
+                    }
+                })
+            })
+        }
+    },
+    {
         label: '查询类型', prop: 'queryType', type: 'select', options: [
             { label: '精确匹配', value: 'eq' },
             { label: '模糊匹配', value: 'like' }
@@ -78,7 +91,7 @@ function syncFields() {
     existFields.forEach(field => fieldMap[field.code] = field)
 
     props.model.listFields = props.model.fields.map(item => {
-        const code = item.code 
+        const code = item.code
         if (fieldMap[code]) {
             return fieldMap[code]
         }
@@ -89,6 +102,7 @@ function syncFields() {
         newItem.dataType = item.dataType
         newItem.hide = item.code == 'id'
         newItem.asQuery = false
+        newItem.dictCode = item.dictCode
 
         if (newItem.code == 'updateTime') {
             newItem.sort = true

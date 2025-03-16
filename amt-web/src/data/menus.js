@@ -8,7 +8,7 @@ export default [
         children: [
             {
                 name: '分类管理',
-                path: '/manager/type',
+                path: '/base/type',
             },
             {
                 name: '接口管理',
@@ -16,7 +16,7 @@ export default [
             },
             {
                 name: '接入方管理',
-                path: '/manager/supplier',
+                path: '/base/supplier',
             }, {
                 path: '/logs/run',
                 name: '运行日志',
@@ -58,13 +58,13 @@ export default [
         path: '/setting',
         icon: markRaw(Setting),
         children: [{
-            path: '/base/user',
+            path: '/sys/user',
             name: '用户管理',
         }, {
-            path: '/manager/client',
+            path: '/sys/client',
             name: '客户端管理',
         }, {
-            path: '/manager/schedule-task',
+            path: '/base/schedule-task',
             name: '定时任务',
         }
             // {

@@ -92,7 +92,7 @@ function toggleDisabled(row) {
 // 跳转客户端接口授权页面
 function goApiAuth(row) {
 	router.push({
-		path: '/manager/client-apis/' + row.id,
+		path: '/sys/client-apis/' + row.id,
 		query: {
 			name: row.name
 		}

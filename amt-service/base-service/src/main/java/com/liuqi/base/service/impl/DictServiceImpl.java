@@ -42,6 +42,7 @@ public class DictServiceImpl extends AbstractBaseService<DictEntity, DictDTO, Di
         return this.createQueryWrapper()
                 .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode())
                 .eq(StringUtils.isNotBlank(query.getName()), "name", query.getName())
+                .in(null != query.getCodes(), "code", query.getCodes())
                 .and(StringUtils.isNotBlank(query.getKey()), q -> q.like("code", query.getKey())
                         .or(l -> l.like("name", query.getKey()))
                         .or(l -> l.like("remark", query.getKey())));

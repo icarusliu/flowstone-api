@@ -1,7 +1,6 @@
 package com.liuqi.dua.bean.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.liuqi.base.bean.dto.DictDTO;
 import com.liuqi.common.base.bean.dto.BaseDTO;
 import liquibase.util.StringUtil;
 import lombok.Data;
@@ -41,6 +40,11 @@ public class ModelPublishedDTO extends BaseDTO {
     private List<Map<String, Object>> listFields;
 
     private List<Map<String, Object>> formFields;
+
+    /**
+     * 所使用的字典列表
+     */
+    private List<DictDTO> dictList;
 
     /**
      * 模型字段

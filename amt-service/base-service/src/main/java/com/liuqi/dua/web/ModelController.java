@@ -2,6 +2,7 @@ package com.liuqi.dua.web;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.liuqi.base.service.DictService;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.common.exception.AppException;
@@ -16,12 +17,18 @@ import com.liuqi.dua.service.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 模型控制器 
@@ -37,6 +44,9 @@ public class ModelController {
 
     @Autowired
     private ModelPublishedService publishedService;
+
+    @Autowired
+    private DictService dictService;
 
     @PostMapping("add")
     @Operation(summary = "新增")
@@ -92,6 +102,41 @@ public class ModelController {
 
     @GetMapping("published/{id}")
     public ModelPublishedDTO getPublished(@PathVariable("id") String id) {
-        return publishedService.findById(id).orElseThrow(AppException.supplier(ErrorCodes.DUA_MODEL_NOT_PUBLISHED));
+        ModelPublishedDTO publishedDTO = publishedService.findById(id).orElseThrow(AppException.supplier(ErrorCodes.DUA_MODEL_NOT_PUBLISHED));
+
+        // 补充所使用的字典列表，需要取表单字段及列表字段等的字典
+        List<String> dictCodes = new ArrayList<>(16);
+        if (!CollectionUtils.isEmpty(publishedDTO.getFields())) {
+            publishedDTO.getFields().forEach(field -> {
+                String dictCode = field.getDictCode();
+                if (StringUtils.isNotBlank(dictCode)) {
+                    dictCodes.add(dictCode);
+                }
+            });
+        }
+
+        if (!CollectionUtils.isEmpty(publishedDTO.getListFields())) {
+            publishedDTO.getListFields().forEach(m -> {
+                String dictCode = MapUtils.getString(m, "dictCode");
+                if (StringUtils.isNotBlank(dictCode)) {
+                    dictCodes.add(dictCode);
+                }
+            });
+        }
+
+        if (!CollectionUtils.isEmpty(publishedDTO.getFormFields())) {
+            publishedDTO.getFormFields().forEach(m -> {
+                String dictCode = MapUtils.getString(m, "dictCode");
+                if (StringUtils.isNotBlank(dictCode)) {
+                    dictCodes.add(dictCode);
+                }
+            });
+        }
+
+        if (!CollectionUtils.isEmpty(dictCodes)) {
+            publishedDTO.setDictList(dictService.findByCodes(dictCodes));
+        }
+
+        return publishedDTO;
     }
 }

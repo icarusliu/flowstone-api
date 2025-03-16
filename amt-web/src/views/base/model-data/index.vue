@@ -4,7 +4,9 @@
         <div class="mb-2">
             <el-button type="primary" @click="newRow" v-if="listConfig.withNew != false" icon="plus">新增记录</el-button>
         </div>
-        <base-table :fields="fields" :dataSupplier="loadData" ref="tableRef" :pageable="listConfig.pagination"
+
+        <el-skeleton :rows="5" v-if="!modelInfo.id"/>
+        <base-table :fields="fields" :dataSupplier="loadData" ref="tableRef" :pageable="listConfig.pagination" v-else
             :pageSize="listConfig.pageSize" />
 
         <component :is="'el-' + (formConfig.displayType || 'drawer')" v-model="visible" title="新增记录">
@@ -55,6 +57,18 @@ onMounted(() => {
         const model = resp
         modelInfo.value = resp
 
+        // 处理所使用的字典
+        let dictList = resp.dictList 
+        let dictMap = {}
+        dictList && dictList.forEach(dict => {
+            dictMap[dict.code] = dict.items.map(item => {
+                return {
+                    label: item.name,
+                    value: item.value
+                }
+            })
+        })
+
         for (var i in model.fields) {
             const item = model.fields[i]
             if (item.primaryKey) {
@@ -68,20 +82,41 @@ onMounted(() => {
 
         let sourceFields = model.listFields || model.fields;
         sourceFields.forEach(field => {
-            // 处理列表字段
-            !field.hide && fields.value.push({
+            const listField = {
                 label: field.name,
                 prop: field.code,
                 width: field.width
-            })
+            }
+
+            let dictCode = field.dictCode 
+            let options = dictMap[dictCode]
+            
+            if (options) {
+                // 处理列表字段转换
+                listField.converter = val => {
+                    for (var i in options) {
+                        let option = options[i]
+                        if (option.value == val) {
+                            return option.label 
+                        }
+                    }
+
+                    return val
+                }
+            }
+
+
+            // 处理列表字段
+            !field.hide && fields.value.push(listField)
 
             // 处理查询字段
             if (field.asQuery) {
                 let item = {
                     label: field.name,
                     prop: field.code,
-                    placeholder: '请输入...',
-                    queryType: field.queryType
+                    placeholder: field.queryCmp == 'select' ? '请选择...' : '请输入...',
+                    queryType: field.queryType,
+                    options
                 }
 
                 // 查询类型
@@ -91,6 +126,8 @@ onMounted(() => {
                 } else if (queryCmp == 'dateRange') {
                     item.type = 'datePicker'
                     item.dateType = 'daterange'
+                } else {
+                    item.type = field.queryCmp
                 }
 
                 queryFields.value.push(item)
@@ -103,6 +140,9 @@ onMounted(() => {
                 if (field.hide) {
                     return
                 }
+
+                const dictCode = field.dictCode
+                const options = dictMap[dictCode]
 
                 // 有配置好的表单字段
                 const code = field.code
@@ -161,11 +201,16 @@ onMounted(() => {
                     type: type,
                     format: format,
                     dateType: dateType,
-                    required: !field.nullable
+                    required: !field.nullable,
+                    options,
+                    default: field.defaultValue
                 })
             })
         } else {
             model.fields.forEach(field => {
+                const dictCode = field.dictCode
+                const options = dictMap[dictCode]
+
                 const code = field.code
                 if (innerFields.includes(code)) {
                     return
@@ -193,21 +238,28 @@ onMounted(() => {
                     type: type,
                     format: format,
                     dateType: dateType,
-                    required: !field.nullable
+                    required: !field.nullable,
+                    options,
+                    default: field.defaultValue
                 })
             })
         }
 
         // 增加操作按钮
         if (listConfig.value.withDelete != false) {
+            const buttons = []
+            if (listConfig.value.withEdit) {
+                buttons.push( { label: '编辑', type: 'primary', action: goEdit })
+            }
+            if (listConfig.value.withDelete) {
+                buttons.push({ label: '删除', type: 'danger', action: deleteRow })
+            }
+
             fields.value.push({
                 label: '操作',
                 type: 'operations',
                 width: '100px',
-                buttons: [
-                    { label: '编辑', type: 'primary', action: goEdit },
-                    { label: '删除', type: 'danger', action: deleteRow }
-                ]
+                buttons
             })
         }
     })
