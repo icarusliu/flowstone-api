@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,6 +15,10 @@ import java.util.Map;
 @ToString
 @Builder
 public class UserDTO extends BaseDTO {
+    private String deptId;
+
+    private String deptName;
+
     private String username;
 
     private String password;
@@ -37,4 +42,6 @@ public class UserDTO extends BaseDTO {
     private String ext3;
 
     private Boolean isSuperAdmin;
+
+    private List<String> roleIds;
 }

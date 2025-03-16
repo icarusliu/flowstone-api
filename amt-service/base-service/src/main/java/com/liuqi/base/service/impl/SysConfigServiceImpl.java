@@ -2,12 +2,12 @@ package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.liuqi.base.service.SysConfigService;
 import com.liuqi.base.bean.dto.SysConfigDTO;
 import com.liuqi.base.bean.query.SysConfigQuery;
-import com.liuqi.common.ErrorCodes;
+import com.liuqi.base.common.ErrorCodes;
 import com.liuqi.base.domain.entity.SysConfigEntity;
 import com.liuqi.base.domain.mapper.SysConfigMapper;
+import com.liuqi.base.service.SysConfigService;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
 import org.springframework.beans.BeanUtils;
@@ -39,7 +39,8 @@ public class SysConfigServiceImpl extends AbstractBaseService<SysConfigEntity, S
     @Override
     protected QueryWrapper<SysConfigEntity> queryToWrapper(SysConfigQuery query) {
         return this.createQueryWrapper()
-                .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode());
+                .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode())
+                .eq(StringUtils.isNotBlank(query.getName()), "name", query.getName());
     }
 
     /**
@@ -50,7 +51,9 @@ public class SysConfigServiceImpl extends AbstractBaseService<SysConfigEntity, S
      */
     @Override
     public Optional<SysConfigDTO> findByCode(String code) {
-        return this.findOne(SysConfigQuery.builder().code(code).build());
+        SysConfigQuery query = new SysConfigQuery();
+        query.setCode(code);
+        return this.findOne(query);
     }
 
     /**

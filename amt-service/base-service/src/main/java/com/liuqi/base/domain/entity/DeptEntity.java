@@ -6,7 +6,7 @@ import com.liuqi.common.base.domain.entity.BaseEntity;
 import lombok.Data;
 
 @Data
-@TableName("base_dept")
+@TableName("sys_dept")
 @Comment("机构")
 public class DeptEntity extends BaseEntity {
     @Comment("编码")

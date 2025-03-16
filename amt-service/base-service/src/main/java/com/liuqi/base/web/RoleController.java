@@ -5,6 +5,7 @@ import com.liuqi.base.bean.dto.RoleDTO;
 import com.liuqi.base.bean.query.RoleQuery;
 import com.liuqi.base.bean.req.RoleAddReq;
 import com.liuqi.base.bean.req.RoleUpdateReq;
+import com.liuqi.base.bean.resp.RoleResourceInfo;
 import com.liuqi.base.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,5 +60,11 @@ public class RoleController {
     @Operation(summary = "查询-不分页")
     public List<RoleDTO> query(@RequestBody RoleQuery query) {
         return roleService.query(query);
+    }
+
+    @GetMapping("resources")
+    @Operation(summary = "查找角色菜单信息")
+    public List<RoleResourceInfo> getRoleMenus(String roleId) {
+        return roleService.getRoleMenus(roleId);
     }
 }

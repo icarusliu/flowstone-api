@@ -3,22 +3,23 @@ package com.liuqi.base.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.base.bean.dto.DeptDTO;
 import com.liuqi.base.bean.query.DeptQuery;
-import com.liuqi.common.ErrorCodes;
+import com.liuqi.base.common.ErrorCodes;
 import com.liuqi.base.domain.entity.DeptEntity;
 import com.liuqi.base.domain.mapper.DeptMapper;
 import com.liuqi.base.service.DeptService;
 import com.liuqi.base.service.DeptUserService;
-import com.liuqi.common.base.bean.dto.Tree;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
-import com.liuqi.common.utils.EntityUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -210,16 +211,5 @@ public class DeptServiceImpl extends AbstractBaseService<DeptEntity, DeptDTO, De
         deptUserService.deleteByDept(ids);
 
         super.processAfterDelete(ids);
-    }
-
-    /**
-     * 获取机构树
-     *
-     * @return 机构树
-     */
-    @Override
-    public List<Tree<DeptDTO>> getTree() {
-        List<DeptDTO> list = this.findAll();
-        return EntityUtils.toTree(list, DeptDTO::getName, DeptDTO::getParentId);
     }
 }

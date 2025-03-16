@@ -8,7 +8,7 @@ import lombok.Data;
  * @author Coder Generator 2025-03-14 12:16:28 
  **/
 @Data
-public class ModelTypeDTO extends TreeNode {
+public class ModelTypeDTO extends TreeNode<ModelTypeDTO> {
     /**
      * 模型分类名称
      */

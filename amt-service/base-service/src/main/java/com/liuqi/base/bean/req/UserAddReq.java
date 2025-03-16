@@ -1,13 +1,16 @@
 package com.liuqi.base.bean.req;
 
 import com.liuqi.base.bean.enums.UserStatus;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Map;
 
 @Data
 public class UserAddReq {
+    private String deptId;
+
     @NotBlank(message = "用户名不能为空")
     private String username;
 
@@ -33,4 +36,6 @@ public class UserAddReq {
     private String ext3;
 
     private Boolean isSuperAdmin;
+
+    private List<String> roleIds;
 }

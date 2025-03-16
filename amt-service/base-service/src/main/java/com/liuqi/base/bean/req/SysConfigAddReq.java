@@ -1,8 +1,7 @@
 package com.liuqi.base.bean.req;
 
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Data
 public class SysConfigAddReq {

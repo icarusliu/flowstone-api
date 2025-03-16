@@ -2,7 +2,7 @@ package com.liuqi.base.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.liuqi.base.bean.enums.UserStatus;
 import com.liuqi.common.base.domain.entity.BaseEntity;
 import lombok.Data;
@@ -14,8 +14,10 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString
-@TableName(value = "base_user", autoResultMap = true)
+@TableName(value = "sys_user", autoResultMap = true)
 public class UserEntity extends BaseEntity {
+    private String deptId;
+
     private String username;
 
     private String password;
@@ -30,7 +32,7 @@ public class UserEntity extends BaseEntity {
 
     private String photo;
 
-    @TableField(typeHandler = Fastjson2TypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, Object> metadata;
 
     private String ext1;

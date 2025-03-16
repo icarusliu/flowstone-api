@@ -172,8 +172,8 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
         List<String> fieldIds = new ArrayList<>(16);
         reqs.forEach(r -> {
             ModelFieldDTO field = new ModelFieldDTO();
-            field.setModelId(dto.getId());
             BeanUtils.copyProperties(r, field);
+            field.setModelId(dto.getId());
             if (StringUtils.isBlank(field.getId())) {
                 field = modelFieldService.insert(field);
             } else {

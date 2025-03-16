@@ -2,8 +2,6 @@ package com.liuqi.base.service;
 
 import com.liuqi.base.bean.dto.MenuDTO;
 import com.liuqi.base.bean.query.MenuQuery;
-import com.liuqi.base.domain.entity.MenuEntity;
-import com.liuqi.common.base.bean.dto.Tree;
 import com.liuqi.common.base.service.BaseService;
 
 import java.util.List;
@@ -16,5 +14,5 @@ public interface MenuService extends BaseService<MenuDTO, MenuQuery> {
      *
      * @return 树形菜单
      */
-    List<Tree<MenuDTO>> getTree(Boolean withHide);
+    List<MenuDTO> getTree(Boolean withHide, Boolean withButtons);
 }

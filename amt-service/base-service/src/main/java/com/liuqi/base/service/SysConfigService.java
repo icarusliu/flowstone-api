@@ -2,7 +2,6 @@ package com.liuqi.base.service;
 
 import com.liuqi.base.bean.dto.SysConfigDTO;
 import com.liuqi.base.bean.query.SysConfigQuery;
-import com.liuqi.base.domain.entity.SysConfigEntity;
 import com.liuqi.common.base.service.BaseService;
 
 import java.util.Optional;

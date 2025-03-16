@@ -5,11 +5,17 @@ import com.liuqi.common.base.domain.entity.BaseEntity;
 import lombok.Data;
 
 @Data
-@TableName("base_role_resource")
+@TableName("sys_role_resource")
 public class RoleResourceEntity extends BaseEntity {
     private String roleId;
 
-    private Integer resourceType;
+    /**
+     * 资源类型，menu/button/api
+     */
+    private String resourceType;
 
+    /**
+     * 资源id，菜单id、按钮id或者接口id
+     */
     private String resourceId;
 }

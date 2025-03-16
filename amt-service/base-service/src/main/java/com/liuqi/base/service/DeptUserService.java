@@ -1,8 +1,7 @@
 package com.liuqi.base.service;
 
-import com.liuqi.base.bean.query.DeptUserQuery;
 import com.liuqi.base.bean.dto.DeptUserDTO;
-import com.liuqi.base.domain.entity.DeptUserEntity;
+import com.liuqi.base.bean.query.DeptUserQuery;
 import com.liuqi.common.base.service.BaseService;
 
 import java.util.Collection;

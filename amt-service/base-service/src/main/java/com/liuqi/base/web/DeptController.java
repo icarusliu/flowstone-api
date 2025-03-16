@@ -1,12 +1,12 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.base.service.DeptService;
 import com.liuqi.base.bean.dto.DeptDTO;
 import com.liuqi.base.bean.query.DeptQuery;
 import com.liuqi.base.bean.req.DeptAddReq;
 import com.liuqi.base.bean.req.DeptUpdateReq;
-import com.liuqi.common.base.bean.dto.Tree;
+import com.liuqi.base.service.DeptService;
+import com.liuqi.common.utils.TreeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -50,13 +50,7 @@ public class DeptController {
        
     }
 
-    @GetMapping("tree")
-    @Operation(summary = "获取机构树")
-    public List<Tree<DeptDTO>> getTree() {
-        return service.getTree();
-    }
-
-    @PostMapping("page-query")
+     @PostMapping("page-query")
     @Operation(summary = "查询-分页")
     public IPage<DeptDTO> pageQuery(@RequestBody DeptQuery query) {
         return service.pageQuery(query);
@@ -66,5 +60,10 @@ public class DeptController {
     @Operation(summary = "查询-不分页")
     public List<DeptDTO> query(@RequestBody DeptQuery query) {
         return service.query(query);
+    }
+
+    @GetMapping("tree")
+    public List<DeptDTO> tree() {
+        return TreeUtils.toTree(service.findAll("sort"));
     }
 }

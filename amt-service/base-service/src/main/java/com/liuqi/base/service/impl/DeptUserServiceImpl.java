@@ -1,11 +1,11 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.base.bean.dto.DeptUserDTO;
 import com.liuqi.base.bean.query.DeptUserQuery;
+import com.liuqi.base.domain.entity.DeptUserEntity;
 import com.liuqi.base.domain.mapper.DeptUserMapper;
 import com.liuqi.base.service.DeptUserService;
-import com.liuqi.base.bean.dto.DeptUserDTO;
-import com.liuqi.base.domain.entity.DeptUserEntity;
 import com.liuqi.common.base.service.AbstractBaseService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

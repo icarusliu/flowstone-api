@@ -11,6 +11,9 @@ import java.util.Map;
 @Data
 public class ModelFieldUpdateReq {
     private String id;
+
+    private String code;
+
     /**
      * 所属模型
      */

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.liuqi.common.base.domain.entity.BaseEntity;
 import lombok.Data;
 
-@TableName("base_operation")
+@TableName("sys_operation")
 @Data
 public class OperationEntity extends BaseEntity {
     private String code;

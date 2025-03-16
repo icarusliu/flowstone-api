@@ -2,8 +2,7 @@ package com.liuqi.dua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.common.base.service.AbstractBaseService;
-import com.liuqi.common.utils.EntityUtils;
-import com.liuqi.dua.bean.dto.ApiTypeDTO;
+import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.dua.bean.dto.ModelTypeDTO;
 import com.liuqi.dua.bean.query.ModelTypeQuery;
 import com.liuqi.dua.domain.entity.ModelTypeEntity;
@@ -45,6 +44,6 @@ public class ModelTypeServiceImpl extends AbstractBaseService<ModelTypeEntity, M
 
     @Override
     public List<ModelTypeDTO> tree() {
-        return EntityUtils.toTableTree(this.findAll());
+        return TreeUtils.toTree(this.findAll());
     }
 }

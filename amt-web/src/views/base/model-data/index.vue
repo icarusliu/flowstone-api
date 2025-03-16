@@ -111,7 +111,7 @@ onMounted(() => {
                 let type
                 let format
                 let dateType
-                switch(cmp) {
+                switch (cmp) {
                     case "number": {
                         type = 'number'
                         break;
@@ -138,15 +138,18 @@ onMounted(() => {
                     }
                     case 'datePicker': {
                         type = 'datePicker'
+                        format = 'YYYY-MM-DD'
                         break;
                     }
                     case 'dateTime': {
                         type = 'datePicker'
                         dateType = 'datetime'
+                        format = 'YYYY-MM-DD HH:mm:ss'
                         break;
                     }
                     case 'time': {
                         type = 'timePicker'
+                        format = 'HH:mm:ss'
                         break;
                     }
                     default: ;
@@ -202,6 +205,7 @@ onMounted(() => {
                 type: 'operations',
                 width: '100px',
                 buttons: [
+                    { label: '编辑', type: 'primary', action: goEdit },
                     { label: '删除', type: 'danger', action: deleteRow }
                 ]
             })
@@ -269,6 +273,11 @@ function save() {
             reload()
         })
     })
+}
+
+function goEdit(row) {
+    form.value = _.cloneDeep(row)
+    visible.value = true
 }
 
 function deleteRow(row) {

@@ -20,7 +20,7 @@
             <slot name="append"></slot>
         </el-table>
 
-        <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo" :layout="pageSimple ? 'prev, next' : 'prev, pager, next'"
+        <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo" :layout="pageSimple ? 'prev, next' : 'prev, pager, next, total'"
             @change="pageChanged" background size="small" class="mt-2" />
     </div>
 </template>

@@ -67,7 +67,8 @@ public enum ErrorCodes implements BaseErrorCodes {
     DUA_MODEL_CODE_EXISTS("F01003", "模型编码重复"),
     DUA_MODEL_TABLE_EXISTS("F01004", "模型编码对应的表已存在，请修改模型编码"),
     DUA_MODEL_NOT_PUBLISHED("F01005", "模型未发布"),
-    DUA_MODEL_PRIMARY_KEY_NOT_EXISTS("F01006", "模型主键字段不存在");;
+    DUA_MODEL_PRIMARY_KEY_NOT_EXISTS("F01006", "模型主键字段不存在"),
+    DUA_MODEL_UPDATE_PRIMARY_KEY_NULL("F01007", "更新主键为空，请联系管理员");;
 
     private final String code;
     private final String msg;

@@ -1,15 +1,17 @@
 package com.liuqi.base.bean.dto;
 
-import com.liuqi.common.base.bean.dto.BaseDTO;
+import com.liuqi.common.base.bean.dto.TreeNode;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class MenuDTO extends BaseDTO {
+public class MenuDTO extends TreeNode<MenuDTO> {
     private String code;
+    private String icon;
     private String name;
     private String path;
     private MenuType type;
     private Boolean hide;
-    private String parentId;
-    private Integer sort;
+    private List<MenuButtonDTO> buttons;
 }

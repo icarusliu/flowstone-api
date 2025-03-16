@@ -5,7 +5,7 @@ import com.liuqi.common.base.domain.entity.BaseEntity;
 import lombok.Data;
 
 @Data
-@TableName("base_sys_config")
+@TableName("sys_config")
 public class SysConfigEntity extends BaseEntity {
     private String code;
 

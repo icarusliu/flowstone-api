@@ -1,12 +1,15 @@
 package com.liuqi.base.bean.req;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Map;
 
 @Data
 public class UserUpdateReq {
+    private String deptId;
+
     @NotBlank(message = "id不能为空")
     private String id;
 
@@ -29,4 +32,9 @@ public class UserUpdateReq {
     private String ext3;
 
     private Boolean isSuperAdmin;
+
+    /**
+     * 用户角色列表
+     */
+    private List<String> roleIds;
 }

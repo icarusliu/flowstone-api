@@ -13,6 +13,9 @@ public class UserQuery extends BaseQuery {
      * 关键字，用于根据username/phone/email查询用户
      */
     private String key;
+
+    private String deptId;
+
     private String username;
     private String phone;
     private String email;

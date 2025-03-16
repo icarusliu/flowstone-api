@@ -2,7 +2,6 @@ package com.liuqi.base.service;
 
 import com.liuqi.base.bean.dto.DictItemDTO;
 import com.liuqi.base.bean.query.DictItemQuery;
-import com.liuqi.base.domain.entity.DictItemEntity;
 import com.liuqi.common.base.service.BaseService;
 
 import java.util.Collection;

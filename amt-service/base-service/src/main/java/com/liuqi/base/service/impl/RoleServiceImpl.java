@@ -1,20 +1,25 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.base.bean.dto.MenuDTO;
 import com.liuqi.base.bean.dto.RoleDTO;
+import com.liuqi.base.bean.dto.RoleResourceDTO;
 import com.liuqi.base.bean.query.RoleQuery;
+import com.liuqi.base.bean.resp.RoleResourceInfo;
+import com.liuqi.base.common.ErrorCodes;
 import com.liuqi.base.domain.entity.RoleEntity;
 import com.liuqi.base.domain.mapper.RoleMapper;
-import com.liuqi.base.service.UserRoleService;
-import com.liuqi.common.ErrorCodes;
-import com.liuqi.base.service.RoleService;
+import com.liuqi.base.service.*;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
+import com.liuqi.common.utils.TreeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +28,15 @@ import java.util.Optional;
 public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, RoleMapper, RoleQuery> implements RoleService {
     @Autowired
     private UserRoleService userRoleService;
+
+    @Autowired
+    private MenuService menuService;
+
+    @Autowired
+    private MenuButtonService buttonService;
+
+    @Autowired
+    private RoleResourceService roleResourceService;
 
     @Override
     public RoleDTO toDTO(RoleEntity entity) {
@@ -138,5 +152,45 @@ public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, Ro
         userRoleService.deleteByRole(roleIds);
 
         super.processAfterDelete(roleIds);
+    }
+
+    /**
+     * 根据角色获取角色菜单按钮等资源信息
+     *
+     * @param roleId 角色id
+     * @return 返回所有菜单、按钮等资源，角色如果有权限时，checked标志为true
+     */
+    @Override
+    public List<RoleResourceInfo> getRoleMenus(String roleId) {
+        // 先查找所有菜单、按钮信息，然后根据角色所配置的角色
+        List<MenuDTO> tree = menuService.getTree(false, true);
+        if (CollectionUtils.isEmpty(tree)) {
+            return new ArrayList<>(0);
+        }
+
+        // 查找角色资源权限
+        List<RoleResourceDTO> roleResources = roleResourceService.findByRole(roleId);
+        List<String> resourceIds = roleResources.stream().map(RoleResourceDTO::getResourceId).toList();
+
+        // 处理菜单选中及菜单按钮
+        return TreeUtils.map(tree, menu -> {
+            RoleResourceInfo info = new RoleResourceInfo();
+            info.setId(menu.getId());
+            info.setName(menu.getName());
+            info.setParentId(menu.getParentId());
+            info.setChecked(resourceIds.contains(menu.getId()));
+
+            if (!CollectionUtils.isEmpty(menu.getButtons())) {
+                info.setButtons(menu.getButtons().stream().map(button -> {
+                    RoleResourceInfo buttonInfo = new RoleResourceInfo();
+                    buttonInfo.setId(button.getId());
+                    buttonInfo.setName(button.getName());
+                    buttonInfo.setChecked(resourceIds.contains(button.getId()));
+                    return buttonInfo;
+                }).toList());
+            }
+
+            return info;
+        });
     }
 }

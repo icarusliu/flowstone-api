@@ -10,7 +10,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-10 15:40:15 
  **/
 @Data
-public class EtlJobTypeDTO extends TreeNode{
+public class EtlJobTypeDTO extends TreeNode<EtlJobTypeDTO>{
     /**
      * 分类编码
      */

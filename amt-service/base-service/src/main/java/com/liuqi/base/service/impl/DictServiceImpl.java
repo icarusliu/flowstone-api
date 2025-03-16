@@ -4,26 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.liuqi.base.bean.dto.DictDTO;
 import com.liuqi.base.bean.query.DictQuery;
+import com.liuqi.base.common.ErrorCodes;
 import com.liuqi.base.domain.entity.DictEntity;
 import com.liuqi.base.domain.mapper.DictMapper;
-import com.liuqi.base.service.DictItemService;
 import com.liuqi.base.service.DictService;
-import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Optional;
 
 @Service
 public class DictServiceImpl extends AbstractBaseService<DictEntity, DictDTO, DictMapper, DictQuery> implements DictService {
-    @Autowired
-    private DictItemService dictItemService;
-
     @Override
     public DictDTO toDTO(DictEntity entity) {
         DictDTO dto = new DictDTO();
@@ -89,22 +82,5 @@ public class DictServiceImpl extends AbstractBaseService<DictEntity, DictDTO, Di
         }
 
         return super.processBeforeInsert(dto);
-    }
-
-    /**
-     * 删除后处理
-     *
-     * @param ids
-     */
-    @Override
-    protected void processAfterDelete(Collection<String> ids) {
-        super.processAfterDelete(ids);
-
-        // 删除对应的字典项
-        if (CollectionUtils.isEmpty(ids)) {
-            return;
-        }
-
-        dictItemService.deleteByDicts(ids);
     }
 }

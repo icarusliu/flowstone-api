@@ -1,12 +1,11 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.base.service.MenuService;
 import com.liuqi.base.bean.dto.MenuDTO;
 import com.liuqi.base.bean.query.MenuQuery;
 import com.liuqi.base.bean.req.MenuAddReq;
 import com.liuqi.base.bean.req.MenuUpdateReq;
-import com.liuqi.common.base.bean.dto.Tree;
+import com.liuqi.base.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -63,8 +62,8 @@ public class MenuController {
     }
 
     @GetMapping("tree")
-    @Operation(summary = "获取树形结构")
-    public List<Tree<MenuDTO>> getTree() {
-        return service.getTree(false);
+    public List<MenuDTO> tree(Boolean withHide,
+                              Boolean withButtons) {
+        return service.getTree(withHide, withButtons);
     }
 }

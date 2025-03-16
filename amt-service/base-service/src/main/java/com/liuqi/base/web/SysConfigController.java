@@ -1,10 +1,11 @@
 package com.liuqi.base.web;
 
-import com.liuqi.base.service.SysConfigService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.base.bean.dto.SysConfigDTO;
 import com.liuqi.base.bean.query.SysConfigQuery;
 import com.liuqi.base.bean.req.SysConfigAddReq;
 import com.liuqi.base.bean.req.SysConfigUpdateReq;
+import com.liuqi.base.service.SysConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/sys-config")
+@RequestMapping("/base/config")
 @Slf4j
 @Tag(name = "控制器")
 public class SysConfigController {
@@ -46,13 +47,19 @@ public class SysConfigController {
     @Operation(summary = "删除")
     public void delete(@PathVariable("id") String id) {
         sysConfigService.delete(id);
-       
     }
+
+    @PostMapping("page-query")
+    @Operation(summary = "查询-分页")
+    public IPage<SysConfigDTO> pageQuery(@RequestBody SysConfigQuery query) {
+        return sysConfigService.pageQuery(query);
+    }
+
 
     @GetMapping("list")
     @Operation(summary = "查找所有配置项")
     public List<SysConfigDTO> getAll() {
-        return sysConfigService.query(SysConfigQuery.builder().build());
+        return sysConfigService.findAll();
     }
 
     @GetMapping("find-by-code/{code}")

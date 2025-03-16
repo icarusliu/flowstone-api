@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class RoleResourceDTO extends BaseDTO {
     private String roleId;
-    private Integer resourceType;
+    private String resourceType;
     private String resourceId;
 }

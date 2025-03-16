@@ -1,8 +1,10 @@
 package com.liuqi.base.bean.req;
 
+import com.liuqi.base.bean.DictItem;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
 public class DictUpdateReq {
@@ -12,6 +14,10 @@ public class DictUpdateReq {
     private String code;
 
     private String name;
+
+    private Integer status;
+
+    private List<DictItem> items;
 
     private String remark;
 }

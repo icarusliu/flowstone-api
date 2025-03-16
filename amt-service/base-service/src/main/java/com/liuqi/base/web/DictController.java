@@ -30,7 +30,7 @@ public class DictController {
         DictDTO dto = new DictDTO();
         BeanUtils.copyProperties(req, dto);
         dictService.insert(dto);
-       
+
     }
 
     @PutMapping("update")

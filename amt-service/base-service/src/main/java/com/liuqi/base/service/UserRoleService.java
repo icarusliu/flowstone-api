@@ -1,8 +1,7 @@
 package com.liuqi.base.service;
 
-import com.liuqi.base.bean.query.UserRoleQuery;
 import com.liuqi.base.bean.dto.UserRoleDTO;
-import com.liuqi.base.domain.entity.UserRoleEntity;
+import com.liuqi.base.bean.query.UserRoleQuery;
 import com.liuqi.common.base.service.BaseService;
 
 import java.util.Collection;
@@ -41,4 +40,12 @@ public interface UserRoleService extends BaseService<UserRoleDTO, UserRoleQuery>
      * @param roleIds 角色id列表
      */
     void saveUserRoles(String userId, List<String> roleIds);
+
+    /**
+     * 根据用户批量查找角色清单
+     *
+     * @param userIds 用户id列表
+     * @return 用户角色列表
+     */
+    List<UserRoleDTO> findByUsers(List<String> userIds);
 }

@@ -2,7 +2,7 @@ package com.liuqi.etl.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.common.base.bean.query.DynamicQuery;
-import com.liuqi.common.utils.EntityUtils;
+import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.etl.bean.dto.EtlJobTypeDTO;
 import com.liuqi.etl.bean.query.EtlJobTypeQuery;
 import com.liuqi.etl.bean.req.EtlJobTypeAddReq;
@@ -78,6 +78,6 @@ public class EtlJobTypeController {
 
     @GetMapping("table-tree")
     public List<EtlJobTypeDTO> tree() {
-        return EntityUtils.toTableTree(service.findAll());
+        return TreeUtils.toTree(service.findAll());
     }
 }

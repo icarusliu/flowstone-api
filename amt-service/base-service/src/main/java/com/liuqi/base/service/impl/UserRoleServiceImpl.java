@@ -1,11 +1,11 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.base.bean.dto.UserRoleDTO;
 import com.liuqi.base.bean.query.UserRoleQuery;
+import com.liuqi.base.domain.entity.UserRoleEntity;
 import com.liuqi.base.domain.mapper.UserRoleMapper;
 import com.liuqi.base.service.UserRoleService;
-import com.liuqi.base.bean.dto.UserRoleDTO;
-import com.liuqi.base.domain.entity.UserRoleEntity;
 import com.liuqi.common.base.service.AbstractBaseService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +41,7 @@ public class UserRoleServiceImpl extends AbstractBaseService<UserRoleEntity, Use
     @Override
     protected QueryWrapper<UserRoleEntity> queryToWrapper(UserRoleQuery query) {
         return this.createQueryWrapper()
+                .in(CollectionUtils.isNotEmpty(query.getUserIds()), "user_id", query.getUserIds())
                 .eq(StringUtils.isNotBlank(query.getUserId()), "user_id", query.getUserId())
                 .eq(StringUtils.isNotBlank(query.getRoleId()), "role_id", query.getRoleId());
     }
@@ -126,5 +127,12 @@ public class UserRoleServiceImpl extends AbstractBaseService<UserRoleEntity, Use
         }
 
         this.addUserRoles(userId, roleIds);
+    }
+
+    @Override
+    public List<UserRoleDTO> findByUsers(List<String> userIds) {
+        UserRoleQuery query = new UserRoleQuery();
+        query.setUserIds(userIds);
+        return this.query(query);
     }
 }

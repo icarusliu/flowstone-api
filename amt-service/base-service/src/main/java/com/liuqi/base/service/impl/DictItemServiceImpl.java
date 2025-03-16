@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-import static com.liuqi.common.ErrorCodes.BASE_DICT_ITEM_EXISTS;
+import static com.liuqi.base.common.ErrorCodes.BASE_DICT_ITEM_EXISTS;
 
 @Service
 public class DictItemServiceImpl extends AbstractBaseService<DictItemEntity, DictItemDTO, DictItemMapper, DictItemQuery> implements DictItemService {

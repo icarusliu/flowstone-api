@@ -1,5 +1,7 @@
 package com.liuqi.base.bean.dto;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+
 import java.util.Arrays;
 
 /**
@@ -16,6 +18,7 @@ public enum MenuType {
         this.code = code;
     }
 
+    @EnumValue
     private final String code;
 
     public String getCode() {

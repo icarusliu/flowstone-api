@@ -6,7 +6,6 @@ import com.liuqi.base.bean.query.UserQuery;
 import com.liuqi.base.bean.req.UserAddReq;
 import com.liuqi.base.bean.req.UserUpdateReq;
 import com.liuqi.base.service.UserService;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.common.bean.UserContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +36,7 @@ public class UserController {
     public void add(@RequestBody @Validated UserAddReq req) {
         UserDTO dto = UserDTO.builder().build();
         BeanUtils.copyProperties(req, dto);
-        userService.insert(dto);
+        userService.insert(dto, req.getRoleIds());
        
     }
 
@@ -46,7 +45,7 @@ public class UserController {
     public void update(@RequestBody @Validated UserUpdateReq req) {
         UserDTO dto = UserDTO.builder().build();
         BeanUtils.copyProperties(req, dto);
-        userService.update(dto);
+        userService.update(dto, req.getRoleIds());
        
     }
 
@@ -61,12 +60,6 @@ public class UserController {
     @Operation(summary = "查询-分页")
     public IPage<UserDTO> pageQuery(@RequestBody UserQuery query) {
         return userService.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<UserDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return userService.dynamicQuery(query);
     }
 
     @PostMapping("query")

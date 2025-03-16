@@ -1,11 +1,12 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.base.bean.query.RoleResourceQuery;
-import com.liuqi.base.bean.req.RoleResourceUpdateReq;
-import com.liuqi.base.service.RoleResourceService;
 import com.liuqi.base.bean.dto.RoleResourceDTO;
+import com.liuqi.base.bean.query.RoleResourceQuery;
 import com.liuqi.base.bean.req.RoleResourceAddReq;
+import com.liuqi.base.bean.req.RoleResourceUpdateReq;
+import com.liuqi.base.bean.req.RoleResourcesUpdateReq;
+import com.liuqi.base.service.RoleResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,11 @@ public class RoleResourceController {
         RoleResourceDTO dto = new RoleResourceDTO();
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
-       
+    }
+
+    @PutMapping("update-role-resources")
+    public void updateRoleResources(@RequestBody RoleResourcesUpdateReq req) {
+        service.updateRoleResources(req.getRoleId(), req.getResourceIds());
     }
 
     @DeleteMapping("delete/{id}")

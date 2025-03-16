@@ -10,6 +10,6 @@ import lombok.Data;
  * @author Coder Generator 2024-08-09 22:08:31
  **/
 @Data
-public class ApiTypeDTO extends TreeNode {
+public class ApiTypeDTO extends TreeNode<ApiTypeDTO> {
     private String name;
 }

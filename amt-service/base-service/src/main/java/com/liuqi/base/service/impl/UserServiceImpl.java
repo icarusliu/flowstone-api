@@ -2,34 +2,31 @@ package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.liuqi.base.bean.dto.RoleResourceDTO;
 import com.liuqi.base.bean.dto.UserDTO;
+import com.liuqi.base.bean.dto.UserRoleDTO;
 import com.liuqi.base.bean.enums.UserStatus;
 import com.liuqi.base.bean.query.UserQuery;
+import com.liuqi.base.common.ErrorCodes;
 import com.liuqi.base.domain.entity.UserEntity;
 import com.liuqi.base.domain.mapper.UserMapper;
-import com.liuqi.base.service.DeptUserService;
-import com.liuqi.base.service.UserRoleService;
-import com.liuqi.base.service.UserService;
-import com.liuqi.common.ErrorCodes;
+import com.liuqi.base.service.*;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.exception.AuthErrorCodes;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.liuqi.common.ErrorCodes.BASE_USER_PHONE_EXISTS;
+import static com.liuqi.base.common.ErrorCodes.BASE_USER_PHONE_EXISTS;
 
 @Service
 public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, UserMapper, UserQuery> implements UserService {
@@ -40,7 +37,14 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
     private DeptUserService deptUserService;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private DeptService deptService;
+
+    @Autowired
+    private RoleResourceService roleResourceService;
 
     @Override
     public UserDTO toDTO(UserEntity entity) {
@@ -62,6 +66,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
                 .eq(StringUtils.isNotBlank(userQuery.getUsername()), "username", userQuery.getUsername())
                 .eq(StringUtils.isNotBlank(userQuery.getPhone()), "phone", userQuery.getPhone())
                 .eq(StringUtils.isNotBlank(userQuery.getEmail()), "email", userQuery.getEmail())
+                .eq(StringUtils.isNotBlank(userQuery.getDeptId()), "dept_id", userQuery.getDeptId())
                 .and(StringUtils.isNotBlank(userQuery.getKey()), wrapper ->
                         wrapper.eq("username", userQuery.getKey())
                                 .or(q -> q.eq("phone", userQuery.getKey()))
@@ -82,14 +87,13 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
         }
 
         if (StringUtils.isEmpty(dto.getPassword())) {
-            dto.setPassword(username);
+            dto.setPassword(dto.getUsername());
         }
-
-        dto.setIsSuperAdmin(false);
-        dto.setStatus(UserStatus.VALID);
 
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 
+        dto.setIsSuperAdmin(false);
+        dto.setStatus(UserStatus.VALID);
 
         return true;
     }
@@ -115,6 +119,54 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
         // 删除用户时需要同时删除相关关联信息
         userRoleService.deleteByUser(ids);
         deptUserService.deleteByUser(ids);
+    }
+
+    /**
+     * 查询后处理
+     *
+     * @param list 查询结果
+     */
+    @Override
+    protected void processAfterQuery(List<UserDTO> list) {
+        super.processAfterQuery(list);
+
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+
+        // 补充用户角色、机构信息
+        List<String> deptIds = new ArrayList<>(16);
+        List<String> userIds = list.stream()
+                .peek(user -> {
+                    if (!StringUtils.isEmpty(user.getDeptId())) {
+                        deptIds.add(user.getDeptId());
+                    }
+                })
+                .map(UserDTO::getId)
+                .toList();
+        List<UserRoleDTO> userRoles = userRoleService.findByUsers(userIds);
+        Map<String, List<String>> userRoleMap = new HashMap<>(16);
+        if (!CollectionUtils.isEmpty(userRoles)) {
+            userRoles.forEach(userRole -> {
+                String userId = userRole.getUserId();
+                userRoleMap.computeIfAbsent(userId, n -> new ArrayList<>(16))
+                        .add(userRole.getRoleId());
+            });
+        }
+
+        // 查询用户机构名称
+        Map<String, String> deptNameMap = new HashMap<>(16);
+        if (!CollectionUtils.isEmpty(deptIds)) {
+            deptService.findByIds(deptIds)
+                    .forEach(dept -> deptNameMap.put(dept.getId(), dept.getName()));
+        }
+
+        list.forEach(user -> {
+            user.setRoleIds(userRoleMap.get(user.getId()));
+            if (null != user.getDeptId()) {
+                user.setDeptName(deptNameMap.get(user.getDeptId()));
+            }
+        });
     }
 
     @Override
@@ -144,7 +196,39 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
     }
 
     @Override
-    @Cacheable(cacheNames = "userInfo-username")
+    public void insert(UserDTO dto, List<String> roleIds) {
+        dto = this.insert(dto);
+        String userId = dto.getId();
+        userRoleService.addUserRoles(userId, roleIds);
+    }
+
+    @Override
+    public void update(UserDTO dto, List<String> roleIds) {
+        this.update(dto);
+        userRoleService.saveUserRoles(dto.getId(), roleIds);
+    }
+
+    /**
+     * 获取用户资源权限列表
+     *
+     * @param userId 用户id
+     * @return 用户资源权限id列表
+     */
+    @Override
+    public List<String> getUserResourceIds(String userId) {
+        // 先获取用户角色，然后根据角色获取授权资源列表
+        List<UserRoleDTO> roles = userRoleService.findByUsers(Collections.singletonList(userId));
+        if (CollectionUtils.isEmpty(roles)) {
+            return new ArrayList<>(0);
+        }
+
+        List<String> roleIds = roles.stream().map(UserRoleDTO::getRoleId)
+                .toList();
+        List<RoleResourceDTO> roleResources = roleResourceService.findByRoles(roleIds);
+        return roleResources.stream().map(RoleResourceDTO::getResourceId).toList();
+    }
+
+    @Override
     public UserContext loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.findByUsername(username)
                 .map(user -> {
@@ -169,58 +253,4 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
                 }).orElseThrow(() -> AppException.of(AuthErrorCodes.USERNAME_OR_PASSWORD_ERROR));
     }
 
-    /**
-     * 更新记录
-     *
-     * @param dto 待更新记录内容，id不能为空
-     */
-    @Override
-    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
-    public void update(UserDTO dto) {
-        super.update(dto);
-    }
-
-    /**
-     * 逻辑删除
-     *
-     * @param id 待删除记录id
-     */
-    @Override
-    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
-    public void delete(String id) {
-        super.delete(id);
-    }
-
-    /**
-     * 批量逻辑删除
-     *
-     * @param ids 待删除记录id列表
-     */
-    @Override
-    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
-    public void delete(Collection<String> ids) {
-        super.delete(ids);
-    }
-
-    /**
-     * 物理删除
-     *
-     * @param id 记录id
-     */
-    @Override
-    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
-    public void deletePhysical(String id) {
-        super.deletePhysical(id);
-    }
-
-    /**
-     * 物理删除
-     *
-     * @param ids 记录id列表
-     */
-    @Override
-    @CacheEvict(cacheNames = "userInfo-username", allEntries = true)
-    public void deletePhysical(Collection<String> ids) {
-        super.deletePhysical(ids);
-    }
 }

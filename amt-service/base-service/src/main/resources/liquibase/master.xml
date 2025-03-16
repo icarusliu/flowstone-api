@@ -107,6 +107,23 @@
             )
         </sql>
     </changeSet>
+
+    <changeSet id="alter-base-tables" author="liuqi">
+        <sql>
+            rename table base_user to sys_user;
+            rename table base_role to sys_role;
+            rename table base_user_role to sys_user_role;
+            rename table base_dept_user to sys_dept_user;
+            rename table base_menu to sys_menu;
+        </sql>
+    </changeSet>
+
+    <changeSet id="alter-tables-sys_user" author="liuqi">
+        <sql>
+            alter table sys_user add column dept_id varchar(64) comment '部门id';
+        </sql>
+    </changeSet>
+
     <changeSet id="create-table-d_api" author="codeGenerator">
         <sql>
             create table d_api(

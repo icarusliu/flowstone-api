@@ -1,9 +1,9 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.liuqi.base.bean.dto.DeptUserDTO;
 import com.liuqi.base.bean.query.DeptUserQuery;
 import com.liuqi.base.service.DeptUserService;
-import com.liuqi.base.bean.dto.DeptUserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

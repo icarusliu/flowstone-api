@@ -1,9 +1,8 @@
 package com.liuqi.base.bean.req;
 
 import com.liuqi.base.bean.dto.MenuType;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Data
 public class MenuAddReq {
@@ -13,6 +12,8 @@ public class MenuAddReq {
 
     @NotBlank
     private String path;
+
+    private String icon;
 
     private MenuType type = MenuType.PATH;
     private Boolean show = true;

@@ -1,7 +1,5 @@
 package com.liuqi.common.exception;
 
-import com.liuqi.common.exception.BaseErrorCodes;
-
 /**
  * 错误信息
  */
