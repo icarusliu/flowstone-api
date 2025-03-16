@@ -8,6 +8,7 @@ import com.liuqi.etl.bean.query.EtlJobHistoryQuery;
 import com.liuqi.etl.bean.query.EtlJobQuery;
 import com.liuqi.etl.bean.req.EtlJobAddReq;
 import com.liuqi.etl.bean.req.EtlJobUpdateReq;
+import com.liuqi.etl.bean.resp.BloodTree;
 import com.liuqi.etl.service.EtlJobHistoryService;
 import com.liuqi.etl.service.EtlJobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,5 +113,10 @@ public class EtlJobController {
         EtlJobHistoryQuery query = new EtlJobHistoryQuery();
         query.setJobId(id);
         return historyService.query(query);
+    }
+
+    @GetMapping("blood")
+    public List<BloodTree> getJobBlook(String id) {
+        return service.getBloodRelation(id);
     }
 }

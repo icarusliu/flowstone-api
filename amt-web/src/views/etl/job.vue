@@ -40,8 +40,8 @@ const fields = ref([
     { label: '编码', prop: 'code', required: true },
     { label: '名称', prop: 'name', required: true },
     {
-        label: '任务类型', prop: 'type', type: 'select', width: '140px', options: [{ label: '数据同步任务', value: 'sync' }, { label: 'SQL加工任务', value: 'sql' }],
-        converter: (val) => val == 'sync' ? '数据同步任务' : 'SQL加工任务'
+        label: '任务类型', prop: 'type', type: 'select', width: '140px', 
+        converter: (val) => val == 'sync' ? '数据同步任务' : val == 'sql' ? 'SQL加工任务' : '实时数据监听'
     },
     {
         label: '触发规则', prop: 'autoTrigger', width: '140px', align: 'center', render: (val, row) => {

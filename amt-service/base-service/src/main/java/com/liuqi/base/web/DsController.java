@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +63,13 @@ public class DsController {
     @PostMapping("page-query")
     @Operation(summary = "查询-分页")
     public IPage<DsDTO> pageQuery(@RequestBody DsQuery query) {
-        return service.pageQuery(query);
+        IPage<DsDTO> pageData = service.pageQuery(query);
+        // 密码需要脱敏
+        List<DsDTO> list = pageData.getRecords();
+        if (!CollectionUtils.isEmpty(list)) {
+            list.forEach(item -> item.setPassword("******"));
+        }
+        return pageData;
     }
 
     @PostMapping("filter")

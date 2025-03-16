@@ -15,6 +15,7 @@ import com.liuqi.etl.bean.dto.EtlJobDependDTO;
 import com.liuqi.etl.bean.dto.EtlJobHistoryDTO;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.bean.query.EtlJobQuery;
+import com.liuqi.etl.bean.resp.BloodTree;
 import com.liuqi.etl.domain.entity.EtlJobEntity;
 import com.liuqi.etl.domain.mapper.EtlJobMapper;
 import com.liuqi.etl.service.EtlJobDependService;
@@ -34,10 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -273,5 +271,53 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
 
         // 停止实时任务
         mqService.stopJob(jobId);
+    }
+
+    /**
+     * 血缘分析获取结果树
+     *
+     * @param id 任务id
+     */
+    @Override
+    public List<BloodTree> getBloodRelation(String id) {
+        EtlJobDTO job = this.findById(id).orElseThrow(AppException.supplier(ErrorCodes.ETL_JOB_NOT_EXISTS));
+
+        // 需要根据使用的表及写入的表，将其父任务及子任务查询出来
+        // 依赖关系的本身不太准确，因为用户可能未配置相应作业的依赖关系
+        // 分析时需要将所有作业都拉出来
+        List<EtlJobDTO> jobs = this.findAll();
+
+        // 先将每个作业的父作业查找到，如果某个任务使用表来源于另外一个任务的输出表，则认为是其后代
+        Map<String, List<EtlJobDTO>> usedTableJobs = new HashMap<>(16);
+        Map<String, List<EtlJobDTO>> updatedTableJobs = new HashMap<>(16);
+        jobs.forEach(item -> {
+            List<String> usedTables = item.getUsedTables();
+            if (!CollectionUtils.isEmpty(usedTables)) {
+                usedTables.forEach(usedTable -> {
+                    usedTableJobs.computeIfAbsent(usedTable, n -> new ArrayList<>(16)).add(item);
+                });
+            }
+
+            List<String> updatedTables = item.getUpdatedTables();
+            if (!CollectionUtils.isEmpty(updatedTables)) {
+                updatedTables.forEach(updatedTable -> {
+                    updatedTableJobs.computeIfAbsent(updatedTable, n -> new ArrayList<>(16)).add(item);
+                });
+            }
+        });
+
+        Map<String, List<EtlJobDTO>> parentMap = new HashMap<>(16);
+        Map<String, List<EtlJobDTO>> childrenMap = new HashMap<>(16);
+        jobs.forEach(item -> {
+            List<String> usedTables = item.getUsedTables();
+            if (!CollectionUtils.isEmpty(usedTables)) {
+                usedTables.forEach(usedTable -> {
+
+                });
+            }
+        });
+
+
+        return List.of();
     }
 }

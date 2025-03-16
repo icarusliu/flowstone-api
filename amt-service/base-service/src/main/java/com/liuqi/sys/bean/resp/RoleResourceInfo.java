@@ -20,11 +20,6 @@ public class RoleResourceInfo extends TreeNode<RoleResourceInfo> {
     private Boolean checked;
 
     /**
-     * 资源id
-     */
-    private String id;
-
-    /**
      * 资源名称
      */
     private String name;
