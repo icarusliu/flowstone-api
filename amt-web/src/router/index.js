@@ -40,12 +40,6 @@ const routes = [
                     }
                 },
                 {
-                    path: '/apis/type',
-                    component: Type,
-                    meta: {
-                        title: '分类管理'
-                    }
-                }, {
                     path: '/apis/supplier',
                     component: () => import('../views/api/supplier/index.vue'),
                     meta: {
