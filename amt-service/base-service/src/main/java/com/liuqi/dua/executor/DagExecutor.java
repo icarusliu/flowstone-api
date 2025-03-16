@@ -5,7 +5,7 @@ import com.github.dexecutor.core.DefaultDexecutor;
 import com.github.dexecutor.core.DexecutorConfig;
 import com.github.dexecutor.core.ExecutionConfig;
 import com.github.dexecutor.core.graph.Node;
-import com.liuqi.base.bean.dto.ClientDTO;
+import com.liuqi.sys.bean.dto.ClientDTO;
 import com.liuqi.common.ClientHolder;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.bean.UserContextHolder;

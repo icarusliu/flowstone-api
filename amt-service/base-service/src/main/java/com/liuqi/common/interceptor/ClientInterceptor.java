@@ -1,7 +1,7 @@
 package com.liuqi.common.interceptor;
 
-import com.liuqi.base.bean.dto.ClientDTO;
-import com.liuqi.base.service.ClientService;
+import com.liuqi.sys.bean.dto.ClientDTO;
+import com.liuqi.sys.service.ClientService;
 import com.liuqi.common.ApiHolder;
 import com.liuqi.common.ClientHolder;
 import com.liuqi.common.bean.UserContext;

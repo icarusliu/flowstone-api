@@ -4,7 +4,7 @@ package com.liuqi.dua.domain.mapper; /**
  **/
 
 import com.liuqi.common.base.domain.mapper.BaseMapper;
-import com.liuqi.dua.domain.entity.ModelTypeEntity;
+import com.liuqi.base.domain.entity.ModelTypeEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

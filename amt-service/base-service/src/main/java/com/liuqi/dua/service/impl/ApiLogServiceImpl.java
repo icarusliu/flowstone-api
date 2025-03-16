@@ -2,7 +2,7 @@ package com.liuqi.dua.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.base.bean.dto.ClientDTO;
+import com.liuqi.sys.bean.dto.ClientDTO;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.utils.ExceptionUtils;
 import com.liuqi.common.bean.UserContextHolder;

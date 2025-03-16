@@ -1,7 +1,7 @@
 package com.liuqi.dua.executor.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.liuqi.base.bean.dto.ClientDTO;
+import com.liuqi.sys.bean.dto.ClientDTO;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.ws.WebSocketMsg;
 import com.liuqi.ws.WebSocketService;

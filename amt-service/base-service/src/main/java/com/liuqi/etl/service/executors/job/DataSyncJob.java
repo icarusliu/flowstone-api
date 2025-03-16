@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.base.service.SysConfigService;
+import com.liuqi.sys.service.SysConfigService;
 import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.etl.service.executors.EtlParamUtils;
 import com.liuqi.etl.service.executors.config.EtlDataSyncConfig;

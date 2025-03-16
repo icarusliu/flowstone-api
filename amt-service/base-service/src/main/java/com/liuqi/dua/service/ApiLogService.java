@@ -1,6 +1,6 @@
 package com.liuqi.dua.service;
 
-import com.liuqi.base.bean.dto.ClientDTO;
+import com.liuqi.sys.bean.dto.ClientDTO;
 import com.liuqi.common.base.service.BaseService;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiLogDTO;
