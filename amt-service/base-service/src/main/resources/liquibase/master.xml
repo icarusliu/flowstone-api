@@ -262,9 +262,9 @@
             )
         </sql>
     </changeSet>
-    <changeSet id="create-table-base_sys_config" author="codeGenerator">
+    <changeSet id="create-table-sys_config" author="codeGenerator">
         <sql>
-            create table base_sys_config(
+            create table sys_config(
             id varchar(64) not null primary key comment '主键',
             code varchar(255),
             value varchar(255),
