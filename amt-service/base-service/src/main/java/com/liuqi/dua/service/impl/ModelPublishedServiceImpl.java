@@ -2,11 +2,11 @@ package com.liuqi.dua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.common.base.service.AbstractBaseService;
-import com.liuqi.dua.bean.dto.ModelPublishedDTO;
-import com.liuqi.dua.bean.query.ModelPublishedQuery;
-import com.liuqi.dua.domain.entity.ModelPublishedEntity;
+import com.liuqi.base.bean.dto.ModelPublishedDTO;
+import com.liuqi.base.bean.query.ModelPublishedQuery;
+import com.liuqi.base.domain.entity.ModelPublishedEntity;
 import com.liuqi.dua.domain.mapper.ModelPublishedMapper;
-import com.liuqi.dua.service.ModelPublishedService;
+import com.liuqi.base.service.ModelPublishedService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

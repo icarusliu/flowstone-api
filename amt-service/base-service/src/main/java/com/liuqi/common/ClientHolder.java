@@ -1,6 +1,6 @@
 package com.liuqi.common;
 
-import com.liuqi.base.bean.dto.ClientDTO;
+import com.liuqi.sys.bean.dto.ClientDTO;
 
 /**
  * ClientHolder

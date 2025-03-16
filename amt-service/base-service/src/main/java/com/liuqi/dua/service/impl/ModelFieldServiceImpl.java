@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.liuqi.common.base.service.AbstractBaseService;
-import com.liuqi.dua.bean.dto.ModelFieldDTO;
-import com.liuqi.dua.bean.query.ModelFieldQuery;
-import com.liuqi.dua.domain.entity.ModelFieldEntity;
+import com.liuqi.base.bean.dto.ModelFieldDTO;
+import com.liuqi.base.bean.query.ModelFieldQuery;
+import com.liuqi.base.domain.entity.ModelFieldEntity;
 import com.liuqi.dua.domain.mapper.ModelFieldMapper;
-import com.liuqi.dua.service.ModelFieldService;
+import com.liuqi.base.service.ModelFieldService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

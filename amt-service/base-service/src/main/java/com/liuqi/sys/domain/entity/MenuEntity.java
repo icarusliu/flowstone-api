@@ -1,0 +1,26 @@
+package com.liuqi.sys.domain.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.liuqi.sys.bean.dto.MenuType;
+import com.liuqi.common.base.domain.entity.BaseEntity;
+import lombok.Data;
+
+@Data
+@TableName("sys_menu")
+public class MenuEntity extends BaseEntity {
+    private String code;
+
+    private String icon;
+
+    private String name;
+
+    private String path;
+
+    private MenuType type;
+
+    private Boolean hide;
+
+    private String parentId;
+
+    private Integer sort;
+}
