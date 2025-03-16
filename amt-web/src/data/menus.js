@@ -47,6 +47,9 @@ export default [
             }, {
                 name: '数据模型管理',
                 path: '/base/model',
+            }, {
+                name: '字典管理',
+                path: '/base/dict',
             },
         ]
     },

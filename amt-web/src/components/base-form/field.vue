@@ -57,7 +57,7 @@
     <cron-editor v-else-if="field.type == 'cron'" v-model="model" :disabled="disabled" @change="onFieldChange" />
 
     <!-- 其它情况 -->
-    <el-input v-else v-model="model" :disabled="disabled" @change="onFieldChange" ref="inputRef">
+    <el-input v-else v-model="model" :disabled="disabled" @change="onFieldChange" ref="inputRef" :placeholder="field.placeholder || '请输入' + field.label">
         <template #prepend v-if="field.prepend">
             {{ field.prepend }}
         </template>

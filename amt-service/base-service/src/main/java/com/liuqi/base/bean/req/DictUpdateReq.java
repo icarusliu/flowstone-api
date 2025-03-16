@@ -5,9 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class DictUpdateReq {
+    /**
+     * 字典类型，items：列表字段，sql: sql字典
+     */
+    private String type;
+
     @NotBlank
     private String id;
 
@@ -20,4 +26,6 @@ public class DictUpdateReq {
     private List<DictItem> items;
 
     private String remark;
+
+    private Map<String, Object> metadata;
 }

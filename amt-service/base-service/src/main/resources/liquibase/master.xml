@@ -591,4 +591,34 @@
             ) comment '模型配置'
         </sql>
     </changeSet>
+
+    <changeSet id="create-sys_dict" author="liuqi">
+        <sql>
+            create or replace table sys_dict
+            (
+            id          varchar(64)                           not null comment '主键'
+            primary key,
+            type varchar(32) default 'items' comment '字典类型, items项字段，sql：sql字典',
+            code        varchar(255)                          not null comment '字典编码',
+            name        varchar(255)                          not null comment '字典名称',
+            status      int       default 1                   not null comment '字典状态, 0: 停用；1：启用',
+            items       varchar(1024)                         null comment '配置项列表',
+            metadata varchar(512) comment '附加配置',
+            remark      varchar(255)                          null comment '备注',
+            tenant_id   varchar(255)                          null comment '租户编号',
+            create_user varchar(255)                          null comment '创建用户',
+            create_time timestamp default current_timestamp() null comment '创建时间',
+            update_user varchar(255)                          null comment '更新用户',
+            update_time timestamp                             null on update current_timestamp() comment '更新时间',
+            deleted     int(1)    default 0                   null comment '是否删除'
+            );
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="alter-model-add-dict" author="liuqi">
+        <sql>
+            alter table d_model_field add column dict_code varchar(64) comment '关联字典';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

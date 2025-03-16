@@ -52,4 +52,9 @@ public class ModelFieldAddReq {
      * 排序
      */
     private String sort;
+
+    /**
+     * 关联字典
+     */
+    private String dictCode;
 }

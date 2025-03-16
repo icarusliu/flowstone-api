@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -46,7 +47,11 @@ public class DictController {
     @Operation(summary = "删除")
     public void delete(@PathVariable("id") String id) {
         dictService.delete(id);
-       
+    }
+
+    @GetMapping("find-by-codes")
+    public List<DictDTO> findByCodes(String codes) {
+        return dictService.findByCodes(Arrays.asList(codes.split(",")));
     }
 
     @PostMapping("page-query")

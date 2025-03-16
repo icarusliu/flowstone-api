@@ -38,7 +38,7 @@ import * as _ from 'lodash'
 
 const form = defineModel()
 const props = defineProps({
-    editing: {type: Boolean, default: false}
+    editing: { type: Boolean, default: false }
 })
 const dataTypes = [
     { label: '字符串', value: 'varchar', config: '(255)', required: true },
@@ -66,7 +66,19 @@ const fieldFields = ref([
     { label: '字段配置', prop: 'dataConfig' },
     { label: '是否可为空', prop: 'nullable', type: 'checkbox', align: 'center', width: '100px' },
     { label: '是否主键', prop: 'primaryKey', type: 'checkbox', disabled: true, align: 'center', width: '100px' },
-    { label: '默认值', prop: 'defaultValue' }
+    { label: '默认值', prop: 'defaultValue' },
+    {
+        label: '关联字典', prop: 'dictCode', type: 'select', options: () => {
+            return https.post('/base/dict/query').then(resp => {
+                return resp.map(item => {
+                    return {
+                        label: item.name,
+                        value: item.code
+                    }
+                })
+            })
+        }
+    }
 ])
 const formRef = ref()
 const tableRef = ref()
@@ -102,7 +114,7 @@ function batchDelete() {
 function toTop() {
     let rows = form.value.fields
     let selectedRows = tableRef.value.getSelection()
-    
+
     // 从最后一个往上，都放第1个位置 
     selectedRows.reverse().forEach(row => {
         let idx = rows.indexOf(row)
@@ -118,7 +130,7 @@ function up() {
     // 选择的行可能不连续，需要从第一个开始上移
     let lastMoved = false
     let lastIdx = 0
-    
+
     selectedRows.forEach(row => {
         let idx = rows.indexOf(row)
 
@@ -156,16 +168,16 @@ function down() {
 
         // 最后四行是内置字段
         if (idx == length - 5) {
-            lastIdx = idx 
+            lastIdx = idx
             lastMoved = false
             return;
         }
         if (lastIdx && !lastMoved && lastIdx == idx + 1) {
-            lastIdx = idx 
+            lastIdx = idx
             return
         }
 
-        lastIdx = idx 
+        lastIdx = idx
         lastMoved = true
 
         rows.splice(idx, 1)

@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Index from '../views/index.vue';
 import ApiIndex from '../views/api/index.vue';
-import Type from '../views/manager/type.vue';
-import Ds from '../views/manager/ds.vue';
+import Type from '../views/api/type.vue';
+import Ds from '../views/base/ds.vue';
 import LogIndex from '../views/logs/Index.vue';
 
 const routes = [
@@ -38,32 +38,32 @@ const routes = [
                 }
             },
             {
-                path: '/manager/type',
+                path: '/base/type',
                 component: Type,
                 meta: {
                     title: '分类管理'
                 }
             }, {
-                path: '/manager/supplier',
-                component: () => import('../views/manager/supplier.vue'),
+                path: '/base/supplier',
+                component: () => import('../views/base/supplier.vue'),
                 meta: {
                     title: '接入方管理'
                 }
             }, {
-                path: '/manager/supplier-auth/:id',
-                component: () => import('../views/manager/supplier-auth.vue'),
+                path: '/base/supplier-auth/:id',
+                component: () => import('../views/base/supplier-auth.vue'),
                 meta: {
                     title: '鉴权管理'
                 }
             }, {
-                path: '/manager/client',
-                component: () => import('../views/base/client.vue'),
+                path: '/sys/client',
+                component: () => import('../views/sys/client.vue'),
                 meta: {
                     title: '客户端管理'
                 }
             }, {
-                path: '/manager/client-apis/:id',
-                component: () => import('../views/base/client-apis.vue'),
+                path: '/sys/client-apis/:id',
+                component: () => import('../views/sys/client-apis.vue'),
                 meta: {
                     title: '客户端授权'
                 }
@@ -79,14 +79,14 @@ const routes = [
                     }
                 ]
             }, {
-                path: '/base/user',
-                component: () => import('../views/base/user-manager.vue'),
+                path: '/sys/user',
+                component: () => import('../views/sys/user-manager.vue'),
                 meta: {
                     title: '用户管理'
                 }
             }, {
-                path: '/manager/schedule-task',
-                component: () => import('../views/manager/schedule-task.vue'),
+                path: '/base/schedule-task',
+                component: () => import('../views/base/schedule-task.vue'),
                 meta: {
                     title: '定时任务'
                 }
@@ -128,6 +128,12 @@ const routes = [
                         meta: {
                             title: '数据模型管理'
                         }
+                    }, {
+                        path: '/base/dict',
+                        component: () => import('../views/base/dict/index.vue'),
+                        meta: {
+                            title: '字典管理'
+                        }
                     }
                 ]
             }
@@ -135,7 +141,7 @@ const routes = [
     },
     {
         path: '/login',
-        component: () => import('../views/base/login.vue')
+        component: () => import('../views/sys/login.vue')
     }
 ]
 

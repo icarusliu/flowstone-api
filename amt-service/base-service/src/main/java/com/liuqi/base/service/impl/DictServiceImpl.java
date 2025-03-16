@@ -2,6 +2,7 @@ package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.liuqi.base.bean.DictItem;
 import com.liuqi.base.bean.dto.DictDTO;
 import com.liuqi.base.bean.query.DictQuery;
 import com.liuqi.base.common.ErrorCodes;
@@ -10,9 +11,14 @@ import com.liuqi.base.domain.mapper.DictMapper;
 import com.liuqi.base.service.DictService;
 import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
+import com.liuqi.common.utils.DynamicSqlHelper;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -50,6 +56,41 @@ public class DictServiceImpl extends AbstractBaseService<DictEntity, DictDTO, Di
     @Override
     public Optional<DictDTO> findByCode(String code) {
         return this.findOne(DictQuery.builder().code(code).build());
+    }
+
+    /**
+     * 查字典明细
+     *
+     * @param codes 字典编码列表
+     * @return 字典项明细
+     */
+    @Override
+    public List<DictDTO> findByCodes(List<String> codes) {
+        DictQuery query = DictQuery.builder()
+                .codes(codes)
+                .build();
+        List<DictDTO> list = this.query(query);
+
+        // 如果是SQL类型的需要特别处理
+        list.forEach(dict -> {
+            String type = dict.getType();
+            if ("sql".equals(type)) {
+                String sql = MapUtils.getString(dict.getMetadata(), "sql");
+                if (StringUtils.isBlank(sql)) {
+                    return;
+                }
+                List<Map<String, Object>> dicts = (List<Map<String, Object>>) DynamicSqlHelper.executeSql("dict-query-" + dict.getId(), sql, new HashMap<>(16));
+                dict.setItems(dicts.stream().map(m -> {
+                    DictItem item = new DictItem();
+                    item.setName(MapUtils.getString(m, "name"));
+                    item.setValue(MapUtils.getString(m, "value"));
+                    item.setRemark(MapUtils.getString(m, "remark"));
+                    return item;
+                }).toList());
+            }
+        });
+
+        return list;
     }
 
     /**

@@ -58,6 +58,11 @@ public class ModelFieldDTO extends BaseDTO {
     private String sort;
 
     /**
+     * 关联字典
+     */
+    private String dictCode;
+
+    /**
      * 获取表字段名称
      * @return 表字段名称
      */

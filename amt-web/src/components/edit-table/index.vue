@@ -2,11 +2,19 @@
     <!-- 可编辑表格 -->
     <div class="mb-2">
         <el-button type="primary" plain @click="newRow" :disabled="readonly" v-if="showNew != false">新增</el-button>
+
+        <template v-if="showSortButtons">
+            <el-button :disabled="readonly" @click="toTop" icon="Upload">移至顶部</el-button>
+            <el-button :disabled="readonly" @click="up" icon="top">上移</el-button>
+            <el-button :disabled="readonly" @click="down" icon="bottom">下移</el-button>
+            <el-button :disabled="readonly" @click="toBottom" icon="download">移至底部</el-button>
+        </template>
+
         <slot name="appendButtons"></slot>
     </div>
     <el-table :data="data" class="table" :row-key="rowKey || 'id'" default-expand-all :border="!!border" @cell-dblclick="cellDblClick"
         :key="key" stripe :maxHeight="height" ref="tableRef" @selectionChange="selectionChange">
-        <el-table-column v-if="showSelection" type="selection" align="center" width="40px" :selectable="selectable"/>
+        <el-table-column v-if="showSelection || showSortButtons" type="selection" align="center" width="40px" :selectable="selectable" />
         <el-table-column v-if="showIndex" type="index" label="序号" width="60px" align="center" />
 
         <template v-for="field in fields" :key="field.prop">
@@ -38,7 +46,7 @@ import * as uuid from 'uuid'
 import EditTableColumn from './edit-table-column.vue';
 
 const props = defineProps(["fields", "defRow", "readonly", "showNew", "operationsWidth", "rowKey", "showOperations", "border",
-    "mode", 'withDelete', 'showIndex', 'editable', 'showSelection', "height", "newIdx", "selectable"])
+    "mode", 'withDelete', 'showIndex', 'editable', 'showSelection', "height", "newIdx", "selectable", "showSortButtons"])
 const data = defineModel()
 const emits = defineEmits(["delete", "selectionChange"])
 const key = ref(uuid.v4())
@@ -93,6 +101,91 @@ function selectionChange(val) {
 
 function getData() {
     return data.value
+}
+
+function toTop() {
+    let rows = data.value
+    let selectedRows = getSelection()
+
+    // 从最后一个往上，都放第1个位置 
+    selectedRows.reverse().forEach(row => {
+        let idx = rows.indexOf(row)
+        rows.splice(idx, 1)
+        rows.splice(0, 0, row)
+    })
+}
+
+function up() {
+    let rows = data.value
+    let selectedRows = getSelection()
+
+    // 选择的行可能不连续，需要从第一个开始上移
+    let lastMoved = false
+    let lastIdx = 0
+
+    selectedRows.forEach(row => {
+        let idx = rows.indexOf(row)
+
+        if (idx <= 0) {
+            lastMoved = false
+            lastIdx = idx
+            return;
+        }
+
+        // 如果上一个没移动，而且现在的这行与上一行是连续的，也不进行移动 
+        if (lastIdx && !lastMoved && lastIdx == idx - 1) {
+            lastIdx = idx
+            return
+        }
+        lastIdx = idx
+        lastMoved = true
+
+        rows.splice(idx, 1)
+        rows.splice(idx - 1, 0, row)
+    })
+}
+
+function down() {
+    let rows = data.value
+    let selectedRows = getSelection()
+    let length = rows.length
+
+    // 选择的行可能不连续，需要从最后一个往上处理
+    let lastMoved = false
+    let lastIdx = 0
+
+    selectedRows.reverse().forEach(row => {
+        let idx = rows.indexOf(row)
+
+        if (idx == length - 1) {
+            lastIdx = idx
+            lastMoved = false
+            return;
+        }
+        if (lastIdx && !lastMoved && lastIdx == idx + 1) {
+            lastIdx = idx
+            return
+        }
+
+        lastIdx = idx
+        lastMoved = true
+
+        rows.splice(idx, 1)
+        rows.splice(idx + 1, 0, row)
+    })
+}
+
+function toBottom() {
+    let rows = data.value
+    let selectedRows = getSelection()
+    let lastIdx = rows.length -1
+
+    // 从第一个往下，均放在最后一个 
+    selectedRows.forEach(row => {
+        let idx = rows.indexOf(row)
+        rows.splice(idx, 1)
+        rows.splice(lastIdx, 0, row)
+    })
 }
 
 defineExpose({ newRow, getSelection, getData })

@@ -10,7 +10,6 @@ import lombok.Data;
  **/
 @Data
 public class DictItem {
-    private String code;
     private String name;
     private String value;
     private String remark;

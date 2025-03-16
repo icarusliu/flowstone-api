@@ -58,6 +58,11 @@ public class ModelFieldEntity extends BaseEntity {
     private String defaultValue;
 
     /**
+     * 关联字典
+     */
+    private String dictCode;
+
+    /**
      * 其它元数据配置
      */
     @TableField(typeHandler = FastjsonTypeHandler.class)
