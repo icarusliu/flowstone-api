@@ -1,6 +1,6 @@
 <template>
     <div class="h-100 d-flex">
-        <base-tree class="tree" title="分类" apiPrefix="/base/api-type" @currentChange="selectType">
+        <base-tree class="tree" title="分类" apiPrefix="/base/api-type" @select="selectType" v-model="currentType" :newFields="newTypeFields">
         </base-tree>
         <div class="content f-left">
             <div class="mb-4 space-between">
@@ -23,7 +23,7 @@ import * as apiApis from '@/apis/api.js'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import * as _ from 'lodash'
 import { useRouter } from 'vue-router'
-import baseTree from '../../components/base-tree.vue'
+import baseTree from '@/components/edit-tree/index.vue'
 import * as utils from '@/utils/utils'
 
 const fields = ref([
@@ -54,6 +54,9 @@ const fields = ref([
         fixed: 'right'
     }
 ])
+const newTypeFields = [
+    {label: '分类名称', prop: 'name', required: true}
+]
 const prefix = '/base/api-draft'
 const tableRef = ref()
 const router = useRouter()

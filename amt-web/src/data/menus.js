@@ -7,10 +7,6 @@ export default [
         icon: markRaw(Switch),
         children: [
             {
-                name: '分类管理',
-                path: '/apis/type',
-            },
-            {
                 name: '接口管理',
                 path: '/apis/list',
             },
