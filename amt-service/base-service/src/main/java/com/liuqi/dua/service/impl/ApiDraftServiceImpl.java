@@ -6,16 +6,20 @@ import com.liuqi.common.base.service.AbstractBaseService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiDraftDTO;
+import com.liuqi.dua.bean.dto.ApiHistoryDTO;
 import com.liuqi.dua.bean.query.ApiDraftQuery;
 import com.liuqi.dua.domain.entity.ApiDraftEntity;
 import com.liuqi.dua.domain.mapper.ApiDraftMapper;
 import com.liuqi.dua.service.ApiDraftService;
+import com.liuqi.dua.service.ApiHistoryService;
 import com.liuqi.dua.service.ApiService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * 接口草稿服务实现
@@ -26,6 +30,9 @@ import org.springframework.stereotype.Service;
 public class ApiDraftServiceImpl extends AbstractBaseService<ApiDraftEntity, ApiDraftDTO, ApiDraftMapper, ApiDraftQuery> implements ApiDraftService {
     @Autowired
     private ApiService apiService;
+
+    @Autowired
+    private ApiHistoryService apiHistoryService;
 
     @Override
     public ApiDraftDTO toDTO(ApiDraftEntity entity) {
@@ -116,6 +123,14 @@ public class ApiDraftServiceImpl extends AbstractBaseService<ApiDraftEntity, Api
         }
 
         this.update(apiDraftDTO);
+
+        // 保存到历史表中
+        ApiHistoryDTO history = new ApiHistoryDTO();
+        BeanUtils.copyProperties(apiDTO, history);
+        history.setApiId(apiDTO.getId());
+        history.setId(null);
+        history.setCreateTime(LocalDateTime.now());
+        apiHistoryService.insert(history);
     }
 
     /**

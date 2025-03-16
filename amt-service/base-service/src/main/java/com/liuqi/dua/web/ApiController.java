@@ -3,10 +3,13 @@ package com.liuqi.dua.web;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.dua.bean.dto.ApiDTO;
+import com.liuqi.dua.bean.dto.ApiHistoryDTO;
 import com.liuqi.dua.bean.dto.ApiTypeDTO;
+import com.liuqi.dua.bean.query.ApiHistoryQuery;
 import com.liuqi.dua.bean.query.ApiQuery;
 import com.liuqi.dua.bean.req.ApiAddReq;
 import com.liuqi.dua.bean.req.ApiUpdateReq;
+import com.liuqi.dua.service.ApiHistoryService;
 import com.liuqi.dua.service.ApiService;
 import com.liuqi.dua.service.ApiTypeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +39,9 @@ public class ApiController {
 
     @Autowired
     private ApiTypeService typeService;
+
+    @Autowired
+    private ApiHistoryService historyService;
 
     @PostMapping("add")
     @Operation(summary = "新增")
@@ -95,5 +101,12 @@ public class ApiController {
     @Operation(summary = "查询-不分页")
     public List<ApiDTO> query(@RequestBody ApiQuery query) {
         return service.query(query);
+    }
+
+    @GetMapping("history")
+    public List<ApiHistoryDTO> queryHistory(String id) {
+        ApiHistoryQuery query = new ApiHistoryQuery();
+        query.setApiId(id);
+        return historyService.query(query);
     }
 }

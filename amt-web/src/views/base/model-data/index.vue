@@ -299,13 +299,7 @@ function loadData(params) {
     })
     finalParams.filters = filters
 
-    return https.post(`/dua/model/data/${modelId.value}/page-query`, finalParams).then(resp => {
-        if (!resp.total) {
-            ElMessage.success('查询成功，数据为空');
-        }
-
-        return resp;
-    })
+    return https.post(`/dua/model/data/${modelId.value}/page-query`, finalParams)
 }
 
 function newRow() {

@@ -12,11 +12,13 @@ import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.SqlParserUtils;
 import com.liuqi.etl.bean.dto.EtlJobDTO;
 import com.liuqi.etl.bean.dto.EtlJobDependDTO;
+import com.liuqi.etl.bean.dto.EtlJobHistoryDTO;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.bean.query.EtlJobQuery;
 import com.liuqi.etl.domain.entity.EtlJobEntity;
 import com.liuqi.etl.domain.mapper.EtlJobMapper;
 import com.liuqi.etl.service.EtlJobDependService;
+import com.liuqi.etl.service.EtlJobHistoryService;
 import com.liuqi.etl.service.EtlJobPublishedService;
 import com.liuqi.etl.service.EtlJobService;
 import com.liuqi.etl.service.executors.EtlJobScheduler;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +62,9 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
     @Autowired
     @Lazy
     private EtlMqJobService mqService;
+
+    @Autowired
+    private EtlJobHistoryService historyService;
 
     @Override
     public EtlJobDTO toDTO(EtlJobEntity entity) {
@@ -238,6 +244,14 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
         if (!publishedDTO.getAutoTrigger() && StringUtils.isNotBlank(publishedDTO.getCron())) {
             etlJobScheduler.restartJob(publishedDTO);
         }
+
+        // 保存历史记录
+        EtlJobHistoryDTO history = new EtlJobHistoryDTO();
+        BeanUtils.copyProperties(job, history);
+        history.setJobId(job.getId());
+        history.setId(null);
+        history.setCreateTime(LocalDateTime.now());
+        historyService.insert(history);
     }
 
     /**

@@ -9,6 +9,9 @@
                 <el-col :span="24" v-else>
                     <el-form-item label="SQL配置" prop="sql" :rules="[{required: true, message: 'SQL配置不能为空'}]">
                         <monaco-editor lang="javascript" height="30vh" v-model="model.metadata.sql" />
+                        <div class="remark">
+                            SQL语句需返回name/value两个字段，其中name表示字典项名称，value表示其对应的值；
+                        </div>
                     </el-form-item>
                 </el-col>
             </template>
