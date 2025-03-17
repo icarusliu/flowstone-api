@@ -1,6 +1,6 @@
 package com.liuqi.common;
 
-import com.liuqi.base.service.ClientService;
+import com.liuqi.sys.service.ClientService;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.service.ApiDraftService;
 import com.liuqi.dua.service.ApiService;

@@ -19,6 +19,26 @@ import java.util.stream.Collectors;
  **/
 public class TreeUtils {
     /**
+     * 遍历树
+     *
+     * @param list     树
+     * @param consumer 处理函数
+     * @param <T>      节点类型
+     */
+    public static <T extends TreeNode<T>> void loopTree(List<T> list, Consumer<T> consumer) {
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+
+        list.forEach(item -> {
+            consumer.accept(item);
+            if (!CollectionUtils.isEmpty(item.getChildren())) {
+                loopTree(item.getChildren(), consumer);
+            }
+        });
+    }
+
+    /**
      * 将对象转换成树
      * 树节点本身就是对象，只是在其基础上增加children字段
      */
@@ -74,12 +94,7 @@ public class TreeUtils {
             return r;
         }
 
-        List<T> subChildren = t.getChildren();
-        List<R> children = subChildren
-                .stream()
-                .map(sub -> map(sub, func))
-                .toList();
-        r.setChildren(children);
+        r.setChildren(t.getChildren().stream().map(sub -> map(sub, func)).toList());
         return r;
     }
 }

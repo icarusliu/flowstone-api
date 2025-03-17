@@ -53,7 +53,7 @@ const formConfig = computed(() => {
 })
 
 onMounted(() => {
-    https.get('/dua/model/published/' + modelId.value).then(resp => {
+    https.get('/base/model/published/' + modelId.value).then(resp => {
         const model = resp
         modelInfo.value = resp
 
@@ -299,7 +299,7 @@ function loadData(params) {
     })
     finalParams.filters = filters
 
-    return https.post(`/dua/model/data/${modelId.value}/page-query`, finalParams)
+    return https.post(`/base/model/data/${modelId.value}/page-query`, finalParams)
 }
 
 function newRow() {
@@ -313,7 +313,7 @@ function save() {
             return
         }
 
-        https.post(`/dua/model/data/${modelId.value}/save`, form.value).then(resp => {
+        https.post(`/base/model/data/${modelId.value}/save`, form.value).then(resp => {
             visible.value = false
             ElMessage.success('操作成功');
             reload()
@@ -329,7 +329,7 @@ function goEdit(row) {
 function deleteRow(row) {
     let primaryCode = primaryField.value || 'id'
     ElMessageBox.confirm('确定删除当前记录？').then(() => {
-        https.del(`/dua/model/data/${modelId.value}/delete?${primaryCode}=${row[primaryCode]}`).then(() => {
+        https.del(`/base/model/data/${modelId.value}/delete?${primaryCode}=${row[primaryCode]}`).then(() => {
             ElMessage.success('删除成功')
             tableRef.value.reload()
         })

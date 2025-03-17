@@ -44,5 +44,7 @@ application-dev.yml
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+!*/build/*.jar
 /build/*.yml
-/build/*.jar
+/**/build/*.jar
+

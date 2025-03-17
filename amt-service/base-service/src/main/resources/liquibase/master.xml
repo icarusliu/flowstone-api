@@ -262,9 +262,9 @@
             )
         </sql>
     </changeSet>
-    <changeSet id="create-table-base_sys_config" author="codeGenerator">
+    <changeSet id="create-table-sys_config" author="codeGenerator">
         <sql>
-            create table base_sys_config(
+            create table sys_config(
             id varchar(64) not null primary key comment '主键',
             code varchar(255),
             value varchar(255),
@@ -577,17 +577,17 @@
     <changeSet id="create-table-d_model_config" author="codeGenerator">
         <sql>
             create table d_model_config(
-                id varchar(64) not null primary key comment '主键',
-                list_config varchar(512) comment '列表配置',
-                list_fields text comment '列表字段配置',
-                form_config varchar(512) comment '表单配置',
-                form_fields text comment '表单字段配置',
-                tenant_id varchar(64) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time datetime default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time datetime on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            list_config varchar(512) comment '列表配置',
+            list_fields text comment '列表字段配置',
+            form_config varchar(512) comment '表单配置',
+            form_fields text comment '表单字段配置',
+            tenant_id varchar(64) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time datetime default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time datetime on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             ) comment '模型配置'
         </sql>
     </changeSet>
@@ -596,21 +596,21 @@
         <sql>
             create or replace table sys_dict
             (
-            id          varchar(64)                           not null comment '主键'
+            id varchar(64) not null comment '主键'
             primary key,
             type varchar(32) default 'items' comment '字典类型, items项字段，sql：sql字典',
-            code        varchar(255)                          not null comment '字典编码',
-            name        varchar(255)                          not null comment '字典名称',
-            status      int       default 1                   not null comment '字典状态, 0: 停用；1：启用',
-            items       varchar(1024)                         null comment '配置项列表',
+            code varchar(255) not null comment '字典编码',
+            name varchar(255) not null comment '字典名称',
+            status int default 1 not null comment '字典状态, 0: 停用；1：启用',
+            items varchar(1024) null comment '配置项列表',
             metadata varchar(512) comment '附加配置',
-            remark      varchar(255)                          null comment '备注',
-            tenant_id   varchar(255)                          null comment '租户编号',
-            create_user varchar(255)                          null comment '创建用户',
+            remark varchar(255) null comment '备注',
+            tenant_id varchar(255) null comment '租户编号',
+            create_user varchar(255) null comment '创建用户',
             create_time timestamp default current_timestamp() null comment '创建时间',
-            update_user varchar(255)                          null comment '更新用户',
-            update_time timestamp                             null on update current_timestamp() comment '更新时间',
-            deleted     int(1)    default 0                   null comment '是否删除'
+            update_user varchar(255) null comment '更新用户',
+            update_time timestamp null on update current_timestamp() comment '更新时间',
+            deleted int(1) default 0 null comment '是否删除'
             );
 
         </sql>
@@ -619,6 +619,53 @@
     <changeSet id="alter-model-add-dict" author="liuqi">
         <sql>
             alter table d_model_field add column dict_code varchar(64) comment '关联字典';
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-d_api_history" author="codeGenerator">
+        <sql>
+            create table d_api_history(
+            id varchar(64) not null primary key comment '主键',
+            api_id varchar(64) not null comment '接口id',
+            guest_mode int(1) default 0 comment '是否游客模式可访问',
+            content text comment '配置内容',
+            name varchar(255) comment '接口名称',
+            remark varchar(255) comment '接口备注',
+            path varchar(255) comment '接口路径',
+            method varchar(255) comment '接口method',
+            type_id varchar(255) comment '分类id',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time datetime default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time datetime on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
+            ) comment '接口历史'
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-b_etl_job_history" author="codeGenerator">
+        <sql>
+            create table b_etl_job_history(
+                id varchar(64) not null primary key comment '主键',
+                job_id varchar(64) not null comment '任务id',
+                type_id varchar(64) comment '分类id',
+                type varchar(64) comment '任务类型，sync:数据同步任务；process：数据处理任务',
+                code varchar(64) comment '任务编码',
+                name varchar(255) comment '任务名称',
+                enabled int(1) default 0 comment '是否启用',
+                sort varchar(32) comment '排序序号',
+                auto_trigger int(1) default 0 comment '是否自动触发，即当期依赖的任务执行完成后是否自动触发',
+                config text comment '任务运行配置',
+                metadata varchar(512) comment '任务其它配置',
+                cron varchar(32) comment '定时执行的表达式',
+                version integer default 0 comment '任务版本',
+                published_version integer default 0 comment '已发布版本',
+                tenant_id varchar(255) comment '租户编号',
+                create_user varchar(255) comment '创建用户',
+                create_time datetime default current_timestamp comment '创建时间',
+                update_user varchar(255) comment '更新用户',
+                update_time datetime on update current_timestamp comment '更新时间',
+                deleted int(1) default 0 comment '是否删除'
+            ) comment 'ETL任务历史记录'
         </sql>
     </changeSet>
 </databaseChangeLog>

@@ -1,0 +1,19 @@
+package com.liuqi.sys.bean.query;
+
+import com.liuqi.common.base.bean.query.BaseQuery;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@Builder
+public class DictQuery extends BaseQuery {
+    private String key;
+
+    private String code;
+
+    private String name;
+
+    private List<String> codes;
+}

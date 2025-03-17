@@ -1,17 +1,15 @@
 package com.liuqi.dua.service.impl;
 
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.common.base.service.AbstractBaseService;
-import com.liuqi.common.utils.DynamicSqlHelper;
-import com.liuqi.dua.bean.dto.DsDTO;
+import com.liuqi.base.bean.dto.DsDTO;
 import com.liuqi.dua.bean.dto.TableFieldDTO;
-import com.liuqi.dua.bean.query.DsQuery;
-import com.liuqi.dua.domain.entity.DsEntity;
+import com.liuqi.base.bean.query.DsQuery;
+import com.liuqi.base.domain.entity.DsEntity;
 import com.liuqi.dua.domain.mapper.DsMapper;
 import com.liuqi.dua.executor.DynamicDsConfigService;
 import com.liuqi.dua.service.db.DbMetadataHelper;
-import com.liuqi.dua.service.DsService;
+import com.liuqi.base.service.DsService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -90,8 +87,18 @@ public class DsServiceImpl extends AbstractBaseService<DsEntity, DsDTO, DsMapper
      */
     @Override
     public void update(DsDTO dto) {
+        if (dto.getPassword().equals("******")) {
+            dto.setPassword(null);
+        }
+
         super.update(dto);
 
+        if (StringUtils.isBlank(dto.getPassword())) {
+            // 密码为空时，需要重新查询
+            dto = this.findById(dto.getId()).orElse(null);
+        }
+
+        assert dto != null;
         dynamicDsConfigService.loadDs(dto);
     }
 

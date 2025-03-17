@@ -1,11 +1,11 @@
 <template>
     <!-- 模型管理 -->
     <div class="d-flex page-content">
-        <edit-tree v-model="currentType" class="tree" @select="selectType" apiPrefix="/dua/model-type" title="任务分类"
+        <edit-tree v-model="currentType" class="tree" @select="selectType" apiPrefix="/base/model-type" title="任务分类"
             :newFields="typeFields" />
 
         <div class="flex-auto">
-            <entity-manager apiPrefix="/dua/model" :fields="fields" :queryFields="queryFields" ref="entityManagerRef" :params="params"
+            <entity-manager apiPrefix="/base/model" :fields="fields" :queryFields="queryFields" ref="entityManagerRef" :params="params"
                 :withNew="false" operationsWidth="220px">
                 <template #rowButtons="{ row }">
                     <buttons :buttons="rowButtons" :data="row" />
@@ -80,7 +80,7 @@ function selectType(type) {
 
 function doDelete(row) {
     ElMessageBox.confirm('确定删除当前记录？').then(() => {
-        https.del('/dua/model/delete/' + row.id).then(() => {
+        https.del('/base/model/delete/' + row.id).then(() => {
             entityManagerRef.value.reload()
             ElMessage.success('删除成功')
         })
@@ -101,8 +101,8 @@ function publish(model) {
     let loading = ElLoading.service({
         text: '发布中'
     })
-    https.get('/dua/model/publish', { id: model.id }).then(() => {
-        model.publishedVersion = model.version
+    https.get('/base/model/publish', { id: model.id }).then(() => {
+        entityManagerRef.value.reload()
         ElMessage.success('操作成功')
     }).finally(() => {
         loading.close()
@@ -111,8 +111,8 @@ function publish(model) {
 
 function offline(model) {
     ElMessageBox.confirm('确定下线当前任务？').then(() => {
-        https.get('/dua/model/offline', { id: model.id }).then(() => {
-            model.publishedVersion = 0
+        https.get('/base/model/offline', { id: model.id }).then(() => {
+            entityManagerRef.value.reload()
             ElMessage.success('操作成功')
         })
     })

@@ -3,7 +3,7 @@ package com.liuqi.dua.executor;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
-import com.liuqi.dua.bean.dto.DsDTO;
+import com.liuqi.base.bean.dto.DsDTO;
 import com.liuqi.dua.service.db.DbMetadataHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

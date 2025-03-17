@@ -3,6 +3,7 @@ package com.liuqi.etl.service;
 import com.liuqi.common.base.service.BaseService;
 import com.liuqi.etl.bean.dto.EtlJobDTO;
 import com.liuqi.etl.bean.query.EtlJobQuery;
+import com.liuqi.etl.bean.resp.BloodTree;
 
 import java.util.List;
 
@@ -29,4 +30,10 @@ public interface EtlJobService extends BaseService<EtlJobDTO, EtlJobQuery> {
      * @param jobId 任务id
      */
     void offline(String jobId);
+
+    /**
+     * 血缘分析获取结果树
+     * @param id 任务id
+     */
+    List<BloodTree> getBloodRelation(String id);
 }

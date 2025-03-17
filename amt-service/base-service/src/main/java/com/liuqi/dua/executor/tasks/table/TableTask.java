@@ -8,7 +8,7 @@ import com.liuqi.dua.executor.AbstractDagTask;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.bean.NodeParam;
-import com.liuqi.dua.service.DsService;
+import com.liuqi.base.service.DsService;
 import liquibase.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;

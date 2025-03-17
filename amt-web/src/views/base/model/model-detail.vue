@@ -56,7 +56,7 @@ const baseRef = ref()
 onMounted(() => {
     if (props.modelId) {
         let loading = ElLoading.service({text: '加载中'})
-        https.get('/dua/model/detail/' + props.modelId).then(resp => {
+        https.get('/base/model/detail/' + props.modelId).then(resp => {
             const model = resp
 
             // 处理默认值
@@ -79,7 +79,7 @@ onMounted(() => {
             }
 
             // 需要查找模型对应的字段
-            https.post('/dua/model-field/query', { modelId: model.id }).then(resp => {
+            https.post('/base/model-field/query', { modelId: model.id }).then(resp => {
                 model.fields = resp.map(item => {
                     if (item.code == 'id') {
                         item.primaryKey = true
@@ -138,13 +138,13 @@ function save() {
         }
 
         if (form.value.id) {
-            https.put('/dua/model/update', form.value).then(resp => {
+            https.put('/base/model/update', form.value).then(resp => {
                 ElMessage.success('操作成功')
                 editing.value = false;
                 form.value.status = 2
             })
         } else {
-            https.post('/dua/model/add', form.value).then((resp) => {
+            https.post('/base/model/add', form.value).then((resp) => {
                 ElMessage.success('操作成功')
                 form.value.id = resp.id
                 form.value.fields = resp.fields
@@ -170,7 +170,7 @@ function cancelEdit() {
 }
 
 function apply() {
-    https.get('/dua/model/publish', { id: form.value.id }).then(() => {
+    https.get('/base/model/publish', { id: form.value.id }).then(() => {
         ElMessage.success('操作成功')
         form.value.status = 1
     })

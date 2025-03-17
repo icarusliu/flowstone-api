@@ -71,3 +71,12 @@ api:
   whiteIps: 127.0.0.1
   # 流量限制，每s每ip最多支持请求数，需要启用Redis才能使用
   limitInSecond: 60
+
+app:
+  logs:
+    api:
+      # API日志保留天数
+      keep-days: 60
+    etl:
+      # ETL日志保留天数
+      keep-days: 60

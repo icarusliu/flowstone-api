@@ -17,12 +17,14 @@
         </div>
 
         <new-job v-if="jobVisible" class="full-panel" @close="closeJob" :item="editingJob" :type="currentType"></new-job>
-        <job-depend v-if="dependVisible" class="full-panel" :job="editingJob" @close="closeDepend"></job-depend>
+        <job-depend v-if="dependVisible" class="full-panel" :job="editingJob" @close="closeDepend" @reload="reload"></job-depend>
+        <job-blood v-if="bloodVisible" class="full-panel" :job="editingJob" @close="closeBlood"/>
     </div>
 </template>
 <script setup>
 import newJob from './job-detail.vue'
 import jobDepend from './job-depend.vue'
+import jobBlood from './job-blood.vue'
 import editTree from '@/components/edit-tree/index.vue'
 import { ElMessageBox, ElMessage, ElTag, ElIcon, ElLoading } from 'element-plus'
 import { Warning } from '@element-plus/icons-vue'
@@ -40,8 +42,8 @@ const fields = ref([
     { label: '编码', prop: 'code', required: true },
     { label: '名称', prop: 'name', required: true },
     {
-        label: '任务类型', prop: 'type', type: 'select', width: '140px', options: [{ label: '数据同步任务', value: 'sync' }, { label: 'SQL加工任务', value: 'sql' }],
-        converter: (val) => val == 'sync' ? '数据同步任务' : 'SQL加工任务'
+        label: '任务类型', prop: 'type', type: 'select', width: '140px', 
+        converter: (val) => val == 'sync' ? '数据同步任务' : val == 'sql' ? 'SQL加工任务' : '实时数据监听'
     },
     {
         label: '触发规则', prop: 'autoTrigger', width: '140px', align: 'center', render: (val, row) => {
@@ -109,6 +111,10 @@ function goEdit(row) {
     jobVisible.value = true
 }
 
+function reload() {
+    entityManagerRef.value.reload()
+}
+
 function selectType(type) {
     fields.value[0].default = type.id
     params.value.typeId = type.id
@@ -143,8 +149,14 @@ function closeDepend() {
     dependVisible.value = false
 }
 
-function showBlood() {
-    ElMessage.warning('功能暂未实现')
+const bloodVisible = ref(false)
+function showBlood(row) {
+    editingJob.value = row
+    bloodVisible.value = true
+}
+
+function closeBlood() {
+    bloodVisible.value = false
 }
 
 function publish(job) {

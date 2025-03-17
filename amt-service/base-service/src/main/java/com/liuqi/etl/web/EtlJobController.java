@@ -3,9 +3,13 @@ package com.liuqi.etl.web;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.etl.bean.dto.EtlJobDTO;
+import com.liuqi.etl.bean.dto.EtlJobHistoryDTO;
+import com.liuqi.etl.bean.query.EtlJobHistoryQuery;
 import com.liuqi.etl.bean.query.EtlJobQuery;
 import com.liuqi.etl.bean.req.EtlJobAddReq;
 import com.liuqi.etl.bean.req.EtlJobUpdateReq;
+import com.liuqi.etl.bean.resp.BloodTree;
+import com.liuqi.etl.service.EtlJobHistoryService;
 import com.liuqi.etl.service.EtlJobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +32,9 @@ import java.util.List;
 public class EtlJobController {
     @Autowired
     private EtlJobService service;
+
+    @Autowired
+    private EtlJobHistoryService historyService;
 
     @PostMapping("add")
     @Operation(summary = "新增")
@@ -99,5 +106,17 @@ public class EtlJobController {
     @GetMapping("offline")
     public void offline(String jobId) {
         service.offline(jobId);
+    }
+
+    @GetMapping("history")
+    public List<EtlJobHistoryDTO> getHistory(String id) {
+        EtlJobHistoryQuery query = new EtlJobHistoryQuery();
+        query.setJobId(id);
+        return historyService.query(query);
+    }
+
+    @GetMapping("blood-tree")
+    public List<BloodTree> getJobBlook(String id) {
+        return service.getBloodRelation(id);
     }
 }

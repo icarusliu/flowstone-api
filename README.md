@@ -2,7 +2,7 @@
 请不要删除相关数据；另外由于环境使用docker部署，数据在docker重新部署后将会重置，请知悉；
 
 # 重大更新
-最新版本增加数据加工模块，提供数据抽取、数据加工与落库、依赖配置、MQTT动态监听、Kafka动态监听等ETL功能，可当成ETL工具或一个简化版的数据中台使用。结合现有的接口配置功能，可以将数据从各个系统抽取至统一的数据库，并基于抽取的数据进行分层数据加工与存储，再将处理的结果数据表配置成接口，提供给前端或数据展示工具使用。
+最新版本增加数据加工模块，提供数据抽取、数据加工与落库、依赖自动加载、血缘分析、MQTT动态监听、Kafka动态监听等ETL功能，可当成ETL工具或一个简化版的数据中台使用。结合现有的接口配置功能，可以将数据从各个系统抽取至统一的数据库，并基于抽取的数据进行分层数据加工与存储，再将处理的结果数据表配置成接口，提供给前端或数据展示工具使用。
 
 # 1. 流石数据管理工具
 采用前后端分离模式，前端使用vue3+element-plus等；后端使用Spring Boot+MyBatis Plus；主要包含以下两大类功能
@@ -24,6 +24,7 @@
 - 提供数据加工功能，使用SQL语句的方式完成数据的分层加工处理；
 - 提供任务执行日志功能；
 - 提供依赖根据脚本自动加载功能，可自动分析使用的表并添加相应的任务依赖；
+- 提供自动血缘分析，可根据当前任务使用及更新的表，自动组装血缘树并进行展示；
 ## 基础功能
 - 数据模型维护及数据预览等功能； 
 
@@ -53,14 +54,14 @@
 - 注意Token域名默认是localhost，端启动后打开页面localhost:3000即可访问页面；默认用户密码：admin/admin123
 
 ## 4.2 使用docker直接启动现有镜像
-镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.1.0
+镜像地址：swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.1.1
 
 镜像内已集成mariadb/nginx，直接启动后即可通过浏览器打开页面进行测试；
 
 启动命令示例：
 
 ```cmd
-docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.1.0
+docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.1.1
 ```
 
 注意：
@@ -69,7 +70,7 @@ docker run -d -e SPRING_SECURITY_DOMAIN=localhost -p 3001:80 swr.cn-east-3.myhua
 - 通过浏览器打开localhost:3001即可使用相关功能；默认登录用户与密码：admin/admin123
 - SPRING_SECURITY_DOMAIN可以修改域名，如不指定，默认是localhost，以下命令将域名修改成test.com
     ```cmd
-    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.1.0
+    docker run -d -e SPRING_SECURITY_DOMAIN=test.com -p 3001:80 swr.cn-east-3.myhuaweicloud.com/icarus-tools/flowstone-amt:v1.1.1
     ```
    修改成test.com或者其它域名后（即所有非localhost的域名），如果未做域名解析，需要本地配置hosts才可正常访问；
 
@@ -222,6 +223,7 @@ curl 'http://localhost:3000/api/dua/test/js' \
 - ！增加数据加工大模块，包含跨库的数据同步、基于SQL语句的数据加工、定时调度、依赖配置等ETL功能；可以当成一个简易的ETL工具来使用，也可以当成一个简易的数据中台；
 - 数据加工模块：增加MQTT监听功能，可以动态监听MQTT数据并进行处理与转换然后写入到MySql表中；
 - 增加数据模型维护功能，可通过前端界面创建数据模型并生成对应的物理实体表，并支持内置的查询接口直接查询生成的表中的数据；
+- 增加血缘分析功能，可自动分析加工任务所使用的表及更新的表，进行血缘分析，并以图形方式进行展示，方便进行数据来源追踪；
 
 ## v1.0.4
 - 数据源增加SQLServer支持；
