@@ -185,17 +185,23 @@ SQL节点
 模型新增：
 ![输入图片说明](docs/images/image.png)
 
+模型列表管理
 ![输入图片说明](docs/images/model_list.png.png)
 
+模型数据管理
 ![输入图片说明](docs/images/model_data.png.png)
 
 ## 5.3 数据抽取与加工
+加工任务列表
 ![输入图片说明](docs/images/etl.png.png)
 
+加工任务详情 
 ![输入图片说明](docs/images/etl_detail.png.png)
 
+加工任务详情
 ![输入图片说明](docs/images/etl_detail1.png.png)
 
+血缘分析
 ![输入图片说明](docs/images/etl_blood.png.png)
 
 # 6. 接口调用
