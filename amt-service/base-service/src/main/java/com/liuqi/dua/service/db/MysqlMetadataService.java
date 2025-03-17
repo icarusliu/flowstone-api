@@ -87,7 +87,7 @@ public class MysqlMetadataService implements DbMetadataService {
 
     @Override
     public void test(String schema) {
-        String sql = "select * 1";
+        String sql = "select 1";
         DynamicSqlHelper.executeSql("test", sql, new HashMap<>());
     }
 }

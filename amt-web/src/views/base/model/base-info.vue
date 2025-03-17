@@ -86,7 +86,7 @@ const rowSelected = ref(false)
 const innerFields = ['id', 'createTime', 'createUser', 'updateTime', 'updateUser']
 
 function loadTypes() {
-    return https.get('/dua/model-type/table-tree');
+    return https.get('/base/model-type/table-tree');
 }
 
 
