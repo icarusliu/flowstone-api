@@ -115,7 +115,7 @@ public class EtlJobController {
         return historyService.query(query);
     }
 
-    @GetMapping("blood")
+    @GetMapping("blood-tree")
     public List<BloodTree> getJobBlook(String id) {
         return service.getBloodRelation(id);
     }

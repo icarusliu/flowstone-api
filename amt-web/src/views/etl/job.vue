@@ -17,12 +17,14 @@
         </div>
 
         <new-job v-if="jobVisible" class="full-panel" @close="closeJob" :item="editingJob" :type="currentType"></new-job>
-        <job-depend v-if="dependVisible" class="full-panel" :job="editingJob" @close="closeDepend"></job-depend>
+        <job-depend v-if="dependVisible" class="full-panel" :job="editingJob" @close="closeDepend" @reload="reload"></job-depend>
+        <job-blood v-if="bloodVisible" class="full-panel" :job="editingJob" @close="closeBlood"/>
     </div>
 </template>
 <script setup>
 import newJob from './job-detail.vue'
 import jobDepend from './job-depend.vue'
+import jobBlood from './job-blood.vue'
 import editTree from '@/components/edit-tree/index.vue'
 import { ElMessageBox, ElMessage, ElTag, ElIcon, ElLoading } from 'element-plus'
 import { Warning } from '@element-plus/icons-vue'
@@ -109,6 +111,10 @@ function goEdit(row) {
     jobVisible.value = true
 }
 
+function reload() {
+    entityManagerRef.value.reload()
+}
+
 function selectType(type) {
     fields.value[0].default = type.id
     params.value.typeId = type.id
@@ -143,8 +149,14 @@ function closeDepend() {
     dependVisible.value = false
 }
 
-function showBlood() {
-    ElMessage.warning('功能暂未实现')
+const bloodVisible = ref(false)
+function showBlood(row) {
+    editingJob.value = row
+    bloodVisible.value = true
+}
+
+function closeBlood() {
+    bloodVisible.value = false
 }
 
 function publish(job) {

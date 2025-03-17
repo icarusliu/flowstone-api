@@ -15,7 +15,12 @@ public class BloodTree {
     /**
      * 表
      */
-    private String table;
+    private List<String> usedTables;
+
+    /**
+     * 更新的表
+     */
+    private List<String> updatedTables;
 
     /**
      * 涉及任务id
@@ -36,4 +41,18 @@ public class BloodTree {
      * 后代列表
      */
     private List<BloodTree> children;
+
+    /**
+     * 父id列表
+     */
+    private List<String> parentIds;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BloodTree)) {
+            return false;
+        }
+
+        return ((BloodTree) obj).getJobId().equals(jobId);
+    }
 }

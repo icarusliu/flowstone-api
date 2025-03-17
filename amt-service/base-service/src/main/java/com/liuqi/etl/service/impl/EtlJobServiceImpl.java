@@ -306,18 +306,145 @@ public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobD
             }
         });
 
-        Map<String, List<EtlJobDTO>> parentMap = new HashMap<>(16);
         Map<String, List<EtlJobDTO>> childrenMap = new HashMap<>(16);
+        Map<String, List<EtlJobDTO>> parentMap = new HashMap<>(16);
+        // 组装每个任务的后代，即他更新的表，被其它任务使用的任务
         jobs.forEach(item -> {
+            List<String> updatedTables = item.getUpdatedTables();
+            if (!CollectionUtils.isEmpty(updatedTables)) {
+                List<EtlJobDTO> children = new ArrayList<>(16);
+                childrenMap.put(item.getId(), children);
+                updatedTables.forEach(updatedTable -> {
+                    List<EtlJobDTO> list = usedTableJobs.get(updatedTable);
+                    if (CollectionUtils.isEmpty(list)) {
+                        return;
+                    }
+
+                    children.addAll(list);
+                });
+            }
+
             List<String> usedTables = item.getUsedTables();
             if (!CollectionUtils.isEmpty(usedTables)) {
-                usedTables.forEach(usedTable -> {
-
+                List<EtlJobDTO> parents = new ArrayList<>(16);
+                parentMap.put(item.getId(), parents);
+                usedTables.forEach(table -> {
+                    List<EtlJobDTO> list = updatedTableJobs.get(table);
+                    if (null != list) {
+                        parents.addAll(list);
+                    }
                 });
             }
         });
 
+        List<EtlJobDTO> roots = getRoots(parentMap, job);
 
-        return List.of();
+        // 组装成树返回
+//        return roots.stream()
+//                .map(item -> jobToTreeItem(childrenMap, parentMap, item))
+//                .toList();
+
+        // 组装成树返回时前端还是需要打平，而且没有办法去不同分支下的重复节点，因此此处打平返回
+        List<BloodTree> result = new ArrayList<>(16);
+        roots.forEach(root -> {
+            List<BloodTree> children = getAllSubNodes(childrenMap, parentMap, root);
+            children.forEach(item -> {
+                if (!result.contains(item)) {
+                    result.add(item);
+                }
+            });
+        });
+
+        return result;
+    }
+
+    private List<BloodTree> getAllSubNodes(Map<String, List<EtlJobDTO>> childrenMap, Map<String, List<EtlJobDTO>> parentMap, EtlJobDTO job) {
+        BloodTree tree = new BloodTree();
+        tree.setUsedTables(job.getUsedTables());
+        tree.setUpdatedTables(job.getUpdatedTables());
+        tree.setJobId(job.getId());
+        tree.setJobCode(job.getCode());
+        tree.setJobName(job.getName());
+
+        // 处理父元素列表
+        List<EtlJobDTO> parents = parentMap.get(job.getId());
+        if (!CollectionUtils.isEmpty(parents)) {
+            tree.setParentIds(parents.stream().map(EtlJobDTO::getId).toList());
+        }
+
+        List<EtlJobDTO> jobChildren = childrenMap.get(job.getId());
+        if (CollectionUtils.isEmpty(jobChildren)) {
+            return List.of(tree);
+        }
+
+        List<BloodTree> list = new ArrayList<>(16);
+        list.add(tree);
+        jobChildren.forEach(subJob -> {
+            List<BloodTree> subTree = getAllSubNodes(childrenMap, parentMap, subJob);
+            subTree.forEach(item -> {
+                if (!list.contains(item)) {
+                    list.add(item);
+                }
+            });
+        });
+        return list;
+    }
+
+    /**
+     * 任务转血缘树节点
+     */
+    private BloodTree jobToTreeItem(Map<String, List<EtlJobDTO>> childrenMap, Map<String, List<EtlJobDTO>> parentMap, EtlJobDTO job) {
+        BloodTree tree = new BloodTree();
+        tree.setUsedTables(job.getUsedTables());
+        tree.setUpdatedTables(job.getUpdatedTables());
+        tree.setJobId(job.getId());
+        tree.setJobCode(job.getCode());
+        tree.setJobName(job.getName());
+        
+        // 处理父元素列表 
+        List<EtlJobDTO> parents = parentMap.get(job.getId());
+        if (!CollectionUtils.isEmpty(parents)) {
+            tree.setParentIds(parents.stream().map(EtlJobDTO::getId).toList());
+        }
+
+        List<EtlJobDTO> jobChildren = childrenMap.get(job.getId());
+        if (CollectionUtils.isEmpty(jobChildren)) {
+            return tree;
+        }
+
+        List<BloodTree> children = new ArrayList<>(16);
+        tree.setChildren(children);
+
+        jobChildren.forEach(subJob -> {
+            BloodTree subTree = jobToTreeItem(childrenMap, parentMap, subJob);
+            children.add(subTree);
+        });
+
+        return tree;
+    }
+
+    /**
+     * 根据某个作业查找其根
+     */
+    private List<EtlJobDTO> getRoots(Map<String, List<EtlJobDTO>> parentMap, EtlJobDTO job) {
+        String jobId = job.getId();
+        List<EtlJobDTO> list = parentMap.get(jobId);
+        if (CollectionUtils.isEmpty(list)) {
+            // 没有父辈，自己就是根
+            return List.of(job);
+        }
+
+        // 有父辈，继续往上找，一直找到某个没有父辈的
+        List<EtlJobDTO> result = new ArrayList<>(16);
+        list.forEach(parent -> {
+            List<EtlJobDTO> parentRoots = getRoots(parentMap, parent);
+            parentRoots.forEach(root -> {
+                if (!result.contains(root)) {
+                    result.add(root);
+                }
+            });
+        });
+
+        return result;
     }
 }

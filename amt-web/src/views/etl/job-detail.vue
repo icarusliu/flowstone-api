@@ -7,7 +7,7 @@
                         <tree-select v-model="model.typeId" :options="loadTypes" :disabled="!editing" />
                     </el-form-item>
                     <el-form-item label="任务编码" required prop="code">
-                        <el-input v-model="model.code" :disabled="!editing" />
+                        <el-input v-model="model.code" :disabled="!editing" @change="changeCode"/>
                     </el-form-item>
                     <el-form-item label="任务名称" required prop="name">
                         <el-input v-model="model.name" :disabled="!editing" />
@@ -143,6 +143,12 @@ onMounted(() => {
         dses.value = resp
     })
 })
+
+function changeCode() {
+    if (!model.value.name) {
+        model.value.name = model.value.code
+    }
+}
 
 function loadTypes() {
     return https.get('/etl/job-type/table-tree');
