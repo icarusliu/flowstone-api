@@ -20,7 +20,7 @@ import fullPanel from '@/components/full-panel.vue'
 import https from '@/utils/https'
 import {ElMessage} from 'element-plus'
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(['close', 'reload'])
 const props = defineProps({
     job: { type: Object }
 })
@@ -63,6 +63,7 @@ function doSave() {
         dependJobIds: form.value
     }).then(() => {
         ElMessage.success('操作成功')
+        emits('reload')
     })
 }
 

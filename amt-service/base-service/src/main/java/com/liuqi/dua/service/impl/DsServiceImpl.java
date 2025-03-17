@@ -87,8 +87,18 @@ public class DsServiceImpl extends AbstractBaseService<DsEntity, DsDTO, DsMapper
      */
     @Override
     public void update(DsDTO dto) {
+        if (dto.getPassword().equals("******")) {
+            dto.setPassword(null);
+        }
+
         super.update(dto);
 
+        if (StringUtils.isBlank(dto.getPassword())) {
+            // 密码为空时，需要重新查询
+            dto = this.findById(dto.getId()).orElse(null);
+        }
+
+        assert dto != null;
         dynamicDsConfigService.loadDs(dto);
     }
 
