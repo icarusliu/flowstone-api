@@ -31,7 +31,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-14 12:45:23 
  **/
 @RestController
-@RequestMapping("/dua/model")
+@RequestMapping("/base/model")
 @Slf4j
 @Tag(name = "模型控制器")
 public class ModelController {

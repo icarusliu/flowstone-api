@@ -15,7 +15,7 @@ import java.util.Map;
  * @version V1.0
  **/
 @RestController
-@RequestMapping("/dua/model/data")
+@RequestMapping("/base/model/data")
 public class ModelDataController {
     @Autowired
     private ModelDataService modelDataService;

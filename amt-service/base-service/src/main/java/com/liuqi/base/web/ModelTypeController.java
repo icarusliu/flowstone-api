@@ -22,7 +22,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-14 12:16:29 
  **/
 @RestController
-@RequestMapping("/dua/model-type")
+@RequestMapping("/base/model-type")
 @Slf4j
 @Tag(name = "模型分类控制器")
 public class ModelTypeController {

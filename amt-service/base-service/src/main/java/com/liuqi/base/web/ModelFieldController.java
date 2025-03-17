@@ -22,7 +22,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-14 12:59:51 
  **/
 @RestController
-@RequestMapping("/dua/model-field")
+@RequestMapping("/base/model-field")
 @Slf4j
 @Tag(name = "模型字段控制器")
 public class ModelFieldController {
