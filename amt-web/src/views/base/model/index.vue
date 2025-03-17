@@ -102,7 +102,7 @@ function publish(model) {
         text: '发布中'
     })
     https.get('/base/model/publish', { id: model.id }).then(() => {
-        model.publishedVersion = model.version
+        entityManagerRef.value.reload()
         ElMessage.success('操作成功')
     }).finally(() => {
         loading.close()
@@ -112,7 +112,7 @@ function publish(model) {
 function offline(model) {
     ElMessageBox.confirm('确定下线当前任务？').then(() => {
         https.get('/base/model/offline', { id: model.id }).then(() => {
-            model.publishedVersion = 0
+            entityManagerRef.value.reload()
             ElMessage.success('操作成功')
         })
     })
