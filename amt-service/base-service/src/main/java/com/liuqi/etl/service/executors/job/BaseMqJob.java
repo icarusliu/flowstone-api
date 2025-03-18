@@ -89,7 +89,22 @@ public abstract class BaseMqJob {
             }
         }
 
-        if (!CollectionUtils.isEmpty(list)) {
+        saveResult(mqConfig, list, jobId);
+    }
+
+    /**
+     * 保存结果
+     * @param mqConfig 配置
+     * @param list 数据列表
+     * @param jobId 任务id
+     */
+    private static void saveResult(EtlMqConfig mqConfig, List<Map<String, Object>> list, String jobId) {
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+
+        String destType = mqConfig.getDestType();
+        if ("sql".equals(destType)) {
             // 调用写入SQL
             String sql = mqConfig.getDestSql();
             String ds = mqConfig.getDestDs();
@@ -103,6 +118,9 @@ public abstract class BaseMqJob {
                     DynamicDataSourceContextHolder.poll();
                 }
             }
+        } else if ("model".equals(destType)) {
+            // 模型写入
+
         }
     }
 

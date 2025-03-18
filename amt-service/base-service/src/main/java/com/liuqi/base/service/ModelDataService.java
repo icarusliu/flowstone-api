@@ -89,6 +89,15 @@ public class ModelDataService {
     }
 
     /**
+     * 批量插入
+     * @param modelId 模型id
+     * @param list 数据列表
+     */
+    public void batchInsert(String modelId, List<Map<String, Object>> list) {
+
+    }
+
+    /**
      * 新增数据
      * @param modelId 模型id
      * @param body 新增数据内容

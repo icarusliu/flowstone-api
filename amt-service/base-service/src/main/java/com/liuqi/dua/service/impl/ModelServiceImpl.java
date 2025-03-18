@@ -67,6 +67,7 @@ public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO,
                 .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode())
                 .eq(StringUtils.isNotBlank(query.getName()), "name", query.getName())
                 .eq(StringUtils.isNotBlank(query.getTypeId()), "type_id", query.getTypeId())
+                .in(null != query.getStatuses(), "status", query.getStatuses())
                 .orderByDesc("create_time");
     }
 

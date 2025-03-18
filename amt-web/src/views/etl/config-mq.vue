@@ -1,7 +1,7 @@
 <template>
     <el-form ref="formRef" :model="model">
         <el-row :gutter="16">
-            <el-col :span="24">
+            <el-col :span="6">
                 <el-form-item label="数据类型" required class="field" prop="type">
                     <el-radio-group v-model="model.type" :disabled="disabled">
                         <el-radio-button value="mqtt">MQTT</el-radio-button>
@@ -9,15 +9,15 @@
                     </el-radio-group>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="6">
                 <el-form-item label="连接串" required class="field" prop="url">
-                    <el-input v-model="model.url" placeholder="请输入连接信息"  :disabled="disabled"/>
+                    <el-input v-model="model.url" placeholder="请输入连接信息" :disabled="disabled" />
                 </el-form-item>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :span="6">
                 <el-form-item label="主题" required class="field" prop="topic">
-                    <el-input v-model="model.topic" placeholder="请输入主题"  :disabled="disabled"/>
+                    <el-input v-model="model.topic" placeholder="请输入主题" :disabled="disabled" />
                 </el-form-item>
             </el-col>
         </el-row>
@@ -67,7 +67,7 @@
                             <span>缓存上一条记录</span>
                         </span>
                     </template>
-                    <el-switch v-model="model.cacheLast"  :disabled="disabled"/>
+                    <el-switch v-model="model.cacheLast" :disabled="disabled" />
 
                     <span class="cache-key d-flex" v-if="model.cacheLast">
                         <label>缓存关键字段</label>
@@ -76,7 +76,40 @@
                 </el-form-item>
             </el-col>
 
-            <el-col :span="24">
+            <!-- <el-col :span="24">
+                <el-form-item label="数据存储规则" prop="destType">
+                    <el-radio-group v-model="model.destType" :disabled="disabled">
+                        <el-radio-button value="model" label="写入模型" />
+                        <el-radio-button value="sql" label="SQL写入" />
+                        <el-radio-button value="kafkq" label="写入Kafka"/>
+                        <el-radio-button value="mqtt" label="写入mqtt"/>
+                    </el-radio-group>
+                </el-form-item>
+            </el-col> -->
+
+            <template v-if="model.destType == 'model'">
+                <el-col :span="6">
+                    <el-form-item required prop="destModel" label="请选择模型">
+                        <base-select v-model="model.destModel" :options="getModels" :disabled="disabled" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item prop="destPrepareType" label="写入前处理">
+                        <el-radio-group v-model="model.destPrepareType" :disabled="disabled">
+                            <el-radio-button value="delete" label="条件删除" />
+                            <el-radio-button value="truncate" label="清空表" />
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="6">
+                    <el-form-item prop="destDeleteField" label="条件删除字段" required>
+                        <base-select v-model="model.destDeleteField" :options="getModelFields" :disabled="disabled"/>
+                    </el-form-item>
+                </el-col>
+            </template>
+
+            <el-col :span="24" v-else-if="model.destType == 'sql'">
                 <el-form-item required prop="destSql">
                     <template #label>
                         存储脚本（SQL插入语句）
@@ -93,7 +126,8 @@
             </template>
         </ScriptDialog>
 
-        <ScriptDialog v-model:visible="computeScriptVisible" v-model="model.computeScript" :lang="model.computeScriptType" :readonly="disabled">
+        <ScriptDialog v-model:visible="computeScriptVisible" v-model="model.computeScript" :lang="model.computeScriptType"
+            :readonly="disabled">
             <template #header>
                 <el-link type="primary" @click="initComputeScript" :disabled="disabled">添加示例脚本</el-link>
             </template>
@@ -103,7 +137,9 @@
 <script setup>
 import monacoEditor from '@/components/monaco-editor.vue'
 import ScriptDialog from '@/components/script-dialog.vue';
+import BaseSelect from '@/components/base-select.vue'
 import { onMounted } from 'vue';
+import https from '@/utils/https';
 
 const props = defineProps({
     dses: { type: Array, required: true },
@@ -124,7 +160,46 @@ onMounted(() => {
     if (!model.value.computeScriptType) {
         model.value.computeScriptType = "groovy"
     }
+
+    model.value.destType = 'sql'
+    // if (!model.value.destType) {
+    //     if (model.value.destSql) {
+    //         model.value.destType = 'sql'
+    //     } else {
+    //         model.value.destType = 'model'
+    //     }
+    // }
+
+    if (!model.value.destPrepareType) {
+        model.value.destPrepareType = 'delete'
+    }
 })
+
+function getModels() {
+    return https.post('/base/model/query', { statuses: [1, 2] }).then(resp => {
+        return resp.map(item => {
+            return {
+                label: item.name,
+                value: item.id
+            }
+        })
+    })
+}
+
+function getModelFields() {
+    if (!model.value.destModel) {
+        return []
+    }
+
+    return https.get('/base/model/published/' + model.value.destModel).then(resp => {
+        return resp.fields.map(item => {
+            return {
+                label: item.name,
+                value: item.code
+            }
+        })
+    })   
+}
 
 function showScript() {
     visible.value = true
