@@ -156,7 +156,7 @@ dev可以修改成自己的环境名称，比如如果想要使用application-pr
   ```
   具体参数根据实际场景修改
 
-# 5. 界面
+## 5.1 数据接口管理
 接口文档
 ![image](https://github.com/user-attachments/assets/eb8aa31e-370b-4278-a9ea-bfd8d788ec1f)
 
@@ -180,6 +180,29 @@ SQL节点
 
 接口测试
 ![image](https://github.com/user-attachments/assets/b1506bf8-713a-4826-b6e0-8fe8cfce4946)
+
+## 5.2 模型管理
+模型新增：
+![输入图片说明](docs/images/image.png)
+
+模型列表管理
+![输入图片说明](docs/images/model_list.png.png)
+
+模型数据管理
+![输入图片说明](docs/images/model_data.png.png)
+
+## 5.3 数据抽取与加工
+加工任务列表
+![输入图片说明](docs/images/etl.png.png)
+
+加工任务详情 
+![输入图片说明](docs/images/etl_detail.png.png)
+
+加工任务详情
+![输入图片说明](docs/images/etl_detail1.png.png)
+
+血缘分析
+![输入图片说明](docs/images/etl_blood.png.png)
 
 # 6. 接口调用
 

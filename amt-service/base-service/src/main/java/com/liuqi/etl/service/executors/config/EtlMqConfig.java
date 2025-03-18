@@ -24,8 +24,13 @@ public class EtlMqConfig {
     @Nullable private String computeScript;
     private Boolean cacheLast;
     @Nullable private String cacheKey;
+
+    // 目标类型，模型或sql或其它mq
+    private String destType;
+
     private String destDs;
     private String destSql;
+    private String destModel;
 
     /**
      * 重连间隔
