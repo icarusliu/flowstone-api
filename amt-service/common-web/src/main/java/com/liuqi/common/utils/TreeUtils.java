@@ -94,7 +94,12 @@ public class TreeUtils {
             return r;
         }
 
-        r.setChildren(t.getChildren().stream().map(sub -> map(sub, func)).toList());
+        List<T> subChildren = t.getChildren();
+        List<R> children = subChildren
+                .stream()
+                .map(sub -> map(sub, func))
+                .toList();
+        r.setChildren(children);
         return r;
     }
 }

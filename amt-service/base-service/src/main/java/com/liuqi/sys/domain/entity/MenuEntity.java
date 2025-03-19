@@ -8,8 +8,7 @@ import lombok.Data;
 @Data
 @TableName("sys_menu")
 public class MenuEntity extends BaseEntity {
-    private String code;
-
+    private String appId;
     private String icon;
 
     private String name;

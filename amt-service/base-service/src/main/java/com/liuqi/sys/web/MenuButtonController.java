@@ -23,7 +23,7 @@ import java.util.List;
  * @author Coder Generator 2024-09-29 18:55:25
  **/
 @RestController
-@RequestMapping("/base/menu-button")
+@RequestMapping("/sys/menu-button")
 @Slf4j
 @Tag(name = "控制器")
 public class MenuButtonController {

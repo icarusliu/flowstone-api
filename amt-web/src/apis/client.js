@@ -6,7 +6,7 @@ import * as https from '@/utils/https'
  * @returns 
  */
 export function resetClientSecret(id) {
-    return https.get('/base/client/reset-secret', {id})
+    return https.get('/sys/client/reset-secret', {id})
 }
 
 /**
@@ -49,5 +49,5 @@ export function deleteClientAndApis(params) {
  * 查询所有客户端信息
  */
 export function getAllClients() {
-    return https.post('/base/client/query', {})
+    return https.post('/sys/client/query', {})
 }

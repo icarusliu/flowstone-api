@@ -1,39 +1,40 @@
 <template>
-    <el-page-header content="接口说明" @back="goBack"></el-page-header>
+    <div class="bg-white p-4">
+        <el-page-header content="接口说明" @back="goBack"></el-page-header>
 
-    <el-descriptions border :column="2" class="mb-8 mt-4">
-        <el-descriptions-item label="接口名称" :span=2>{{ apiInfo.name }}</el-descriptions-item>
-        <el-descriptions-item label="接口类型">{{ apiInfo.method }}</el-descriptions-item>
-        <el-descriptions-item label="接口地址">{{ '/dua/' + apiInfo.path }}</el-descriptions-item>
+        <el-descriptions border :column="2" class="mb-8 mt-4">
+            <el-descriptions-item label="接口名称" :span=2>{{ apiInfo.name }}</el-descriptions-item>
+            <el-descriptions-item label="接口类型">{{ apiInfo.method }}</el-descriptions-item>
+            <el-descriptions-item label="接口地址">{{ '/dua/' + apiInfo.path }}</el-descriptions-item>
 
-        <el-descriptions-item label="输入参数" :span="2">
-            <div v-if="!apiConfig.inputParams">未定义</div>
-            <div class="p-4" v-else>
-                <base-table :dataSupplier="() => apiConfig.inputParams" :fields="inputFields" :pageable="false">
-                </base-table>
-            </div>
-        </el-descriptions-item>
+            <el-descriptions-item label="输入参数" :span="2">
+                <div v-if="!apiConfig.inputParams">未定义</div>
+                <div class="p-4" v-else>
+                    <base-table :dataSupplier="() => apiConfig.inputParams" :fields="inputFields" :pageable="false">
+                    </base-table>
+                </div>
+            </el-descriptions-item>
 
-        <el-descriptions-item label="输出参数" :span="2">
-            <div v-if="!apiConfig.output">未定义</div>
-            <div class="p-4" v-else>
-                <base-table :dataSupplier="() => apiConfig.output" :fields="outputFields" :pageable="false">
-                </base-table>
-            </div>
-        </el-descriptions-item>
+            <el-descriptions-item label="输出参数" :span="2">
+                <div v-if="!apiConfig.output">未定义</div>
+                <div class="p-4" v-else>
+                    <base-table :dataSupplier="() => apiConfig.output" :fields="outputFields" :pageable="false">
+                    </base-table>
+                </div>
+            </el-descriptions-item>
 
-        <el-descriptions-item label="调用示例" :span="2">
-            <div class="p-4">
-                <div>{{ curlTest }}</div>
-                <div class="mt-2">实际调用中请替换token</div>
-            </div>
-        </el-descriptions-item>
+            <el-descriptions-item label="调用示例" :span="2">
+                <div class="p-4">
+                    <div>{{ curlTest }}</div>
+                    <div class="mt-2">实际调用中请替换token</div>
+                </div>
+            </el-descriptions-item>
 
-        <el-descriptions-item label="输出示例" :span="2">
-            <monacoEditor language="json" v-model="apiConfig.outputExample" :editorOptions="{ readOnly: true }"
-                height="500px" />
-        </el-descriptions-item>
-    </el-descriptions>
+            <el-descriptions-item label="输出示例" :span="2">
+                <monacoEditor language="json" v-model="apiConfig.outputExample" :editorOptions="{ readOnly: true }" height="500px" />
+            </el-descriptions-item>
+        </el-descriptions>
+    </div>
 </template>
 
 <script setup>
@@ -56,8 +57,8 @@ const host = computed(() => {
     return href
 })
 const curlTest = computed(() => {
-    let {method, path} = apiInfo.value
-    let {testData} = apiConfig.value
+    let { method, path } = apiInfo.value
+    let { testData } = apiConfig.value
 
     let result = `curl -X ${method} http://${host.value}/api/dua/${path}`
 
@@ -68,10 +69,10 @@ const curlTest = computed(() => {
     if (method == 'post') {
         if (testData.body) {
             result += ` -d '${testData.body}' -H 'Content-Type: application/json'`
-        } 
+        }
     } else {
         if (testData.queryParams && testData.queryParams.length) {
-            let str = testData.queryParams.map(({code, value}) => code + '=' + value)
+            let str = testData.queryParams.map(({ code, value }) => code + '=' + value)
                 .reduce((s1, s2) => s1 + '&' + s2)
             result += '?' + str
         }

@@ -1,53 +1,54 @@
 <template>
     <!-- 实体类管理 -->
-    <search-form class="bg-white mb-4" v-if="queryFields && queryFields.length" v-model="searchParams"
-        :fields="queryFields" @query="reload" />
+    <div>
+        <search-form class="bg-white mb-4 p-4 br-1" v-if="queryFields && queryFields.length" v-model="searchParams" :fields="queryFields"
+            @query="reload" />
 
-    <div class="bg-white">
-        <!-- 按钮 -->
-        <div class="mb-2">
-            <el-button type="primary" @click="newItem()" v-perm="'new'" icon="plus" v-if="withNew != false">新增</el-button>
-            <slot name="buttons"/>
+        <div class="bg-white p-4 br-1">
+            <!-- 按钮 -->
+            <div class="mb-2">
+                <el-button type="primary" @click="newItem()" v-perm="'new'" icon="plus" v-if="withNew != false">新增</el-button>
+                <slot name="buttons" />
+            </div>
+
+            <!-- 表格 -->
+            <base-table :fields="fields" :dataSupplier="dataSupplier" :pageable="pageable != false && !tree" :showIndex="true"
+                ref="tableRef" @rowClick="rowClick">
+                <template #append>
+                    <el-table-column label="操作" :width="operationsWidth || '130px'">
+                        <template #default="{ row, $index }">
+                            <slot name="prefixButtons" :row="row" :index="$index">
+                                <!-- 附加按钮 -->
+                            </slot>
+
+                            <!-- 操作按钮 -->
+                            <slot name="rowButtons" :row="row" :index="$index">
+                                <entity-manager-row-buttons :row="row" :index="$index" :tree="tree" :withEdit="withEdit"
+                                    :withDelete="withDelete" @addSub="addSub" @goEdit="goEdit" @doDelete="doDelete">
+                                </entity-manager-row-buttons>
+                            </slot>
+                            <slot name="appendButtons" :row="row" :index="$index">
+                                <!-- 附加按钮 -->
+                            </slot>
+                        </template>
+                    </el-table-column>
+                </template>
+            </base-table>
         </div>
 
-        <!-- 表格 -->
-        <base-table :fields="fields" :dataSupplier="dataSupplier" :pageable="pageable != false && !tree" :showIndex="true"
-            ref="tableRef" @rowClick="rowClick">
-            <template #append>
-                <el-table-column label="操作" :width="operationsWidth || '130px'">
-                    <template #default="{ row, $index }">
-                        <slot name="prefixButtons" :row="row" :index="$index">
-                            <!-- 附加按钮 -->
-                        </slot>
-
-                        <!-- 操作按钮 -->
-                        <slot name="rowButtons" :row="row" :index="$index">
-                            <entity-manager-row-buttons :row="row" :index="$index" :tree="tree" :withEdit="withEdit"
-                                :withDelete="withDelete" @addSub="addSub" @goEdit="goEdit" @doDelete="doDelete">
-                            </entity-manager-row-buttons>
-                        </slot>
-                        <slot name="appendButtons" :row="row" :index="$index">
-                            <!-- 附加按钮 -->
-                        </slot>
-                    </template>
-                </el-table-column>
+        <!-- 新增或编辑界面 -->
+        <el-drawer v-model="visible" :title="formModel.id ? '编辑' : '新增'" :close-on-click-modal="false" :close-on-press-escape="false">
+            <base-form :fields="newFields" v-model="formModel" labelPosition="top" ref="formRef" />
+            <slot name="newRemark" v-if="!formModel.id"></slot>
+            <template #footer>
+                <div class="text-right">
+                    <el-link type="primary" class="mr-2" @click="visible = false">取消</el-link>
+                    <el-button type="primary" @click="doSave">保存</el-button>
+                    <slot name="formButtons" :model="formModel"></slot>
+                </div>
             </template>
-        </base-table>
+        </el-drawer>
     </div>
-
-    <!-- 新增或编辑界面 -->
-    <el-drawer v-model="visible" :title="formModel.id ? '编辑' : '新增'" :close-on-click-modal="false"
-        :close-on-press-escape="false">
-        <base-form :fields="newFields" v-model="formModel" labelPosition="top" ref="formRef" />
-        <slot name="newRemark" v-if="!formModel.id"></slot>
-        <template #footer>
-            <div class="text-right">
-                <el-link type="primary" class="mr-2" @click="visible = false">取消</el-link>
-                <el-button type="primary" @click="doSave">保存</el-button>
-                <slot name="formButtons" :model="formModel"></slot>
-            </div>
-        </template>
-    </el-drawer>
 </template>
 
 <script setup>

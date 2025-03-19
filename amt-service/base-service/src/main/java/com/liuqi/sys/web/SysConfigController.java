@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/config")
+@RequestMapping("/sys/config")
 @Slf4j
 @Tag(name = "控制器")
 public class SysConfigController {

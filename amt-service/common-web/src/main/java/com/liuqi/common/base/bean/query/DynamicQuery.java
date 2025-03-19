@@ -23,9 +23,9 @@ public class DynamicQuery {
         return new DynamicQuery();
     }
 
-    private Integer pageNo;
+    private Long pageNo;
 
-    private Integer pageSize;
+    private Long pageSize;
 
     private List<Filter> filters = new ArrayList<>(16);
 

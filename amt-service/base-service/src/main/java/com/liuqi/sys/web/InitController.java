@@ -31,7 +31,7 @@ public class InitController {
         InitInfo initInfo = new InitInfo();
 
         String userId = UserContextHolder.getUserId().orElse("");
-        UserDTO userInfo = UserDTO.builder().build();
+        UserDTO userInfo = new UserDTO();
         if (!StringUtils.isEmpty(userId)) {
             userInfo = userService.findById(userId).orElse(userInfo);
         }
@@ -39,7 +39,7 @@ public class InitController {
         initInfo.setUserInfo(userInfo);
 
         // 获取菜单信息
-        initInfo.setMenuTree(menuService.getTree(false, true));
+        initInfo.setMenuTree(menuService.getTree("sys", false, true));
 
         return initInfo;
     }

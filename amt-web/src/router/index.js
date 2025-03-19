@@ -68,22 +68,28 @@ const routes = [
                 path: '/sys',
                 children: [{
                     path: '/sys/client',
-                    component: () => import('../views/sys/client.vue'),
+                    component: () => import('../views/base/client.vue'),
                     meta: {
                         title: '客户端管理'
                     }
                 }, {
                     path: '/sys/client-apis/:id',
-                    component: () => import('../views/sys/client-apis.vue'),
+                    component: () => import('../views/base/client-apis.vue'),
                     meta: {
                         title: '客户端授权'
                     }
                 },
                 {
                     path: '/sys/user',
-                    component: () => import('../views/sys/user-manager.vue'),
+                    component: () => import('../views/sys/user.vue'),
                     meta: {
                         title: '用户管理'
+                    }
+                }, {
+                    path: '/sys/dict',
+                    component: () => import('../views/sys/dict/index.vue'),
+                    meta: {
+                        title: '字典管理'
                     }
                 }]
             }, {
@@ -123,12 +129,6 @@ const routes = [
                         component: () => import('../views/base/model-data/index.vue'),
                         meta: {
                             title: '数据模型管理'
-                        }
-                    }, {
-                        path: '/base/dict',
-                        component: () => import('../views/base/dict/index.vue'),
-                        meta: {
-                            title: '字典管理'
                         }
                     }
                 ]

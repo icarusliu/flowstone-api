@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
-@RequestMapping("/base/user-role")
+@RequestMapping("/sys/user-role")
 @Slf4j
 @Tag(name = "控制器")
 public class UserRoleController {
@@ -35,5 +36,20 @@ public class UserRoleController {
     public void saveUserRoles(@PathVariable("userId") String userId,
                               @RequestParam("roleIds") String roleIds) {
         userRoleService.saveUserRoles(userId, Arrays.asList(roleIds.split(",")));
+    }
+
+    @GetMapping("remove")
+    public void removeUserRole(String userId, String roleIds) {
+        userRoleService.deleteUserRoles(userId, Arrays.asList(roleIds.split(",")));
+    }
+
+    @GetMapping("save-role-users")
+    public void saveRoleUsers(String roleId, String userIds) {
+        userRoleService.saveRoleUsers(roleId, Arrays.asList(userIds.split(",")));
+    }
+
+    @GetMapping("remove-role-users")
+    public void removeRoleUsers(String roleId, String userIds) {
+        userRoleService.removeRoleUsers(roleId, Arrays.asList(userIds.split(",")));
     }
 }

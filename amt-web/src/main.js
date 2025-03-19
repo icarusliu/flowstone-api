@@ -12,12 +12,13 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { startWebSocket } from '@/utils/ws.js'
 import { useSysStore } from './store'
 import * as loginApis from '@/apis/login'
+import * as sysApis from '@/apis/sys'
 import { directives } from './utils/directives';
 
 const app = createApp(App)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
+    app.component(key, component)
 }
 
 const pinia = createPinia()
@@ -26,21 +27,26 @@ app
     .component('BaseTable', BaseTable)
     .component('EntityManager', EntityManager)
     .component('titleBar', TitleBar)
+    .use(elementPlus)
+    .use(router)
     .use(pinia)
     .use(directives)
 
 
 // 获取初始化信息
-loginApis.getUserInfo().then(resp => {
+sysApis.getInitInfo().then(resp => {
     const sysStore = useSysStore()
-    sysStore.setUserInfo(resp)
+    sysStore.setUserInfo(resp.userInfo)
+    sysStore.setMenuTree(resp.menuTree)
 
     // 启动websocket
     window.websocket = startWebSocket()
 
-    app.use(elementPlus)
-        .use(router)
-        .mount('#app')
+    app.mount('#app')
+
+    if (!resp.menuTree || !resp.menuTree.length) {
+        // router.push('/login')
+    }
 }).catch(() => {
     app.use(elementPlus)
         .use(router)

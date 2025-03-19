@@ -2,10 +2,7 @@ package com.liuqi.sys.bean.dto;
 
 import com.liuqi.sys.bean.enums.UserStatus;
 import com.liuqi.common.base.bean.dto.BaseDTO;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +10,6 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString
-@Builder
 public class UserDTO extends BaseDTO {
     private String deptId;
 

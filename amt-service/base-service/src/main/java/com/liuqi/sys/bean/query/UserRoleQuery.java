@@ -9,6 +9,6 @@ import java.util.List;
 public class UserRoleQuery extends BaseQuery {
     private String userId;
     private List<String> userIds;
-
+    private List<String> roleIds;
     private String roleId;
 }

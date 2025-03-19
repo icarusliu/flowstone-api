@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/dept")
+@RequestMapping("/sys/dept")
 @Slf4j
 @Tag(name = "控制器")
 public class DeptController {

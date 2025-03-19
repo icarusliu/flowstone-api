@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/dict")
+@RequestMapping("/sys/dict")
 @Slf4j
 @Tag(name = "控制器")
 public class DictController {

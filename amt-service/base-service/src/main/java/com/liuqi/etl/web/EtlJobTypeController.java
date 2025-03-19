@@ -76,7 +76,7 @@ public class EtlJobTypeController {
         return service.query(query);
     }
 
-    @GetMapping("table-tree")
+    @GetMapping("tree")
     public List<EtlJobTypeDTO> tree() {
         return TreeUtils.toTree(service.findAll());
     }

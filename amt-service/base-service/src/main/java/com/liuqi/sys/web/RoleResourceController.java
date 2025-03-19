@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/role-resource")
+@RequestMapping("/sys/role-resource")
 @Slf4j
 @Tag(name = "控制器")
 public class RoleResourceController {

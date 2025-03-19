@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @TableName("sys_dept")
 @Comment("机构")
-public class DeptEntity extends BaseEntity {
+public class    DeptEntity extends BaseEntity {
     @Comment("编码")
     private String code;
 

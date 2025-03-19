@@ -151,7 +151,7 @@ function changeCode() {
 }
 
 function loadTypes() {
-    return https.get('/etl/job-type/table-tree');
+    return https.get('/etl/job-type/tree');
 }
 
 function close() {

@@ -43,6 +43,7 @@ public class UserRoleServiceImpl extends AbstractBaseService<UserRoleEntity, Use
         return this.createQueryWrapper()
                 .in(CollectionUtils.isNotEmpty(query.getUserIds()), "user_id", query.getUserIds())
                 .eq(StringUtils.isNotBlank(query.getUserId()), "user_id", query.getUserId())
+                .in(CollectionUtils.isNotEmpty(query.getRoleIds()), "role_id", query.getRoleIds())
                 .eq(StringUtils.isNotBlank(query.getRoleId()), "role_id", query.getRoleId());
     }
 
@@ -134,5 +135,45 @@ public class UserRoleServiceImpl extends AbstractBaseService<UserRoleEntity, Use
         UserRoleQuery query = new UserRoleQuery();
         query.setUserIds(userIds);
         return this.query(query);
+    }
+
+    /**
+     * 保存角色用户清单
+     *
+     * @param roleId  角色id
+     * @param userIds 用户列表
+     */
+    @Override
+    public void saveRoleUsers(String roleId, List<String> userIds) {
+        List<UserRoleDTO> list = this.findByRoles(List.of(roleId));
+        List<String> existsUsers = list.stream().map(UserRoleDTO::getUserId).toList();
+        userIds.removeAll(existsUsers);
+        if (CollectionUtils.isEmpty(userIds)) {
+            return;
+        }
+
+        List<UserRoleDTO> toSaveList = userIds.stream()
+                .map(userId -> {
+                    UserRoleDTO dto = new UserRoleDTO();
+                    dto.setRoleId(roleId);
+                    dto.setUserId(userId);
+                    return dto;
+                }).toList();
+
+        this.insert(toSaveList);
+    }
+
+    /**
+     * 删除角色用户信息
+     *
+     * @param roleId  角色id
+     * @param userIds 用户id
+     */
+    @Override
+    public void removeRoleUsers(String roleId, List<String> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return;
+        }
+        this.remove(this.createQueryWrapper().in("user_id", userIds).eq("role_id", roleId));
     }
 }

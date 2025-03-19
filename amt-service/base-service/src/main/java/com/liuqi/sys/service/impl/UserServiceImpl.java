@@ -1,7 +1,9 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.sys.bean.dto.RoleResourceDTO;
 import com.liuqi.sys.bean.dto.UserDTO;
 import com.liuqi.sys.bean.dto.UserRoleDTO;
@@ -48,7 +50,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO toDTO(UserEntity entity) {
-        UserDTO dto = UserDTO.builder().build();
+        UserDTO dto = new UserDTO();
         BeanUtils.copyProperties(entity, dto);
         return dto;
     }
@@ -252,5 +254,4 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
                     return userContext;
                 }).orElseThrow(() -> AppException.of(AuthErrorCodes.USERNAME_OR_PASSWORD_ERROR));
     }
-
 }

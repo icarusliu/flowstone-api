@@ -13,7 +13,6 @@ import lombok.ToString;
 @Builder
 @TableName("sys_role")
 public class RoleEntity extends BaseEntity {
-    private String code;
-
+    private String appId;
     private String name;
 }

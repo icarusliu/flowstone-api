@@ -281,20 +281,48 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     @Override
     @Transactional
     public IPage<D> pageQuery(Q q) {
+        return this.pageQueryInternal(q.getPageNo(), q.getPageSize(), this.queryToWrapper(q));
+    }
+
+    private IPage<D> pageQueryInternal(Long pageNo, Long pageSize, QueryWrapper<E> queryWrapper) {
         IPage<E> pageReq = new Page<>();
-        pageReq.setCurrent(q.getPageNo());
-        pageReq.setSize(q.getPageSize());
-        IPage<E> result = this.page(pageReq, this.queryToWrapper(q));
+        pageReq.setCurrent(pageNo);
+        pageReq.setSize(pageSize);
+        IPage<E> result = this.page(pageReq, queryWrapper);
 
         IPage<D> finalResult = new Page<>();
         finalResult.setTotal(result.getTotal());
-        finalResult.setSize(q.getPageSize());
-        finalResult.setCurrent(q.getPageNo());
+        finalResult.setSize(pageSize);
+        finalResult.setCurrent(pageNo);
         finalResult.setPages(result.getPages());
         finalResult.setRecords(this.toDTO(result.getRecords()));
 
         this.processAfterQuery(finalResult.getRecords());
         return finalResult;
+    }
+
+    /**
+     * 动态查询
+     *
+     * @param query 查询对象
+     * @return 查询结果
+     */
+    @Override
+    public IPage<D> dynamicQuery(DynamicQuery query) {
+        QueryWrapper<E> queryWrapper = this.createQueryWrapper();
+        List<Filter> filters = query.getFilters();
+        if (!CollectionUtils.isEmpty(filters)) {
+            filters.forEach(filter -> this.processFilter(filter, queryWrapper));
+        }
+
+        if (null == query.getPageNo()) {
+            query.setPageNo(1L);
+        }
+        if (null == query.getPageSize()) {
+            query.setPageSize(1000L);
+        }
+
+        return this.pageQueryInternal(query.getPageNo(), query.getPageSize(), queryWrapper);
     }
 
     /**
@@ -392,39 +420,6 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     }
 
     /**
-     * 动态查询
-     *
-     * @param query 查询对象
-     * @return 查询结果
-     */
-    @Override
-    public IPage<D> dynamicQuery(DynamicQuery query) {
-        QueryWrapper<E> queryWrapper = this.createQueryWrapper();
-        List<Filter> filters = query.getFilters();
-        if (!CollectionUtils.isEmpty(filters)) {
-            filters.forEach(filter -> this.processFilter(filter, queryWrapper));
-        }
-
-        int pageNo = Optional.ofNullable(query.getPageNo()).orElse(1);
-        int pageSize = Optional.ofNullable(query.getPageSize()).orElse(10000);
-        IPage<E> pageReq = new Page<>();
-        pageReq.setCurrent(pageNo);
-        pageReq.setSize(pageSize);
-        IPage<E> result = this.page(pageReq, queryWrapper);
-
-        IPage<D> finalResult = new Page<>();
-        finalResult.setTotal(result.getTotal());
-        finalResult.setSize(pageSize);
-        finalResult.setCurrent(pageNo);
-        finalResult.setPages(result.getPages());
-        finalResult.setRecords(this.toDTO(result.getRecords()));
-
-        this.processAfterQuery(finalResult.getRecords());
-
-        return finalResult;
-    }
-
-    /**
      * 处理动态查询条件
      *
      * @param filter       动态查询条件
@@ -498,7 +493,7 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      */
     @Override
     public List<D> findByIds(List<String> ids) {
-        return this.toDTO(this.list(this.createQueryWrapper().in("id", ids)));
+        return this.queryInternal(null, q -> q.in("id", ids));
     }
 
 

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bg-white p-4">
         <search-form :fields="queryFields" @query="reload" v-model="queryParams" />
         <div class="mb-2">
             <el-button type="primary" @click="newRow" v-if="listConfig.withNew != false" icon="plus">新增记录</el-button>

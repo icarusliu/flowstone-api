@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class MenuDTO extends TreeNode<MenuDTO> {
-    private String code;
+    private String appId;
     private String icon;
     private String name;
     private String path;

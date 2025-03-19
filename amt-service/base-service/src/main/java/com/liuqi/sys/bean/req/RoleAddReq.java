@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 public class RoleAddReq {
-    @NotBlank
-    private String code;
+    private String appId;
 
     @NotBlank
     private String name;

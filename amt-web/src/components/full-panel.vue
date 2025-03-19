@@ -1,5 +1,5 @@
 <template>
-    <div class="page-content">
+    <div class="page-content bg-white p-4">
         <div class="top-bar d-flex">
             <div class="return cursor-pointer" @click="close">
                 <el-icon>

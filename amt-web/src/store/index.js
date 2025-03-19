@@ -1,10 +1,19 @@
 import { defineStore } from 'pinia'
+import * as utils from '@/utils/utils'
 
 export const useSysStore = defineStore('sysStore', {
     state: () => {
         return {
             userInfo: {},
-            menuFolded: false
+            menuTree: [],
+
+            // 有权限的按钮编码列表
+            buttons: [],
+
+            // 有权限的菜单路径列表
+            menuPaths: [],            
+
+            menuFolded: false,
         }
     },
 
@@ -17,6 +26,10 @@ export const useSysStore = defineStore('sysStore', {
             return this.userInfo || {}
         },
 
+        isSuperAdmin() {
+            return this.getUserInfo().isSuperAdmin
+        },
+
         // 折叠菜单
         reverseMenuFold() {
             this.menuFolded = !this.menuFolded
@@ -24,6 +37,38 @@ export const useSysStore = defineStore('sysStore', {
 
         getMenuFolded() {
             return this.menuFolded
+        },
+
+        getMenuTree() {
+            return this.menuTree || []
+        },
+
+        setMenuTree(tree) {
+            this.menuTree = tree
+            if (tree) {
+                this.menuPaths = []
+                this.buttons = []
+
+                utils.loop(tree, item => {
+                    this.menuPaths.push(item.path)
+
+                    if (!item.buttons) {
+                        return
+                    }
+
+                    item.buttons.forEach(button => {
+                        this.buttons.push(item.path + ':' + button.code)
+                    })
+                })
+            }
+        },
+
+        getButtons() {
+            return this.buttons || []
+        }, 
+
+        getMenuPaths() {
+            return this.menuPaths
         }
     }
 })

@@ -46,10 +46,7 @@ export default [
             }, {
                 name: '数据模型管理',
                 path: '/base/model',
-            }, {
-                name: '字典管理',
-                path: '/base/dict',
-            },
+            }
         ]
     },
     {
@@ -62,7 +59,10 @@ export default [
         }, {
             path: '/sys/client',
             name: '客户端管理',
-        }
+        }, {
+            name: '字典管理',
+            path: '/sys/dict',
+        },
             // {
             //     path: '/manager/export',
             //     name: '接口导出',
