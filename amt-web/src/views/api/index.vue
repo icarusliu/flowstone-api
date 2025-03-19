@@ -1,6 +1,6 @@
 <template>
     <div class="h-100 d-flex">
-        <base-tree class="tree" title="分类" apiPrefix="/base/api-type" @select="selectType" v-model="currentType" :newFields="newTypeFields">
+        <base-tree class="tree" title="分类" apiPrefix="/base/api-type" @select="selectType" :newFields="newTypeFields">
         </base-tree>
         <div class="content f-left bg-white p-4">
             <div class="mb-4 space-between">
