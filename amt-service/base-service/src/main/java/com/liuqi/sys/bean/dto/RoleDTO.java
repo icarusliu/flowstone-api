@@ -11,6 +11,6 @@ import lombok.ToString;
 @ToString
 @Builder
 public class RoleDTO extends BaseDTO {
-    private String code;
+    private String appId;
     private String name;
 }

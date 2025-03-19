@@ -48,4 +48,29 @@ public interface UserRoleService extends BaseService<UserRoleDTO, UserRoleQuery>
      * @return 用户角色列表
      */
     List<UserRoleDTO> findByUsers(List<String> userIds);
+
+    /**
+     * 根据角色批量查找记录
+     * @param roleIds
+     * @return 用户角色列表
+     */
+    default List<UserRoleDTO> findByRoles(List<String> roleIds) {
+        UserRoleQuery query = new UserRoleQuery();
+        query.setRoleIds(roleIds);
+        return this.query(query);
+    }
+
+    /**
+     * 保存角色用户清单
+     * @param roleId 角色id
+     * @param userIds 用户列表
+     */
+    void saveRoleUsers(String roleId, List<String> userIds);
+
+    /**
+     * 删除角色用户信息
+     * @param roleId 角色id
+     * @param userIds 用户id
+     */
+    void removeRoleUsers(String roleId, List<String> userIds);
 }

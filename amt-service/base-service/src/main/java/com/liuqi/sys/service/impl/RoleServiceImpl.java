@@ -1,6 +1,9 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.exception.AppException;
+import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.sys.bean.dto.MenuDTO;
 import com.liuqi.sys.bean.dto.RoleDTO;
 import com.liuqi.sys.bean.dto.RoleResourceDTO;
@@ -10,9 +13,6 @@ import com.liuqi.sys.common.ErrorCodes;
 import com.liuqi.sys.domain.entity.RoleEntity;
 import com.liuqi.sys.domain.mapper.RoleMapper;
 import com.liuqi.sys.service.*;
-import com.liuqi.common.base.service.AbstractBaseService;
-import com.liuqi.common.exception.AppException;
-import com.liuqi.common.utils.TreeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +53,11 @@ public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, Ro
     }
 
     @Override
-    protected QueryWrapper<RoleEntity> queryToWrapper(RoleQuery userQuery) {
+    protected QueryWrapper<RoleEntity> queryToWrapper(RoleQuery query) {
         return this.createQueryWrapper()
-                .eq(StringUtils.isNotBlank(userQuery.getCode()), "code", userQuery.getCode())
-                .eq(StringUtils.isNotBlank(userQuery.getName()), "name", userQuery.getName());
+                .eq(StringUtils.isNotBlank(query.getCode()), "code", query.getCode())
+                .eq(StringUtils.isNotBlank(query.getAppId()), "app_id", query.getAppId())
+                .eq(StringUtils.isNotBlank(query.getName()), "name", query.getName());
     }
 
     /**
@@ -68,37 +69,16 @@ public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, Ro
      */
     @Override
     protected boolean processBeforeInsert(RoleDTO dto) {
-        // 角色编码与名称不能重复
-        List<RoleEntity> entities = this.findByCodeOrName(dto.getCode(), dto.getName());
-        if (!entities.isEmpty()) {
+        String appId = Optional.ofNullable(dto.getAppId()).orElse("sys");
+        dto.setAppId(appId);
+
+        // 角色名称不能重复
+        Optional<RoleDTO> entities = this.findByName(dto.getAppId(), dto.getName());
+        if (entities.isPresent()) {
             throw AppException.of(ErrorCodes.BASE_ROLE_EXISTS);
         }
 
         return super.processBeforeInsert(dto);
-    }
-
-    /**
-     * 查找编码或者名称为指定值的记录
-     *
-     * @param code 角色编码
-     * @param name 角色名称
-     * @return 满足条件的记录
-     */
-    private List<RoleEntity> findByCodeOrName(String code, String name) {
-        QueryWrapper<RoleEntity> queryWrapper = this.createQueryWrapper()
-                .eq("code", code)
-                .or(q -> q.eq("name", name));
-        return this.list(queryWrapper);
-    }
-
-    /**
-     * 根据编码查询角色信息
-     *
-     * @param code 角色编码
-     * @return 角色信息
-     */
-    private Optional<RoleDTO> findByCode(String code) {
-        return this.findOne(RoleQuery.builder().code(code).build());
     }
 
     /**
@@ -107,8 +87,8 @@ public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, Ro
      * @param name 名称
      * @return 角色信息
      */
-    private Optional<RoleDTO> findByName(String name) {
-        return this.findOne(RoleQuery.builder().name(name).build());
+    private Optional<RoleDTO> findByName(String appId, String name) {
+        return this.findOne(RoleQuery.builder().appId(appId).name(name).build());
     }
 
     /**
@@ -119,20 +99,16 @@ public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, Ro
      */
     @Override
     protected boolean processBeforeUpdate(RoleDTO dto) {
-        // 角色编码与名称不能重复
-        String code = dto.getCode();
+        // 角色名称不能重复
         String name = dto.getName();
         String id = dto.getId();
 
-        if (StringUtils.isNotBlank(code)) {
-            boolean exists = this.findByCode(code).filter(d -> !d.getId().equals(id)).isPresent();
-            if (exists) {
-                throw AppException.of(ErrorCodes.BASE_ROLE_CODE_EXISTS);
-            }
-        }
+        String appId = Optional.ofNullable(dto.getAppId()).orElse("sys");
+        dto.setAppId(appId);
 
         if (StringUtils.isNotBlank(name)) {
-            boolean exists = this.findByName(name).filter(d -> !d.getId().equals(id)).isPresent();
+            boolean exists = this.findByName(dto.getAppId(), name)
+                    .filter(d -> !d.getId().equals(id)).isPresent();
             if (exists) {
                 throw AppException.of(ErrorCodes.BASE_ROLE_NAME_EXISTS);
             }
@@ -161,9 +137,9 @@ public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, Ro
      * @return 返回所有菜单、按钮等资源，角色如果有权限时，checked标志为true
      */
     @Override
-    public List<RoleResourceInfo> getRoleMenus(String roleId) {
+    public List<RoleResourceInfo> getRoleMenus(String appId, String roleId) {
         // 先查找所有菜单、按钮信息，然后根据角色所配置的角色
-        List<MenuDTO> tree = menuService.getTree(false, true);
+        List<MenuDTO> tree = menuService.getTree(appId, false, true);
         if (CollectionUtils.isEmpty(tree)) {
             return new ArrayList<>(0);
         }

@@ -79,7 +79,7 @@ public class ApiTypeController {
         return service.query(query);
     }
 
-    @GetMapping("table-tree")
+    @GetMapping("tree")
     public List<ApiTypeDTO> tree() {
         return service.tree();
     }

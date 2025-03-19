@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 public class RoleQuery extends BaseQuery {
+    private String appId;
     private String code;
 
     private String name;

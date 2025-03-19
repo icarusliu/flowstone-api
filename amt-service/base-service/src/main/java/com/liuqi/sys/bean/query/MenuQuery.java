@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class MenuQuery extends BaseQuery {
+    private String appId;
     private String name;
 
     private String code;

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class MenuAddReq {
-    private String code;
+    private String roleId;
     @NotBlank
     private String name;
 

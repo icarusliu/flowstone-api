@@ -668,4 +668,39 @@
             ) comment 'ETL任务历史记录'
         </sql>
     </changeSet>
+
+    <changeSet id="alter-sys-tables" author="liuqi">
+        <sql>
+            alter table sys_menu drop column code;
+            alter table sys_menu add column app_id varchar(32) default 'sys' comment '应用id';
+            alter table sys_role drop column code;
+            alter table sys_role add column app_id varchar(32) default 'sys' comment '应用id';
+        </sql>
+    </changeSet>
+
+    <changeSet id="alter-sys-menu" author="liuqi">
+        <sql>
+            alter table sys_menu add column icon varchar(255) default 'sys' comment '图标';
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-sys_dept" author="liuqi">
+        <sql>
+            create or replace table sys_dept
+            (
+            id          varchar(64)                             not null comment '主键'
+            primary key,
+            code        varchar(64)                             not null comment '编码',
+            name        varchar(255)                            not null comment '名称',
+            parent_id   varchar(64) default '-1'                null comment '父级机构',
+            sort        int         default 0                   null comment '排序',
+            tenant_id   varchar(64)                            null comment '租户编号',
+            create_user varchar(255)                            null comment '创建用户',
+            create_time timestamp   default current_timestamp() null comment '创建时间',
+            update_user varchar(255)                            null comment '更新用户',
+            update_time timestamp                               null on update current_timestamp() comment '更新时间',
+            deleted     int(1)      default 0                   null comment '是否删除'
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

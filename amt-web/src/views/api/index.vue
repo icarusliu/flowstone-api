@@ -2,7 +2,7 @@
     <div class="h-100 d-flex">
         <base-tree class="tree" title="分类" apiPrefix="/base/api-type" @select="selectType" v-model="currentType" :newFields="newTypeFields">
         </base-tree>
-        <div class="content f-left">
+        <div class="content f-left bg-white p-4">
             <div class="mb-4 space-between">
                 <div>
                     <el-input class="wf-3 mr-4" placeholder="请输入关键字进行查询" v-model="params.keyLike" clearable></el-input>

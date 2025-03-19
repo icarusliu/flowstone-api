@@ -29,10 +29,7 @@
         <component :is="value" />
     </el-icon>
 
-    <!-- 带有转换函数的列 -->
-    <span :class="clazz" v-else-if="field.converter">{{ field.converter(value, row) }}</span>
-
-    <span :class="clazz" v-else>{{ value == 0 ? value : value || '--' }}</span>
+    <span :class="clazz" v-else>{{ defaultShow() }}</span>
 </template>
 
 <script setup>
@@ -61,6 +58,34 @@ const clazz = computed(() => {
         return clazz
     }
 })
+
+function defaultShow() {
+    let prop = props.field.prop
+    let value = _.get(props.row, prop)
+    let converter = props.field.converter
+    if (converter) {
+        return converter(value, props.row)
+    }
+
+    // 如果是select且有options，需要进行转换
+    let options = props.field.options
+    if (options && _.isArray(options)) {
+        for (var i in options) {
+            let option = options[i]
+            if (option.value == value) {
+                return option.label;
+            }
+        }
+    }
+
+    if (value == 0) {
+        return 0
+    } else if (!value) {
+        return '--'
+    } else {
+        return value
+    }
+}
 
 function change(val) {
     let change = props.field.changeInTable || props.field.change

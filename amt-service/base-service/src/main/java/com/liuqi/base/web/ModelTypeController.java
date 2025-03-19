@@ -75,7 +75,7 @@ public class ModelTypeController {
         return service.query(query);
     }
 
-    @GetMapping("table-tree")
+    @GetMapping("tree")
     public List<ModelTypeDTO> tree() {
         return service.tree();
     }

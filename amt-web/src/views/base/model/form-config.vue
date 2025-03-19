@@ -64,7 +64,7 @@ const fields = ref([
             let cmp = model.cmp
             return !['radio', 'select', 'checkbox'].includes(cmp)
         }, options: () => {
-            return https.post('/base/dict/query').then(resp => {
+            return https.post('/sys/dict/query').then(resp => {
                 return resp.map(item => {
                     return {
                         label: item.name,

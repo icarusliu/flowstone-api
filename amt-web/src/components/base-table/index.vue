@@ -2,8 +2,9 @@
     <!-- 基础数据表格 -->
     <div>
         <el-table :data="rows" row-key="id" :default-expand-all="defaultExpandAll != false" border @rowClick="onRowClick"
-            :highlight-current-row="true" ref="tableRef">
-            <el-table-column width="52px" label="序号" type="index" fixed v-if="showIndex != false" align="center" />
+            :highlight-current-row="true" ref="tableRef" @selectionChange="selectionChange">
+            <el-table-column v-if="showSelection" type="selection" align="center" width="40px" />
+            <el-table-column width="52px" label="序号" type="index" fixed v-else-if="showIndex != false" align="center" />
 
             <template v-for="field in fields">
                 <el-table-column :prop="field.prop" :key="field.prop" :label="field.label" :fixed="field.fixed" :width="field.width"
@@ -20,8 +21,8 @@
             <slot name="append"></slot>
         </el-table>
 
-        <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo" :layout="pageSimple ? 'prev, next' : 'prev, pager, next, total'"
-            @change="pageChanged" background size="small" class="mt-2" />
+        <el-pagination v-if="pageable != false" :total="total" :pageNo="pageNo"
+            :layout="pageSimple ? 'prev, next' : 'prev, pager, next, total'" @change="pageChanged" background size="small" class="mt-2" />
     </div>
 </template>
 
@@ -29,13 +30,16 @@
 import { ref, onMounted } from 'vue'
 import baseTableColumn from './base-table-column.vue';
 
-const props = defineProps(["dataSupplier", "fields", "params", "pageable", "pageSimple", "defaultExpandAll", "showIndex", "initLoad", "pageSize"])
+const props = defineProps(["dataSupplier", "fields", "params", "pageable", "pageSimple", "defaultExpandAll", "showIndex", "initLoad", "pageSize", "showSelection"])
 const total = ref(0)
 const rows = ref([])
 const pageNo = ref(1)
 const pageSize = ref(10)
 const emits = defineEmits(["rowClick"])
 const tableRef = ref()
+const selection = defineModel('selection', {
+    default: []
+})
 
 onMounted(() => {
     props.initLoad != false && loadData()
@@ -125,6 +129,10 @@ function toggleRowExpansion(row, expanded) {
 
 function getSelectionRows() {
     return tableRef.value.getSelectionRows()
+}
+
+function selectionChange() {
+    selection.value = getSelectionRows()
 }
 
 defineExpose({

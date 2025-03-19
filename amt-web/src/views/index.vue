@@ -6,7 +6,7 @@
 
     <div class="right-panel flex-auto h-100">
       <TopNav />
-      <div class="right-content b-box bg-white br-1 m-4 p-4 flex-auto">
+      <div class="right-content b-box br-1 m-4 flex-auto">
         <RouterView />
       </div>
     </div>
@@ -29,7 +29,7 @@ const type = computed(() => {
 <style scoped lang="scss">
 .right-panel {
   overflow: hidden;
-  background-color: #efefef;
+  background-color: #f2f3f5;
 
   .right-content {
     position: relative;

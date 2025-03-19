@@ -1,7 +1,9 @@
 <template>
-    <SearchForm v-model="params" :fields="queryFields" @query="reload"></SearchForm>
-    <base-table :fields="fields" :dataSupplier="dataSupplier" :defaultExpandAll="false" @rowClick="onRowClick" :pageSimple="true"
-        ref="tableRef" :params="params" />
+    <div class="bg-white p-4">
+        <SearchForm v-model="params" :fields="queryFields" @query="reload"></SearchForm>
+        <base-table :fields="fields" :dataSupplier="dataSupplier" :defaultExpandAll="false" @rowClick="onRowClick" :pageSimple="true"
+            ref="tableRef" :params="params" />
+    </div>
 </template>
 
 <script setup>

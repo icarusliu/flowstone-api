@@ -59,7 +59,7 @@ const fields = ref([
     },
     {
         label: '关联字典', prop: 'dictCode', type: 'select', options: () => {
-            return https.post('/base/dict/query').then(resp => {
+            return https.post('/sys/dict/query').then(resp => {
                 return resp.map(item => {
                     return {
                         label: item.name,

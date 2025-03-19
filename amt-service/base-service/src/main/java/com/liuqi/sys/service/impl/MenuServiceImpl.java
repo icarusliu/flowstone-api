@@ -1,6 +1,13 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.bean.UserContext;
+import com.liuqi.common.bean.UserContextHolder;
+import com.liuqi.common.exception.AppException;
+import com.liuqi.common.utils.TreeUtils;
+import com.liuqi.common.utils.enhancer.ListEnhancer;
+import com.liuqi.common.utils.value.BiValue;
 import com.liuqi.sys.bean.dto.MenuButtonDTO;
 import com.liuqi.sys.bean.dto.MenuDTO;
 import com.liuqi.sys.bean.query.MenuQuery;
@@ -9,13 +16,6 @@ import com.liuqi.sys.domain.mapper.MenuMapper;
 import com.liuqi.sys.service.MenuButtonService;
 import com.liuqi.sys.service.MenuService;
 import com.liuqi.sys.service.UserService;
-import com.liuqi.common.base.service.AbstractBaseService;
-import com.liuqi.common.bean.UserContext;
-import com.liuqi.common.bean.UserContextHolder;
-import com.liuqi.common.exception.AppException;
-import com.liuqi.common.utils.TreeUtils;
-import com.liuqi.common.utils.enhancer.ListEnhancer;
-import com.liuqi.common.utils.value.BiValue;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.liuqi.sys.common.ErrorCodes.BASE_MENU_CODE_EXISTS;
 import static com.liuqi.sys.common.ErrorCodes.BASE_MENU_NAME_EXISTS;
 
 @Service
@@ -60,11 +59,8 @@ public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, Me
                 .eq(StringUtils.isNotBlank(query.getParentId()), "parent_id", query.getParentId())
                 .eq(null != query.getHide(), "hide", query.getHide())
                 .in(CollectionUtils.isNotEmpty(query.getIds()), "id", query.getIds())
+                .eq(StringUtils.isNotBlank(query.getAppId()), "app_id", query.getAppId())
                 .orderByAsc("sort");
-    }
-
-    private Optional<MenuDTO> findByCode(String code) {
-        return this.findOne(MenuQuery.builder().code(code).build());
     }
 
     /**
@@ -74,8 +70,8 @@ public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, Me
      * @return 子菜单列表
      */
     @Override
-    public List<MenuDTO> findByParent(String parentId) {
-        return this.query(MenuQuery.builder().parentId(parentId).build());
+    public List<MenuDTO> findByParent(String appId, String parentId) {
+        return this.query(MenuQuery.builder().appId(appId).parentId(parentId).build());
     }
 
     /**
@@ -87,17 +83,11 @@ public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, Me
      */
     @Override
     protected boolean processBeforeInsert(MenuDTO dto) {
-        // 菜单编码全局不能重复
-        String code = dto.getCode();
-        if (StringUtils.isNotBlank(code)) {
-            if (this.findByCode(code).isPresent()) {
-                throw AppException.of(BASE_MENU_CODE_EXISTS);
-            }
-        }
-
         // 同一主菜单下子菜单名称不能重复；
         String name = dto.getName();
-        List<MenuDTO> menus = this.findByParent(dto.getParentId());
+        String appId = Optional.ofNullable(dto.getAppId()).orElse("sys");
+        dto.setAppId(appId);
+        List<MenuDTO> menus = this.findByParent(appId, dto.getParentId());
         if (CollectionUtils.isNotEmpty(menus)) {
             if (menus.stream().anyMatch(item -> item.getName().equals(name))) {
                 throw AppException.of(BASE_MENU_NAME_EXISTS);
@@ -115,7 +105,7 @@ public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, Me
      * @return 树形菜单
      */
     @Override
-    public List<MenuDTO> getTree(Boolean withHide, Boolean withButtons) {
+    public List<MenuDTO> getTree(String appId, Boolean withHide, Boolean withButtons) {
         // 获取用户有权限的菜单与按钮信息
         UserContext userContext = UserContextHolder.get().orElse(null);
         if (null == userContext) {
@@ -132,6 +122,7 @@ public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, Me
 
         MenuQuery query = MenuQuery.builder()
                 .hide(!withHide ? false : null)
+                .appId(appId)
                 .build();
 
         if (null != userResourceIds) {

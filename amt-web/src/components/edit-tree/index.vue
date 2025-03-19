@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <base-tree :apiPrefix="apiPrefix" class="tree mr-4" :title="title" ref="treeRef" :showRoot="showRoot" @currentChange="selectNode">
+    <div class="tree mr-4">
+        <base-tree :apiPrefix="apiPrefix" :title="title" ref="treeRef" :showRoot="showRoot" @currentChange="selectNode">
             <template #buttons>
                 <el-link type="primary" @click="showNew">新增</el-link>
             </template>
@@ -27,7 +27,8 @@
             </template>
         </base-tree>
 
-        <new-item v-model:visible="visible" v-model="editingRow" @change="reloadTree" :parent="currentNode" :apiPrefix="apiPrefix" :fields="newFields"></new-item>
+        <new-item v-model:visible="visible" v-model="editingRow" @change="reloadTree" :parent="currentNode" :apiPrefix="apiPrefix"
+            :fields="newFields"></new-item>
     </div>
 </template>
 <script setup>
@@ -38,10 +39,10 @@ import * as _ from 'lodash'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
 const props = defineProps({
-    apiPrefix: {type: String, required: true},
-    title: {type: String},
-    showRoot: {type: Boolean, default: true},
-    newFields: {type: Array}
+    apiPrefix: { type: String, required: true },
+    title: { type: String },
+    showRoot: { type: Boolean, default: true },
+    newFields: { type: Array }
 })
 const currentNode = defineModel()
 const visible = ref(false)
@@ -79,6 +80,20 @@ function goEdit(row) {
 </script>
 
 <style lang='scss' scoped>
+.tree {
+    background-color: #fefefe;
+    border: 1px solid #f1f1f1;
+    border-radius: 8px;
+    padding: 8px 16px;
+
+    :deep() {
+        .tree-panel {
+            border: none;
+            margin-right: 0;
+        }
+    }
+}
+
 .item {
     width: 100%;
     display: flex;

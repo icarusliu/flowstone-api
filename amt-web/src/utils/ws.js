@@ -1,7 +1,8 @@
 import * as tokenUtils from './token'
 import { useSysStore } from '../store/index.js'
+import { v4 } from 'uuid'
 
-
+const clientId = v4()
 
 export function startWebSocket() {
     let href = window.location.href.replace('http://', '')
@@ -25,6 +26,7 @@ export function startWebSocket() {
 
             websocket.send(JSON.stringify({
                 userId: useSysStore().getUserInfo().id,
+                clientId,
                 msg
             }))
         },

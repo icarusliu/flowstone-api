@@ -14,5 +14,5 @@ public interface RoleService extends BaseService<RoleDTO, RoleQuery> {
      * @param roleId 角色id
      * @return 角色菜单信息
      */
-    List<RoleResourceInfo> getRoleMenus(String roleId);
+    List<RoleResourceInfo> getRoleMenus(String appId, String roleId);
 }

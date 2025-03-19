@@ -26,6 +26,9 @@ const props = defineProps({
     title: {type: String},
     showRoot: {type: Boolean, default: true}
 })
+const currentNode = defineModel("current", {
+    default: {}
+})
 const data = ref([{ id: 0, name: '全部' }])
 const treeProps = reactive({
     label: 'name'
@@ -47,6 +50,7 @@ function load() {
 }
 
 function currentChange(data) {
+    currentNode.value = data
     emits('currentChange', data)
 }
 

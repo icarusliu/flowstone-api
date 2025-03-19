@@ -44,13 +44,7 @@ public class AppSecurityFilter extends OncePerRequestFilter {
         }
 
         UserContext userContext = AuthUtils.parse(token);
-        if (!userContext.getIsClient()) {
-            String username = userContext.getUsername();
-            userContext = (UserContext) userDetailsService.loadUserByUsername(username);
-            UserContextHolder.set(userContext);
-        } else {
-            UserContextHolder.set(userContext);
-        }
+        UserContextHolder.set(userContext);
 
         Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(userContext, null, userContext.getAuthorities());
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

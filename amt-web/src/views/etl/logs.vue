@@ -1,5 +1,5 @@
 <template>
-    <div class="page-content">
+    <div class="page-content bg-white p-4">
         <search-form :fields="queryFields" v-model="params" @query="doQuery"></search-form>
         <base-table :fields="fields" :params="params" ref="tableRef" :dataSupplier="loadData" :pageSimple="true"></base-table>
     </div>

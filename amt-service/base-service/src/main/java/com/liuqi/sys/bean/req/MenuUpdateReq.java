@@ -8,8 +8,7 @@ import lombok.Data;
 public class MenuUpdateReq {
     @NotBlank
     private String id;
-
-    private String code;
+    private String roleId;
     private String icon;
     private String name;
 

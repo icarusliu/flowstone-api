@@ -23,7 +23,7 @@ import java.util.List;
  * @author Coder Generator 2024-09-25 09:04:45 
  **/
 @RestController
-@RequestMapping("/base/client")
+@RequestMapping("/sys/client")
 @Slf4j
 @Tag(name = "客户端控制器")
 public class ClientController {

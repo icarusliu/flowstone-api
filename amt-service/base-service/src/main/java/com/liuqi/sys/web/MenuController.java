@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/menu")
+@RequestMapping("/sys/menu")
 @Slf4j
 @Tag(name = "控制器")
 public class MenuController {
@@ -30,7 +30,7 @@ public class MenuController {
         MenuDTO dto = new MenuDTO();
         BeanUtils.copyProperties(req, dto);
         service.insert(dto);
-       
+
     }
 
     @PutMapping("update")
@@ -39,14 +39,14 @@ public class MenuController {
         MenuDTO dto = new MenuDTO();
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
-       
+
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
     public void delete(@PathVariable("id") String id) {
         service.delete(id);
-       
+
     }
 
     @PostMapping("page-query")
@@ -62,8 +62,10 @@ public class MenuController {
     }
 
     @GetMapping("tree")
-    public List<MenuDTO> tree(Boolean withHide,
-                              Boolean withButtons) {
-        return service.getTree(withHide, withButtons);
+    public List<MenuDTO> tree(
+            @RequestParam(value = "appId", defaultValue = "sys") String appId,
+            Boolean withHide,
+            Boolean withButtons) {
+        return service.getTree(appId, withHide, withButtons);
     }
 }

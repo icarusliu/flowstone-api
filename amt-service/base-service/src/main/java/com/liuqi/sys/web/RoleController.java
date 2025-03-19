@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/base/role")
+@RequestMapping("/sys/role")
 @Slf4j
 @Tag(name = "角色控制器")
 public class RoleController {
@@ -64,7 +64,9 @@ public class RoleController {
 
     @GetMapping("resources")
     @Operation(summary = "查找角色菜单信息")
-    public List<RoleResourceInfo> getRoleMenus(String roleId) {
-        return roleService.getRoleMenus(roleId);
+    public List<RoleResourceInfo> getRoleMenus(
+            @RequestParam(value = "appId", defaultValue = "sys") String appId,
+            String roleId) {
+        return roleService.getRoleMenus(appId, roleId);
     }
 }

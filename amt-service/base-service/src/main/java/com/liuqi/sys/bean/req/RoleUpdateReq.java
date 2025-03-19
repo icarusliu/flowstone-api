@@ -8,7 +8,7 @@ public class RoleUpdateReq {
     @NotBlank
     private String id;
 
-    private String code;
+    private String roleId;
 
     private String name;
 }

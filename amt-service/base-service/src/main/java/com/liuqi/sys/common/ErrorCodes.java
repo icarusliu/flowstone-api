@@ -41,6 +41,9 @@ public enum ErrorCodes implements BaseErrorCodes {
     // -------------------------------系统配置项相关异常
     BASE_CONFIG_CODE_EXISTS("C06001", "配置项编码重复"),
 
+    BASE_CLIENT_INVALID("C07001", "客户端无效"),
+    BASE_CLIENT_DISABLED("C07002", "客户端已禁用"),
+
     // -------------------------------业务相关异常
     BUSI_WORK_TYPE_NAME_DUPLICATED("D01001", "工作分类名称重复"),
     BUSI_PROJECT_DELETE_FAILED("D01002", "该项目已填报日/月计划，需要先删除项目关联的日、月数据再进行操作"),

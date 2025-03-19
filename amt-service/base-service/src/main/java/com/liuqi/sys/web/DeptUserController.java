@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/base/dept-user")
+@RequestMapping("/sys/dept-user")
 @Slf4j
 @Tag(name = "控制器")
 public class DeptUserController {

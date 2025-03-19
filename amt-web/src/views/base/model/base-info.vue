@@ -69,7 +69,7 @@ const fieldFields = ref([
     { label: '默认值', prop: 'defaultValue' },
     {
         label: '关联字典', prop: 'dictCode', type: 'select', options: () => {
-            return https.post('/base/dict/query').then(resp => {
+            return https.post('/sys/dict/query').then(resp => {
                 return resp.map(item => {
                     return {
                         label: item.name,
@@ -86,7 +86,7 @@ const rowSelected = ref(false)
 const innerFields = ['id', 'createTime', 'createUser', 'updateTime', 'updateUser']
 
 function loadTypes() {
-    return https.get('/base/model-type/table-tree');
+    return https.get('/base/model-type/tree');
 }
 
 

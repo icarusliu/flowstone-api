@@ -2,12 +2,12 @@ package com.liuqi.sys.service;
 
 import com.alibaba.fastjson2.JSON;
 import com.liuqi.sys.bean.dto.ClientDTO;
-import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.bean.LoginResp;
 import com.liuqi.common.bean.UserInfoResp;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.AuthUtils;
 import com.liuqi.common.bean.UserContext;
+import com.liuqi.sys.common.ErrorCodes;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
