@@ -6,7 +6,7 @@ const options = [
 ];
 
 export const dsFields = [
-    { label: '编码', prop: 'code', required: true, width: '80px', maxLength: 16 },
+    { label: '编码', prop: 'code', required: true, width: '80px', maxLength: 16, unique: true },
     { label: '名称', prop: 'name', required: true, width: '160px' },
     {
         label: '类型', prop: 'type', required: true,

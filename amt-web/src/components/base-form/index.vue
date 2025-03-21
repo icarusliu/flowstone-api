@@ -51,7 +51,6 @@ const props = defineProps({
 onMounted(() => {
     // 加载校验规则
     loadRules()
-
     if (_.isEmpty(form.value)) {
         form.value = getFormDefaultModel(props.fields)
     }
@@ -97,6 +96,7 @@ function loadRules() {
             // 可能是校验函数或者正则表达式或者内置校验
             if (type == 'func' || _.isFunction(validator)) {
                 fieldRules.push({
+                    trigger: 'blur',
                     validator: (rule, val, callback) => validator(rule, val, callback, form.value)
                 })
             } else if (type == 'regex') {

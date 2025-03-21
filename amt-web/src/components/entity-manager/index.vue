@@ -83,6 +83,31 @@ onMounted(() => {
         if (field.needNew != false && field.type != 'operations' && !field.system) {
             // field.system表示是否是系统字段
             newFields.push(field);
+
+            // 处理唯一性校验
+            if (field.unique) {
+                if (!field.validation) {
+                    field.validation = {}
+                }
+                field.validation.validator = (rule, val, callback, form) => {
+                    // 校验唯一性
+                    let params = {}
+                    params[field.prop] = val 
+                    entityApis.query(props.apiPrefix, params).then(resp => {
+                        if (!resp || !resp.length) {
+                            return callback()
+                        }
+
+                        let arr = resp.filter(item => item.id != form.id)
+                        if (!arr || !arr.length) {
+                            return callback()
+                        }
+
+                        callback(new Error(field.label + '不能重复，请重新输入'))
+                    })
+                }
+            }
+
         } else if (field.type == 'operations') {
             hasOperation = true
         }

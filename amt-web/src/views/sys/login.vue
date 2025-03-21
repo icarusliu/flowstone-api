@@ -1,19 +1,19 @@
 <template>
     <div class="main">
         <div class="login-box">
-            <h1 class="color-primary">欢迎使用流石API管理工具</h1>
+            <h1 class="color-primary">流石API管理工具</h1>
             <div class="content">
                 <div class="sub-title">
                     <span class="title font-bold">
-                        欢迎登录
+                        账号登录
                     </span>
                 </div>
                 <el-form class="form" :model="formData" :rules="rules" ref="formRef">
                     <el-form-item prop="username">
-                        <el-input class="line" placeholder="请输入用户名或手机号" v-model="formData.username" name="username" />
+                        <el-input placeholder="请输入用户名或手机号" v-model="formData.username" name="username" />
                     </el-form-item>
                     <el-form-item prop="password">
-                        <password-input :line="true" v-model="formData.password" />
+                        <password-input v-model="formData.password" />
                     </el-form-item>
                     <div class="buttons">
                         <el-button type="primary" class="button" @click="doLogin">登录</el-button>
@@ -109,8 +109,7 @@ function doLogin() {
 @media screen and (min-width: 600px) {
     .login-box {
         width: 500px;
-        right: 10%;
-        top: 15%;
+        right: 20%;
     }
 }
 
@@ -118,7 +117,6 @@ function doLogin() {
     .login-box {
         width: 100%;
         padding: 0 16px;
-        top: 15%;
         box-sizing: border-box;
     }
 }
@@ -132,6 +130,7 @@ function doLogin() {
 
 .login-box {
     position: absolute;
+    top: 20%;
 
     h1 {
         text-align: center;
@@ -140,20 +139,20 @@ function doLogin() {
     }
 
     .content {
-        box-shadow: 0 0 5px #dfdfdf;
+        box-shadow: 0 4px 16px 0 rgb(33 37 46 / 12%);
         padding: 48px;
         line-height: 58px;
         background-color: #fff;
-        border-radius: 5px;
+        border-radius: 2px;
 
         .sub-title {
             font-size: 18px;
-            text-align: center;
+            text-align: left;
             margin-bottom: 32px;
 
             .title {
-                padding-bottom: 12px;
-                border-bottom: 3px solid var(--primary_color);
+                padding: 0 8px 4px 8px;
+                border-bottom: 4px solid var(--primary_color);
             }
         }
 
@@ -169,7 +168,7 @@ function doLogin() {
         .form {
             :deep() {
                 .el-input {
-                    --el-input-height: 48px;
+                    --el-input-height: 40px;
                 }
             }
         }

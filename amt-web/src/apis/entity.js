@@ -4,6 +4,10 @@ export function load(prefix, params) {
     return https.post(prefix + '/page-query', params)
 }
 
+export function query(prefix, params) {
+    return https.post(prefix + '/query', params);
+}
+
 export function tree(prefix, params) {
     return https.get(prefix + '/tree', params);
 }
