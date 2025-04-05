@@ -1,9 +1,9 @@
-name: $T$Service
+name: $T$EntityService
 dir: service
 comment: "服务接口"
 imports:
   - $T$DTO
   - $T$Query
   - com.liuqi.common.base.service.BaseService
-template: "public interface $T$Service extends BaseService<$T$DTO, $T$Query> {
+template: "public interface $T$EntityService extends BaseService<$T$DTO, $T$Query> {
   }"

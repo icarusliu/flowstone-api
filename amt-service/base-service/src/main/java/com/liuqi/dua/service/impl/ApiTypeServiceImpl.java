@@ -1,7 +1,7 @@
 package com.liuqi.dua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.dua.bean.dto.ApiTypeDTO;
 import com.liuqi.dua.bean.query.ApiTypeQuery;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Coder Generator 2024-08-09 22:08:31
  **/
 @Service
-public class ApiTypeServiceImpl extends AbstractBaseService<ApiTypeEntity, ApiTypeDTO, ApiTypeMapper, ApiTypeQuery> implements ApiTypeService {
+public class ApiTypeServiceImpl extends AbstractBaseEntityService<ApiTypeEntity, ApiTypeDTO, ApiTypeMapper, ApiTypeQuery> implements ApiTypeService {
     @Override
     public ApiTypeDTO toDTO(ApiTypeEntity entity) {
         ApiTypeDTO dto = new ApiTypeDTO();

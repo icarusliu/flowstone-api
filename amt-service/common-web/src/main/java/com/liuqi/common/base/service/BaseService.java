@@ -1,15 +1,15 @@
 package com.liuqi.common.base.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.dto.BaseDTO;
 import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.common.base.bean.query.BaseQuery;
+import com.liuqi.common.base.bean.query.DynamicQueryBuilder;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseService<D extends BaseDTO, Q extends BaseQuery> {
+public interface BaseService<D, Q extends BaseQuery> {
     D insert(D dto);
 
     List<D> insert(List<D> dtos);
@@ -36,7 +36,20 @@ public interface BaseService<D extends BaseDTO, Q extends BaseQuery> {
      * @param query 查询对象
      * @return 查询结果
      */
-    IPage<D> dynamicQuery(DynamicQuery query);
+    IPage<D> dynamicPageQuery(DynamicQuery query);
+
+    /**
+     * 动态查询
+     *
+     * @param query 查询对象
+     * @return 查询结果
+     */
+    List<D> dynamicQuery(DynamicQuery query);
+
+    /**
+     * 动态查询
+     */
+    DynamicQueryBuilder<D> dynamicQuery();
 
     /**
      * 查询单个数据

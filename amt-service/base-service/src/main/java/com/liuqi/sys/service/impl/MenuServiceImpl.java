@@ -1,7 +1,7 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.common.bean.UserContextHolder;
 import com.liuqi.common.exception.AppException;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import static com.liuqi.sys.common.ErrorCodes.BASE_MENU_NAME_EXISTS;
 
 @Service
-public class MenuServiceImpl extends AbstractBaseService<MenuEntity, MenuDTO, MenuMapper, MenuQuery> implements MenuService {
+public class MenuServiceImpl extends AbstractBaseEntityService<MenuEntity, MenuDTO, MenuMapper, MenuQuery> implements MenuService {
     @Autowired
     private MenuButtonService menuButtonService;
 

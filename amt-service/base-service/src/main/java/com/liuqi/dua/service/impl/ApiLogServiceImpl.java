@@ -3,7 +3,7 @@ package com.liuqi.dua.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.sys.bean.dto.ClientDTO;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.utils.ExceptionUtils;
 import com.liuqi.common.bean.UserContextHolder;
 import com.liuqi.dua.bean.dto.ApiDTO;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Coder Generator 2024-08-14 14:42:30
  **/
 @Service
-public class ApiLogServiceImpl extends AbstractBaseService<ApiLogEntity, ApiLogDTO, ApiLogMapper, ApiLogQuery> implements ApiLogService {
+public class ApiLogServiceImpl extends AbstractBaseEntityService<ApiLogEntity, ApiLogDTO, ApiLogMapper, ApiLogQuery> implements ApiLogService {
     @Override
     public ApiLogDTO toDTO(ApiLogEntity entity) {
         ApiLogDTO dto = new ApiLogDTO();

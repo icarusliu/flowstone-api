@@ -1,7 +1,7 @@
 package com.liuqi.etl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.etl.bean.dto.EtlJobDependDTO;
 import com.liuqi.etl.bean.query.EtlJobDependQuery;
 import com.liuqi.etl.domain.entity.EtlJobDependEntity;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-10 17:05:53 
  **/
 @Service
-public class EtlJobDependServiceImpl extends AbstractBaseService<EtlJobDependEntity, EtlJobDependDTO, EtlJobDependMapper, EtlJobDependQuery> implements EtlJobDependService {
+public class EtlJobDependServiceImpl extends AbstractBaseEntityService<EtlJobDependEntity, EtlJobDependDTO, EtlJobDependMapper, EtlJobDependQuery> implements EtlJobDependService {
     @Override
     public EtlJobDependDTO toDTO(EtlJobDependEntity entity) {
         EtlJobDependDTO dto = new EtlJobDependDTO();

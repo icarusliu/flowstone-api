@@ -1,7 +1,7 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.base.bean.dto.DsDTO;
 import com.liuqi.dua.bean.dto.TableFieldDTO;
 import com.liuqi.base.bean.query.DsQuery;
@@ -26,7 +26,7 @@ import java.util.List;
  **/
 @Service
 @Slf4j
-public class DsServiceImpl extends AbstractBaseService<DsEntity, DsDTO, DsMapper, DsQuery> implements DsService {
+public class DsServiceImpl extends AbstractBaseEntityService<DsEntity, DsDTO, DsMapper, DsQuery> implements DsService {
     @Autowired
     private DynamicDsConfigService dynamicDsConfigService;
 

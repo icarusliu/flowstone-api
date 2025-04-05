@@ -6,7 +6,7 @@ import com.liuqi.sys.bean.query.DeptUserQuery;
 import com.liuqi.sys.domain.entity.DeptUserEntity;
 import com.liuqi.sys.domain.mapper.DeptUserMapper;
 import com.liuqi.sys.service.DeptUserService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +19,7 @@ import java.util.List;
  * 机构用户关联服务
  */
 @Service
-public class DeptUserServiceImpl extends AbstractBaseService<DeptUserEntity, DeptUserDTO, DeptUserMapper, DeptUserQuery> implements DeptUserService {
+public class DeptUserServiceImpl extends AbstractBaseEntityService<DeptUserEntity, DeptUserDTO, DeptUserMapper, DeptUserQuery> implements DeptUserService {
     @Override
     public DeptUserDTO toDTO(DeptUserEntity entity) {
         DeptUserDTO dto = new DeptUserDTO();

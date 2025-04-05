@@ -1,7 +1,7 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.base.bean.dto.ModelConfigDTO;
 import com.liuqi.base.bean.query.ModelConfigQuery;
 import com.liuqi.base.domain.entity.ModelConfigEntity;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * @author Coder Generator 2025-03-15 16:48:45 
  **/
 @Service
-public class ModelConfigServiceImpl extends AbstractBaseService<ModelConfigEntity, ModelConfigDTO, ModelConfigMapper, ModelConfigQuery> implements ModelConfigService {
+public class ModelConfigServiceImpl extends AbstractBaseEntityService<ModelConfigEntity, ModelConfigDTO, ModelConfigMapper, ModelConfigQuery> implements ModelConfigService {
     @Override
     public ModelConfigDTO toDTO(ModelConfigEntity entity) {
         ModelConfigDTO dto = new ModelConfigDTO();

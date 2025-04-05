@@ -8,7 +8,7 @@ import com.liuqi.base.bean.query.ScheduleTaskQuery;
 import com.liuqi.base.domain.entity.ScheduleTaskEntity;
 import com.liuqi.base.domain.mapper.ScheduleTaskMapper;
 import com.liuqi.base.service.ScheduleTaskService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  * @author Coder Generator 2024-08-16 15:54:28
  **/
 @Service
-public class ScheduleTaskServiceImpl extends AbstractBaseService<ScheduleTaskEntity, ScheduleTaskDTO, ScheduleTaskMapper, ScheduleTaskQuery> implements ScheduleTaskService {
+public class ScheduleTaskServiceImpl extends AbstractBaseEntityService<ScheduleTaskEntity, ScheduleTaskDTO, ScheduleTaskMapper, ScheduleTaskQuery> implements ScheduleTaskService {
     @Override
     public ScheduleTaskDTO toDTO(ScheduleTaskEntity entity) {
         ScheduleTaskDTO dto = new ScheduleTaskDTO();

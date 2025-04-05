@@ -1,18 +1,18 @@
 <template>
     <!-- 下拉 -->
     <base-select v-if="field.type == 'select'" v-model="model" :value-key="field.valueKey" :disabled="disabled" :multiple="field.multiple"
-        @change="onFieldChange" :options="field.options">
+        :filterable="field.filterable" @change="onFieldChange" :options="field.options">
     </base-select>
 
     <!-- 树形下拉 -->
-    <base-tree-select v-else-if="field.type == 'tree-select'" v-model="model" :disabled="disabled" @change="onFieldChange"
-        :options="field.options">
+    <base-tree-select v-else-if="field.type == 'tree-select' || field.type == 'treeSelect'" v-model="model" :disabled="disabled"
+        @change="onFieldChange" :options="field.options">
     </base-tree-select>
 
     <!-- 数字输入 -->
     <template v-else-if="field.type == 'number'">
         <el-input-number v-model="model" :step="field.step || 1" :precision="field.precision" :max="field.max" :disabled="disabled"
-            @change="onFieldChange">
+            :min="field.min" @change="onFieldChange">
         </el-input-number>
         <span class="ml-2">{{ field.unit }}</span>
     </template>
@@ -23,7 +23,8 @@
     </el-radio-group>
 
     <!-- 复选 -->
-    <base-checkbox v-else-if="field.type == 'checkbox'" v-model="model" :options="field.options" :disabled="disabled" @change="onFieldChange" />
+    <base-checkbox v-else-if="field.type == 'checkbox'" v-model="model" :options="field.options" :disabled="disabled"
+        @change="onFieldChange" />
 
     <!-- 子表格 -->
     <TableField v-else-if="field.type == 'table'" v-model="model" :field="field" :disabled="disabled" @change="onFieldChange" />
@@ -44,11 +45,13 @@
 
     <!-- 子可编辑表格 -->
     <template v-else-if="field.type == 'editTable'">
-        <edit-table :fields="field.fields" v-model="model" :defRow="field.default" :readonly="readonly"></edit-table>
+        <edit-table :fields="field.fields" v-model="model" :defRow="field.default" :readonly="readonly" :showIndex="field.showIndex"
+            :mode="field.mode" :height="field.height" :showNew="field.showNew" :withDelete="field.withDelete"></edit-table>
     </template>
 
     <!-- testarea -->
-    <el-input v-else-if="field.type == 'textarea'" type="textarea" v-model="model" :disabled="disabled" @change="onFieldChange">
+    <el-input v-else-if="field.type == 'textarea'" type="textarea" v-model="model" :disabled="disabled" @change="onFieldChange"
+        :placeholder="field.placeholder || '请输入' + field.label">
     </el-input>
 
     <!-- Cron表达式编辑 -->
@@ -60,60 +63,61 @@
         <template #prepend v-if="field.prepend">
             {{ field.prepend }}
         </template>
+        <template #append v-if="field.append">{{ field.append }}</template>
     </el-input>
 </template>
 
 <script setup>
-import BaseSelect from '../base-select.vue'
-import baseCheckbox from '../base-checkbox.vue';
-import baseTreeSelect from '../base-tree-select.vue'
-import CronEditor from '../cron-editor.vue';
-import EditTable from '../edit-table/index.vue'
-import iconSelector from '../icon-selector.vue';
-import TableField from './table-field.vue'
-import * as _ from 'lodash'
+    import BaseSelect from '../base-select.vue'
+    import baseCheckbox from '../base-checkbox.vue';
+    import baseTreeSelect from '../base-tree-select.vue'
+    import CronEditor from '../cron-editor.vue';
+    import EditTable from '../edit-table/index.vue'
+    import iconSelector from '../icon-selector.vue';
+    import TableField from './table-field.vue'
+    import * as _ from 'lodash'
 
-const props = defineProps(['field', 'fields', 'form', 'readonly'])
+    const props = defineProps(['field', 'fields', 'form', 'readonly'])
 
-const disabled = computed(() => {
-    let editable = props.field.editable
-    if (editable == false || props.readonly) {
-        return true
+    const disabled = computed(() => {
+        let editable = props.field.editable
+        if (editable == false || props.readonly) {
+            return true
+        }
+
+        if (_.isFunction(editable)) {
+            return editable(model.value, props.form)
+        }
+
+        return false
+    })
+
+    const model = computed({
+        get() {
+            return _.get(props.form, props.field.prop)
+        },
+        set(val) {
+            _.set(props.form, props.field.prop, val)
+        }
+    })
+    const inputRef = ref()
+
+    onMounted(() => {
+        if (props.field.autofocus) {
+            nextTick(() => {
+                inputRef.value && inputRef.value.focus()
+            })
+        }
+    })
+
+    // 字段值变化事件 
+    function onFieldChange(val, item) {
+        let field = props.field
+        if (field.change) {
+            field.change(val, props.form, {
+                fields: props.fields,
+                item
+            })
+        }
     }
-
-    if (_.isFunction(editable)) {
-        return editable(model.value, props.form)
-    }
-
-    return false
-})
-
-const model = computed({
-    get() {
-        return props.form[props.field.prop]
-    },
-    set(val) {
-        props.form[props.field.prop] = val
-    }
-})
-const inputRef = ref()
-
-onMounted(() => {
-    if (props.field.autofocus) {
-        nextTick(() => {
-            inputRef.value && inputRef.value.focus()
-        })
-    }
-})
-
-// 字段值变化事件 
-function onFieldChange(val, item) {
-    let field = props.field
-    if (field.change) {
-        field.change(val, props.form, {
-            fields: props.fields,
-            item
-        })
-    }
-}
 </script>

@@ -6,7 +6,7 @@ import com.liuqi.sys.bean.query.ClientQuery;
 import com.liuqi.sys.domain.entity.ClientEntity;
 import com.liuqi.sys.domain.mapper.ClientMapper;
 import com.liuqi.sys.service.ClientService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * @author Coder Generator 2024-09-25 09:04:45 
  **/
 @Service
-public class ClientServiceImpl extends AbstractBaseService<ClientEntity, ClientDTO, ClientMapper, ClientQuery> implements ClientService {
+public class ClientServiceImpl extends AbstractBaseEntityService<ClientEntity, ClientDTO, ClientMapper, ClientQuery> implements ClientService {
     @Override
     public ClientDTO toDTO(ClientEntity entity) {
         ClientDTO dto = new ClientDTO();

@@ -2,21 +2,14 @@ package com.liuqi.common.base.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liuqi.common.base.bean.dto.BaseDTO;
-import com.liuqi.common.base.bean.query.BaseQuery;
-import com.liuqi.common.base.bean.query.DynamicQuery;
-import com.liuqi.common.base.bean.query.Filter;
-import com.liuqi.common.base.bean.query.FilterOp;
-import com.liuqi.common.base.domain.entity.BaseEntity;
-import com.liuqi.common.base.domain.mapper.BaseMapper;
-import com.liuqi.common.bean.UserContextHolder;
-import com.liuqi.common.exception.AppException;
-import com.liuqi.common.exception.CommErrorCodes;
+import com.liuqi.common.base.bean.query.*;
 import liquibase.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -34,13 +26,14 @@ import java.util.stream.Collectors;
 
 /**
  * 抽象实体服务，完成基础数据库操作的封装
+ * 用于实体类不含基础字段的场景（创建时间、更新时间、删除标记等）
  *
  * @param <E> Entity实体对象
  * @param <D> DTO数据对象
  * @param <M> 数据库操作Mapper
  * @param <Q> Query查询对象
  */
-public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDTO, M extends BaseMapper<E>, Q extends BaseQuery>
+public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>, Q extends BaseQuery>
         extends ServiceImpl<M, E> implements BaseService<D, Q> {
     /**
      * 实体插入操作
@@ -55,26 +48,9 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
             return dto;
         }
 
-        this.setCreateFields(dto);
-
         E entity = this.toEntity(dto);
         this.save(entity);
         return this.toDTO(entity);
-    }
-
-    /**
-     * 设置基础字段值
-     *
-     * @param dto 数据对象
-     */
-    protected void setCreateFields(D dto) {
-        UserContextHolder.get()
-                .ifPresent(user -> {
-                    dto.setCreateUser(user.getNickname());
-                    dto.setTenantId(user.getTenantId());
-                });
-        dto.setCreateTime(LocalDateTime.now());
-        dto.setDeleted(false);
     }
 
     @Override
@@ -110,29 +86,12 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     @Override
     @Transactional
     public void update(D dto) {
-        if (StringUtils.isEmpty(dto.getId())) {
-            throw AppException.of(CommErrorCodes.FIELD_NULL, "id");
-        }
-
         if (!this.processBeforeUpdate(dto)) {
             return;
         }
 
-        this.setUpdateFields(dto);
-
         E entity = this.toEntity(dto);
         this.updateById(entity);
-    }
-
-    /**
-     * 设置更新字段值
-     *
-     * @param dto 数据对象
-     */
-    protected void setUpdateFields(D dto) {
-        UserContextHolder.get()
-                .ifPresent(user -> dto.setUpdateUser(user.getNickname()));
-        dto.setUpdateTime(LocalDateTime.now());
     }
 
     /**
@@ -188,7 +147,7 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      * @param processor 查询附加处理器，可为空
      * @return 查询结果
      */
-    private List<D> queryInternal(Q q, Consumer<QueryWrapper<E>> processor) {
+    protected List<D> queryInternal(Q q, Consumer<QueryWrapper<E>> processor) {
         QueryWrapper<E> queryWrapper;
         if (null != q) {
             queryWrapper = this.queryToWrapper(q);
@@ -257,10 +216,7 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      * @return 创建好的QueryWrapper
      */
     protected QueryWrapper<E> createQueryWrapper() {
-        QueryWrapper<E> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("deleted", false);
-
-        return queryWrapper;
+        return new QueryWrapper<>();
     }
 
     /**
@@ -308,7 +264,7 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
      * @return 查询结果
      */
     @Override
-    public IPage<D> dynamicQuery(DynamicQuery query) {
+    public IPage<D> dynamicPageQuery(DynamicQuery query) {
         QueryWrapper<E> queryWrapper = this.createQueryWrapper();
         List<Filter> filters = query.getFilters();
         if (!CollectionUtils.isEmpty(filters)) {
@@ -323,6 +279,27 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
         }
 
         return this.pageQueryInternal(query.getPageNo(), query.getPageSize(), queryWrapper);
+    }
+
+    @Override
+    public DynamicQueryBuilder<D> dynamicQuery() {
+        return DynamicQueryBuilder.create(this);
+    }
+
+    /**
+     * 动态查询
+     *
+     * @param query 查询对象
+     * @return 查询结果
+     */
+    @Override
+    public List<D> dynamicQuery(DynamicQuery query) {
+        return this.queryInternal(null, w -> {
+            List<Filter> filters = query.getFilters();
+            if (!CollectionUtils.isEmpty(filters)) {
+                filters.forEach(filter -> this.processFilter(filter, w));
+            }
+        });
     }
 
     /**
@@ -341,45 +318,25 @@ public abstract class AbstractBaseService<E extends BaseEntity, D extends BaseDT
     }
 
     /**
-     * 逻辑删除
+     * 物理删除
      *
      * @param id 待删除记录id
      */
     @Override
     @Transactional
     public void delete(String id) {
-        if (!this.processBeforeDelete(Collections.singleton(id))) {
-            return;
-        }
-
-        // 逻辑删除
-        UpdateWrapper<E> updateWrapper = this.createUpdateWrapper();
-        updateWrapper.eq("id", id)
-                .set("deleted", true);
-        this.update(updateWrapper);
-
-        this.processAfterDelete(Collections.singleton(id));
+        this.deletePhysical(id);
     }
 
     /**
-     * 批量逻辑删除
+     * 物理删除
      *
      * @param ids 待删除记录id列表
      */
     @Override
     @Transactional
     public void delete(Collection<String> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            return;
-        }
-
-        if (!this.processBeforeDelete(ids)) {
-            return;
-        }
-
-        this.update(this.createUpdateWrapper().in("id", ids).set("deleted", false));
-
-        this.processAfterDelete(ids);
+        this.deletePhysical(ids);
     }
 
     /**

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.common.ErrorCodes;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.SqlParserUtils;
 import com.liuqi.etl.bean.dto.EtlJobDTO;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * @author Coder Generator 2025-03-10 16:36:10 
  **/
 @Service
-public class EtlJobServiceImpl extends AbstractBaseService<EtlJobEntity, EtlJobDTO, EtlJobMapper, EtlJobQuery> implements EtlJobService {
+public class EtlJobServiceImpl extends AbstractBaseEntityService<EtlJobEntity, EtlJobDTO, EtlJobMapper, EtlJobQuery> implements EtlJobService {
     @Autowired
     private EtlJobPublishedService publishedService;
 

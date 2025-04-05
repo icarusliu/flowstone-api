@@ -1,7 +1,7 @@
 package com.liuqi.etl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.etl.bean.dto.EtlLogDTO;
 import com.liuqi.etl.bean.query.EtlLogQuery;
 import com.liuqi.etl.domain.entity.EtlLogEntity;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * @author Coder Generator 2025-03-10 16:37:56 
  **/
 @Service
-public class EtlLogServiceImpl extends AbstractBaseService<EtlLogEntity, EtlLogDTO, EtlLogMapper, EtlLogQuery> implements EtlLogService {
+public class EtlLogServiceImpl extends AbstractBaseEntityService<EtlLogEntity, EtlLogDTO, EtlLogMapper, EtlLogQuery> implements EtlLogService {
     @Override
     public EtlLogDTO toDTO(EtlLogEntity entity) {
         EtlLogDTO dto = new EtlLogDTO();

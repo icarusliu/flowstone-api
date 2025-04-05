@@ -54,9 +54,33 @@ public class DataSyncJob {
         Map<String, Object> configMap = job.getConfig();
         EtlDataSyncConfig config = JSONObject.parseObject(JSON.toJSONString(configMap), EtlDataSyncConfig.class);
         Map<String, Object> params = EtlParamUtils.getEtlParams(dataDate);
-        this.syncInternal(job, config, params);
+        if (null == config.getAdvanced() || config.getAdvanced()) {
+            // 高级模式，通过SQL语句直接同步
+            this.advancedSync(job, config, params);
+        } else {
+            // 常规模式，选择表选择字段进行同步
+            this.normalSync(job, config, params);
+        }
     }
 
+    /**
+     * 常规模式下的数据同步
+     */
+    private void normalSync(EtlJobPublishedDTO job, EtlDataSyncConfig config, Map<String, Object> params) {
+        // 组装查询语句
+        String sourceSql = " select * from " + config.getSourceTable();
+        String where = config.getSourceWhere();
+        if (StringUtils.isNotBlank(where)) {
+            if (where.contains("where")) {
+                sourceSql += " " + where;
+            } else {
+                sourceSql += " where " + where;
+            }
+        }
+
+        String totalSql = " select count(1) from (" + sourceSql + ") t";
+
+    }
 
 
     /**
@@ -65,7 +89,7 @@ public class DataSyncJob {
      * @param config 数据同步对象
      * @param params      数据同步参数
      */
-    private void syncInternal(EtlJobPublishedDTO job, EtlDataSyncConfig config, Map<String, Object> params) {
+    private void advancedSync(EtlJobPublishedDTO job, EtlDataSyncConfig config, Map<String, Object> params) {
         // 先查找记录数
         long total = getTotal(job, config, params);
 

@@ -1,7 +1,7 @@
 package com.liuqi.dua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.dua.bean.dto.SupplierDTO;
 import com.liuqi.dua.bean.query.SupplierQuery;
 import com.liuqi.dua.domain.entity.SupplierEntity;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * @author Coder Generator 2024-08-12 19:00:03
  **/
 @Service
-public class SupplierServiceImpl extends AbstractBaseService<SupplierEntity, SupplierDTO, SupplierMapper, SupplierQuery> implements SupplierService {
+public class SupplierServiceImpl extends AbstractBaseEntityService<SupplierEntity, SupplierDTO, SupplierMapper, SupplierQuery> implements SupplierService {
     @Override
     public SupplierDTO toDTO(SupplierEntity entity) {
         SupplierDTO dto = new SupplierDTO();

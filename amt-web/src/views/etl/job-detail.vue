@@ -81,7 +81,8 @@ const model = ref({
             type: 'sql',
             config: {
             }
-        }]
+        }],
+        advanced: false
     }
 })
 const props = defineProps({

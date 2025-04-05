@@ -3,7 +3,7 @@ package com.liuqi.base.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.base.bean.dto.*;
 import com.liuqi.common.ErrorCodes;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.base.bean.query.ModelQuery;
@@ -32,7 +32,7 @@ import java.util.*;
  * @author Coder Generator 2025-03-14 12:45:23 
  **/
 @Service
-public class ModelServiceImpl extends AbstractBaseService<ModelEntity, ModelDTO, ModelMapper, ModelQuery> implements ModelService {
+public class ModelServiceImpl extends AbstractBaseEntityService<ModelEntity, ModelDTO, ModelMapper, ModelQuery> implements ModelService {
     @Autowired
     private ModelFieldService modelFieldService;
 

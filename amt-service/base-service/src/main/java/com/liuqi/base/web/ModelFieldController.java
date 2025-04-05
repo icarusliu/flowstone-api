@@ -66,7 +66,7 @@ public class ModelFieldController {
     @PostMapping("filter")
     @Operation(summary = "查询-动态")
     public IPage<ModelFieldDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicQuery(query);
+        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

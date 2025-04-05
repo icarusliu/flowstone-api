@@ -2,7 +2,7 @@ package com.liuqi.dua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.liuqi.common.ErrorCodes;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiDraftDTO;
@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
  * @author Coder Generator 2024-07-08 22:33:46
  **/
 @Service
-public class ApiDraftServiceImpl extends AbstractBaseService<ApiDraftEntity, ApiDraftDTO, ApiDraftMapper, ApiDraftQuery> implements ApiDraftService {
+public class ApiDraftServiceImpl extends AbstractBaseEntityService<ApiDraftEntity, ApiDraftDTO, ApiDraftMapper, ApiDraftQuery> implements ApiDraftService {
     @Autowired
     private ApiService apiService;
 

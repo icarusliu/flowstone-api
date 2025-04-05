@@ -2,8 +2,13 @@ package com.liuqi.common.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -59,5 +64,38 @@ public class WebUtils {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param response 请求返回
+     * @param fileName 文件名
+     * @param bytes    文件内容
+     */
+    public static void downloadFile(HttpServletResponse response, String fileName, byte[] bytes, String mimeType) {
+        if (StringUtils.isBlank(mimeType)) {
+            response.setContentType("application/x-zip-compressed");
+        } else {
+            response.setContentType(mimeType);
+        }
+
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+        OutputStream outputStream = null;
+        try {
+            outputStream = response.getOutputStream();
+            IOUtils.write(bytes, outputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (null != outputStream) {
+                    outputStream.flush();
+                    outputStream.close();
+                }
+            } catch (IOException ignored) {
+            }
+        }
     }
 }

@@ -94,7 +94,7 @@ public class ApiDraftController {
     @PostMapping("filter")
     @Operation(summary = "查询-动态")
     public IPage<ApiDraftDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicQuery(query);
+        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

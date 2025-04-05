@@ -6,7 +6,7 @@ imports:
   - $T$UpdateReq
   - $T$DTO
   - $T$Query
-  - $T$Service
+  - $T$EntityService
   - io.swagger.v3.oas.annotations.Operation
   - io.swagger.v3.oas.annotations.tags.Tag
   - lombok.extern.slf4j.Slf4j
@@ -23,7 +23,6 @@ imports:
   - org.springframework.validation.annotation.Validated
   - com.baomidou.mybatisplus.core.metadata.IPage
   - com.liuqi.common.base.bean.query.DynamicQuery
-  - org.apache.commons.lang3.StringUtils
   - java.util.List
 template: "@RestController
 @RequestMapping(\"/base/$PATH$\")
@@ -31,7 +30,7 @@ template: "@RestController
   @Tag(name = \"$COMMENT$控制器\")
   public class $T$Controller {
   @Autowired
-  private $T$Service service;
+  private $T$EntityService service;
   
   @PostMapping(\"add\")
   @Operation(summary = \"新增\")
@@ -52,7 +51,7 @@ template: "@RestController
   @PostMapping(\"save\")
   @Operation(summary = \"保存\")
   public $T$DTO save(@RequestBody @Validated $T$DTO req) {
-  if (StringUtils.isNotBlank(req.getId())) {
+  if (StringUtils.isBlank(req.getId())) {
     return service.insert(req);
   }
   service.update(req);
@@ -81,7 +80,7 @@ template: "@RestController
   @PostMapping(\"filter\")
   @Operation(summary = \"查询-动态\")
   public IPage<$T$DTO> pageQuery(@RequestBody DynamicQuery query) {
-  return service.dynamicQuery(query);
+  return service.dynamicPageQuery(query);
   }
   
   @PostMapping(\"query\")

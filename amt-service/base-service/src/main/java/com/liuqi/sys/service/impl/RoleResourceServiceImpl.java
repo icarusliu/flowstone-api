@@ -7,7 +7,7 @@ import com.liuqi.sys.bean.query.RoleResourceQuery;
 import com.liuqi.sys.domain.entity.RoleResourceEntity;
 import com.liuqi.sys.domain.mapper.RoleResourceMapper;
 import com.liuqi.sys.service.RoleResourceService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class RoleResourceServiceImpl extends AbstractBaseService<RoleResourceEntity, RoleResourceDTO, RoleResourceMapper, RoleResourceQuery> implements RoleResourceService {
+public class RoleResourceServiceImpl extends AbstractBaseEntityService<RoleResourceEntity, RoleResourceDTO, RoleResourceMapper, RoleResourceQuery> implements RoleResourceService {
     @Override
     public RoleResourceDTO toDTO(RoleResourceEntity entity) {
         RoleResourceDTO dto = new RoleResourceDTO();

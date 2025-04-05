@@ -13,7 +13,7 @@ import com.liuqi.sys.common.ErrorCodes;
 import com.liuqi.sys.domain.entity.UserEntity;
 import com.liuqi.sys.domain.mapper.UserMapper;
 import com.liuqi.sys.service.*;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.bean.UserContext;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.exception.AuthErrorCodes;
@@ -31,7 +31,7 @@ import java.util.*;
 import static com.liuqi.sys.common.ErrorCodes.BASE_USER_PHONE_EXISTS;
 
 @Service
-public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, UserMapper, UserQuery> implements UserService {
+public class UserServiceImpl extends AbstractBaseEntityService<UserEntity, UserDTO, UserMapper, UserQuery> implements UserService {
     @Autowired
     private UserRoleService userRoleService;
 

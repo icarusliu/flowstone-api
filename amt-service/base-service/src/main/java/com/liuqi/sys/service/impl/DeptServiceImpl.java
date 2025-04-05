@@ -8,7 +8,7 @@ import com.liuqi.sys.domain.entity.DeptEntity;
 import com.liuqi.sys.domain.mapper.DeptMapper;
 import com.liuqi.sys.service.DeptService;
 import com.liuqi.sys.service.DeptUserService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @author Coder Generator 2023-12-19 19:09:28
  **/
 @Service
-public class DeptServiceImpl extends AbstractBaseService<DeptEntity, DeptDTO, DeptMapper, DeptQuery> implements DeptService {
+public class DeptServiceImpl extends AbstractBaseEntityService<DeptEntity, DeptDTO, DeptMapper, DeptQuery> implements DeptService {
     @Autowired
     private DeptUserService deptUserService;
 

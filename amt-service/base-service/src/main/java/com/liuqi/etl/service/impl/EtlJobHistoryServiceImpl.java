@@ -1,7 +1,7 @@
 package com.liuqi.etl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.etl.bean.dto.EtlJobHistoryDTO;
 import com.liuqi.etl.bean.query.EtlJobHistoryQuery;
 import com.liuqi.etl.domain.entity.EtlJobHistoryEntity;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * @author Coder Generator 2025-03-16 17:21:59 
  **/
 @Service
-public class EtlJobHistoryServiceImpl extends AbstractBaseService<EtlJobHistoryEntity, EtlJobHistoryDTO, EtlJobHistoryMapper, EtlJobHistoryQuery> implements EtlJobHistoryService {
+public class EtlJobHistoryServiceImpl extends AbstractBaseEntityService<EtlJobHistoryEntity, EtlJobHistoryDTO, EtlJobHistoryMapper, EtlJobHistoryQuery> implements EtlJobHistoryService {
     @Override
     public EtlJobHistoryDTO toDTO(EtlJobHistoryEntity entity) {
         EtlJobHistoryDTO dto = new EtlJobHistoryDTO();

@@ -1,7 +1,7 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.base.bean.dto.ModelPublishedDTO;
 import com.liuqi.base.bean.query.ModelPublishedQuery;
 import com.liuqi.base.domain.entity.ModelPublishedEntity;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * @author Coder Generator 2025-03-15 10:50:27 
  **/
 @Service
-public class ModelPublishedServiceImpl extends AbstractBaseService<ModelPublishedEntity, ModelPublishedDTO, ModelPublishedMapper, ModelPublishedQuery> implements ModelPublishedService {
+public class ModelPublishedServiceImpl extends AbstractBaseEntityService<ModelPublishedEntity, ModelPublishedDTO, ModelPublishedMapper, ModelPublishedQuery> implements ModelPublishedService {
     @Override
     public ModelPublishedDTO toDTO(ModelPublishedEntity entity) {
         ModelPublishedDTO dto = new ModelPublishedDTO();

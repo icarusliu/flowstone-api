@@ -37,7 +37,7 @@ public class EtlMqJobService {
     @PostConstruct
     public void init() {
         // 系统重启时需要启动监听
-        List<EtlJobPublishedDTO> list = publishedService.dynamicQuery(DynamicQuery.create().eq("type", "mq")).getRecords();
+        List<EtlJobPublishedDTO> list = publishedService.dynamicQuery(DynamicQuery.create().eq("type", "mq"));
         list.forEach(job -> {
             try {
                 this.startJob(job);

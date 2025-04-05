@@ -3,8 +3,12 @@ dir: domain/mapper
 comment: "数据库操作服务"
 imports:
   - $T$Entity
-template: "import com.liuqi.common.base.domain.mapper.BaseMapper; 
-  import org.apache.ibatis.annotations.Mapper;
-  @Mapper
+  - $T$Query
+  - $T$DTO
+  - java.util.List
+  - com.liuqi.common.base.domain.mapper.BaseMapper
+  - org.apache.ibatis.annotations.Mapper
+template: "@Mapper
 public interface $T$Mapper extends BaseMapper<$T$Entity> {
+  List<$T$DTO> query($T$Query query);
 }"

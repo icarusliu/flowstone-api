@@ -4,7 +4,7 @@ comment: "控制器"
 imports:
   - $T$DTO
   - $T$Query
-  - $T$Service
+  - $T$EntityService
   - io.swagger.v3.oas.annotations.Operation
   - io.swagger.v3.oas.annotations.tags.Tag
   - lombok.extern.slf4j.Slf4j
@@ -29,7 +29,7 @@ template: "@RestController
   @Tag(name = \"$COMMENT$控制器\")
   public class $T$Controller {
   @Autowired
-  private $T$Service service;
+  private $T$EntityService service;
   
   @PostMapping(\"add\")
   @Operation(summary = \"新增\")
@@ -75,7 +75,7 @@ template: "@RestController
   @PostMapping(\"filter\")
   @Operation(summary = \"查询-动态\")
   public IPage<$T$DTO> pageQuery(@RequestBody DynamicQuery query) {
-  return service.dynamicQuery(query);
+  return service.dynamicPageQuery(query);
   }
   
   @PostMapping(\"query\")

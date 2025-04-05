@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 /**
@@ -75,11 +72,12 @@ public class DbMetadataHelper implements InitializingBean {
      */
     private <R> R process(String ds, BiFunction<String, String, R> function) {
         DsDTO dsDTO = dsService.findByCode(ds);
-        String schema = parseSchema(dsDTO.getType(), dsDTO.getUrl());
+        String type = Optional.ofNullable(dsDTO.getType()).orElse("mysql");
+        String schema = parseSchema(type, dsDTO.getUrl());
 
         DynamicDataSourceContextHolder.push(ds);
         try {
-            return function.apply(dsDTO.getType(), schema);
+            return function.apply(type, schema);
         } finally {
             DynamicDataSourceContextHolder.poll();
         }

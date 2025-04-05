@@ -8,7 +8,7 @@ import com.liuqi.sys.common.ErrorCodes;
 import com.liuqi.sys.domain.entity.SysConfigEntity;
 import com.liuqi.sys.domain.mapper.SysConfigMapper;
 import com.liuqi.sys.service.SysConfigService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.Optional;
  * @author 不空军 2023/12/26 11:07
  **/
 @Service
-public class SysConfigServiceImpl extends AbstractBaseService<SysConfigEntity, SysConfigDTO, SysConfigMapper, SysConfigQuery> implements SysConfigService {
+public class SysConfigServiceImpl extends AbstractBaseEntityService<SysConfigEntity, SysConfigDTO, SysConfigMapper, SysConfigQuery> implements SysConfigService {
     @Override
     public SysConfigDTO toDTO(SysConfigEntity entity) {
         SysConfigDTO dto = new SysConfigDTO();

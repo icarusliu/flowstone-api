@@ -592,9 +592,9 @@
         </sql>
     </changeSet>
 
-    <changeSet id="create-sys_dict" author="liuqi">
+    <changeSet id="create-sys_dict" author="liuqi" failOnError="false">
         <sql>
-            create or replace table sys_dict
+            create table if not exists table sys_dict
             (
             id varchar(64) not null comment '主键'
             primary key,
@@ -684,9 +684,9 @@
         </sql>
     </changeSet>
 
-    <changeSet id="create-sys_dept" author="liuqi">
+    <changeSet id="create-sys_dept" author="liuqi" failOnError="false">
         <sql>
-            create or replace table sys_dept
+            create table if not exists sys_dept
             (
             id          varchar(64)                             not null comment '主键'
             primary key,

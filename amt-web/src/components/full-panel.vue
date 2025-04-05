@@ -1,5 +1,5 @@
 <template>
-    <div class="page-content bg-white p-4">
+    <div class="full-panel bg-white p-4">
         <div class="top-bar d-flex">
             <div class="return cursor-pointer" @click="close">
                 <el-icon>
@@ -28,6 +28,16 @@ function close() {
 </script>
 
 <style lang='scss' scoped>
+.full-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    box-sizing: border-box;
+}
+
 .top-bar {
     align-items: center;
     border-bottom: 1px solid #eee;

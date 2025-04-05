@@ -1,7 +1,7 @@
 package com.liuqi.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.base.bean.dto.ModelTypeDTO;
 import com.liuqi.base.bean.query.ModelTypeQuery;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-14 12:16:29 
  **/
 @Service
-public class ModelTypeServiceImpl extends AbstractBaseService<ModelTypeEntity, ModelTypeDTO, ModelTypeMapper, ModelTypeQuery> implements ModelTypeService {
+public class ModelTypeServiceImpl extends AbstractBaseEntityService<ModelTypeEntity, ModelTypeDTO, ModelTypeMapper, ModelTypeQuery> implements ModelTypeService {
     @Override
     public ModelTypeDTO toDTO(ModelTypeEntity entity) {
         ModelTypeDTO dto = new ModelTypeDTO();

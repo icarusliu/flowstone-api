@@ -3,7 +3,7 @@ package com.liuqi.base.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.base.bean.dto.ModelFieldDTO;
 import com.liuqi.base.bean.query.ModelFieldQuery;
 import com.liuqi.base.domain.entity.ModelFieldEntity;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Coder Generator 2025-03-14 12:59:51 
  **/
 @Service
-public class ModelFieldServiceImpl extends AbstractBaseService<ModelFieldEntity, ModelFieldDTO, ModelFieldMapper, ModelFieldQuery> implements ModelFieldService {
+public class ModelFieldServiceImpl extends AbstractBaseEntityService<ModelFieldEntity, ModelFieldDTO, ModelFieldMapper, ModelFieldQuery> implements ModelFieldService {
     @Override
     public ModelFieldDTO toDTO(ModelFieldEntity entity) {
         ModelFieldDTO dto = new ModelFieldDTO();

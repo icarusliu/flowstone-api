@@ -1,0 +1,29 @@
+name: $T$Mapper.xml
+dir: mapper
+template: "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+  <!DOCTYPE mapper
+  PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"
+  \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">
+  <mapper namespace=\"$PKG$.domain.mapper.$T$Mapper\"> \n
+  <select id=\"query\" parameterType=\"$PKG$.bean.query.$T$Query\"
+  resultType=\"$PKG$.bean.dto.$T$DTO\"> \n
+  select \n
+    $COLUMNS$
+  from $TABLE_NAME$\n
+  where deleted = 0\n
+  <if test=\"null != id and '' != id\">\n
+      and id = #{id}\n
+  </if>\n
+  <if test=\"null != ids\">\n
+    <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n
+        #{id}\n
+    </foreach> \n
+  </if> \n
+  <if test=\"null != orderBy and '' != orderBy\">
+    order by ${orderBy}
+  </if>
+  <if test=\"null == orderBy or '' == orderBy\">
+    order by create_time desc\n
+  </if>
+  </select>\n
+  </mapper>"

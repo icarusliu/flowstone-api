@@ -8,7 +8,7 @@ import com.liuqi.sys.bean.req.MenuButtonAddReq;
 import com.liuqi.sys.domain.entity.MenuButtonEntity;
 import com.liuqi.sys.domain.mapper.MenuButtonMapper;
 import com.liuqi.sys.service.MenuButtonService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author Coder Generator 2024-09-29 18:55:25
  **/
 @Service
-public class MenuButtonServiceImpl extends AbstractBaseService<MenuButtonEntity, MenuButtonDTO, MenuButtonMapper, MenuButtonQuery> implements MenuButtonService {
+public class MenuButtonServiceImpl extends AbstractBaseEntityService<MenuButtonEntity, MenuButtonDTO, MenuButtonMapper, MenuButtonQuery> implements MenuButtonService {
     @Override
     public MenuButtonDTO toDTO(MenuButtonEntity entity) {
         MenuButtonDTO dto = new MenuButtonDTO();

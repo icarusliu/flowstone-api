@@ -5,9 +5,7 @@ import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.security.core.parameters.P;
 
-import javax.swing.plaf.IconUIResource;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +49,30 @@ public class DynamicQuery {
         filter.setOp(FilterOp.EQ);
         filter.setKey(key);
         filter.setValue(value);
+        return this.addFilter(filter);
+    }
+
+    public DynamicQuery neq(String key, Object value) {
+        if (null == value || "".equals(value)) {
+            return this;
+        }
+
+        Filter filter = new Filter();
+        filter.setOp(FilterOp.NEQ);
+        filter.setKey(key);
+        filter.setValue(value);
+        return this.addFilter(filter);
+    }
+
+    public DynamicQuery in(String key, Collection<?> collection) {
+        if (null == collection || collection.isEmpty()) {
+            return this;
+        }
+
+        Filter filter = new Filter();
+        filter.setOp(FilterOp.IN);
+        filter.setKey(key);
+        filter.setValue(collection);
         return this.addFilter(filter);
     }
 

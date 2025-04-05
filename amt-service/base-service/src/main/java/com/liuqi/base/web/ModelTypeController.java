@@ -66,7 +66,7 @@ public class ModelTypeController {
     @PostMapping("filter")
     @Operation(summary = "查询-动态")
     public IPage<ModelTypeDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicQuery(query);
+        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

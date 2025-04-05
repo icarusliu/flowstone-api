@@ -1,7 +1,7 @@
 package com.liuqi.dua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.dua.bean.dto.ApiHistoryDTO;
 import com.liuqi.dua.bean.query.ApiHistoryQuery;
 import com.liuqi.dua.domain.entity.ApiHistoryEntity;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * @author Coder Generator 2025-03-16 17:16:13 
  **/
 @Service
-public class ApiHistoryServiceImpl extends AbstractBaseService<ApiHistoryEntity, ApiHistoryDTO, ApiHistoryMapper, ApiHistoryQuery> implements ApiHistoryService {
+public class ApiHistoryServiceImpl extends AbstractBaseEntityService<ApiHistoryEntity, ApiHistoryDTO, ApiHistoryMapper, ApiHistoryQuery> implements ApiHistoryService {
     @Override
     public ApiHistoryDTO toDTO(ApiHistoryEntity entity) {
         ApiHistoryDTO dto = new ApiHistoryDTO();

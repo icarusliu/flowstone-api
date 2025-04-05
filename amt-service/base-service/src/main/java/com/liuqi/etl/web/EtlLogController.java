@@ -66,7 +66,7 @@ public class EtlLogController {
     @PostMapping("filter")
     @Operation(summary = "查询-动态")
     public IPage<EtlLogDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicQuery(query);
+        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

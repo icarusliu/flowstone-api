@@ -9,7 +9,7 @@ import com.liuqi.sys.common.ErrorCodes;
 import com.liuqi.sys.domain.entity.DictEntity;
 import com.liuqi.sys.domain.mapper.DictMapper;
 import com.liuqi.sys.service.DictService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.DynamicSqlHelper;
 import org.apache.commons.collections4.MapUtils;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class DictServiceImpl extends AbstractBaseService<DictEntity, DictDTO, DictMapper, DictQuery> implements DictService {
+public class DictServiceImpl extends AbstractBaseEntityService<DictEntity, DictDTO, DictMapper, DictQuery> implements DictService {
     @Override
     public DictDTO toDTO(DictEntity entity) {
         DictDTO dto = new DictDTO();

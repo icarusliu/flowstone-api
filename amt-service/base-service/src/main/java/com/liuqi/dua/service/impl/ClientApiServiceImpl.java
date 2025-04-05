@@ -3,7 +3,7 @@ package com.liuqi.dua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.dua.bean.dto.ClientApiDTO;
 import com.liuqi.dua.bean.query.ClientApiQuery;
 import com.liuqi.dua.domain.entity.ClientApiEntity;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author Coder Generator 2024-09-25 15:58:18 
  **/
 @Service
-public class ClientApiServiceImpl extends AbstractBaseService<ClientApiEntity, ClientApiDTO, ClientApiMapper, ClientApiQuery> implements ClientApiService {
+public class ClientApiServiceImpl extends AbstractBaseEntityService<ClientApiEntity, ClientApiDTO, ClientApiMapper, ClientApiQuery> implements ClientApiService {
     @Override
     public ClientApiDTO toDTO(ClientApiEntity entity) {
         ClientApiDTO dto = new ClientApiDTO();

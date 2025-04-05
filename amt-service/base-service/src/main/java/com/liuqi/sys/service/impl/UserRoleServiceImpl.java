@@ -6,7 +6,7 @@ import com.liuqi.sys.bean.query.UserRoleQuery;
 import com.liuqi.sys.domain.entity.UserRoleEntity;
 import com.liuqi.sys.domain.mapper.UserRoleMapper;
 import com.liuqi.sys.service.UserRoleService;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author 不空军 2023/12/27 15:03
  **/
 @Service
-public class UserRoleServiceImpl extends AbstractBaseService<UserRoleEntity, UserRoleDTO, UserRoleMapper, UserRoleQuery> implements UserRoleService {
+public class UserRoleServiceImpl extends AbstractBaseEntityService<UserRoleEntity, UserRoleDTO, UserRoleMapper, UserRoleQuery> implements UserRoleService {
     @Override
     public UserRoleDTO toDTO(UserRoleEntity entity) {
         UserRoleDTO dto = new UserRoleDTO();

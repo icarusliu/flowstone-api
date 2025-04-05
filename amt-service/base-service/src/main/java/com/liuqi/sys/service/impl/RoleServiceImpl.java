@@ -1,7 +1,7 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.liuqi.common.base.service.AbstractBaseService;
+import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.sys.bean.dto.MenuDTO;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RoleServiceImpl extends AbstractBaseService<RoleEntity, RoleDTO, RoleMapper, RoleQuery> implements RoleService {
+public class RoleServiceImpl extends AbstractBaseEntityService<RoleEntity, RoleDTO, RoleMapper, RoleQuery> implements RoleService {
     @Autowired
     private UserRoleService userRoleService;
 
