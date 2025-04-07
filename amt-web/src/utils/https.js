@@ -41,7 +41,7 @@ axios.interceptors.request.use((config) => {
 // 跳转登录页面
 function goLogin() {
     const sysStore = useSysStore()
-    const path = router.currentRoute.value.fullPath
+    let path = router.currentRoute.value.fullPath
 
     // 清空用户信息
     sysStore.setUserInfo(null)

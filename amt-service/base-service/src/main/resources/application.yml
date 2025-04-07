@@ -49,7 +49,7 @@ spring:
       host: localhost
       port: 6379
       password:
-      connectTimeout: 10
+      connectTimeout: 100
   cache:
     type: simple
 
