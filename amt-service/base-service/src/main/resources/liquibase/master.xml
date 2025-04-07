@@ -592,7 +592,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="create-sys_dict" author="liuqi" failOnError="false">
+    <changeSet id="create-sys_dict-v1" author="liuqi" failOnError="false">
         <sql>
             create table if not exists table sys_dict
             (
@@ -684,7 +684,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="create-sys_dept" author="liuqi" failOnError="false">
+    <changeSet id="create-sys_dept-v1" author="liuqi" failOnError="false">
         <sql>
             create table if not exists sys_dept
             (

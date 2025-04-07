@@ -160,6 +160,12 @@ public class DsServiceImpl extends AbstractBaseEntityService<DsEntity, DsDTO, Ds
             throw ex;
         }
 
-        dbMetadataHelper.test(dsDTO);
+        try {
+            dbMetadataHelper.test(dsDTO);
+        } finally {
+            if (StringUtils.isBlank(dsDTO.getId())) {
+                dynamicDsConfigService.removeDs(dsDTO.getCode());
+            }
+        }
     }
 }

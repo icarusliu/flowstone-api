@@ -4,8 +4,10 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.druid.DruidDataSourceCreator;
 import com.liuqi.base.bean.dto.DsDTO;
+import com.liuqi.base.service.DsService;
 import com.liuqi.dua.service.db.DbMetadataHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,9 @@ public class DynamicDsConfigService {
     @Autowired
     private DbMetadataHelper dbMetadataHelper;
 
+    @Autowired
+    private DsService dsService;
+
     /**
      * 加载单个数据源
      *
@@ -38,6 +43,12 @@ public class DynamicDsConfigService {
             if (!url.contains("encrypt")) {
                 url += ";encrypt=false";
             }
+        }
+
+        if (StringUtils.isNotBlank(ds.getId()) && ds.getPassword().equals("******")) {
+            dsService.findById(ds.getId()).ifPresent(dto -> {
+                ds.setPassword(dto.getPassword());
+            });
         }
 
         String code = ds.getCode();
