@@ -7,6 +7,7 @@ import com.github.dexecutor.core.task.ExecutionResults;
 import com.github.dexecutor.core.task.Task;
 import com.liuqi.common.utils.GroovyUtils;
 import com.liuqi.common.utils.JsUtils;
+import com.liuqi.common.utils.OgnlUtils;
 import com.liuqi.dua.executor.bean.ApiExecutorContext;
 import com.liuqi.dua.executor.bean.NodeInput;
 import com.liuqi.dua.executor.bean.NodeParam;
@@ -51,13 +52,14 @@ public abstract class AbstractDagTask<T extends NodeConfig> extends Task<NodeInp
     @Override
     public boolean shouldExecute(ExecutionResults<NodeInput, Object> parentResults) {
         String code = this.getId().getNodeInfo().getCode();
+        // 条件执行判断，返回false/1/2时都不执行，其它情况执行；false/1时仅当前节点不执行；2时后续所有节点均不执行
         // 先判断，如果有一个父节点执行状态是2，那么本节点不需要执行
         List<ExecutionResult<NodeInput, Object>> parents = parentResults.getAll();
         Map<String, Integer> nodeExecuteState = executorContext.getNodeExecuteState();
         for (ExecutionResult<NodeInput, Object> parent : parents) {
             String parentCode = parent.getId().getNodeInfo().getCode();
             Integer parentState = nodeExecuteState.get(parentCode);
-            if (parentState == 2) {
+            if (null != parentState && parentState == 2) {
                 executorContext.addNodeExecuteState(code, 2);
                 return false;
             }
@@ -68,18 +70,36 @@ public abstract class AbstractDagTask<T extends NodeConfig> extends Task<NodeInp
             return true;
         }
 
-        Object result = JsUtils.execute(condition, this.getNodeExecuteParams());
-        if (null == result) {
+        Object result = null;
+        if (condition.contains("function")) {
+            // JS方法
+            result = JsUtils.execute(condition, this.getNodeExecuteParams());
+        } else {
+            // OGNL表达式
+            result = OgnlUtils.execute(condition, this.getNodeExecuteParams());
+        }
+
+        if (null == result || Boolean.TRUE.equals(result) || "true".equals(result.toString())) {
+            return true;
+        } else if (Boolean.FALSE.equals(result) || "false".equals(result)) {
+            // 当前节点不执行
+            executorContext.addNodeExecuteState(code, 1);
+            return false;
+        }
+
+        if (!StringUtils.isNumeric(result.toString()) || result.toString().contains(".")) {
+            // 其它情况非数字，或者结果是小数时，均执行
             return true;
         }
 
-        int resultValue = Integer.parseInt(result.toString());
-        if (1 != resultValue && 2 != resultValue) {
-            return true;
+        int resultCode = Integer.parseInt(result.toString());
+        if (resultCode == 1 || resultCode == 2) {
+            executorContext.addNodeExecuteState(code, resultCode);
+            return false;
         }
 
-        executorContext.addNodeExecuteState(code, resultValue);
-        return false;
+        // 其它情况，均需要执行
+        return true;
     }
 
     /**
