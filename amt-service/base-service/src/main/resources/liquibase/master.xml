@@ -594,7 +594,7 @@
 
     <changeSet id="create-sys_dict-v1" author="liuqi" failOnError="false">
         <sql>
-            create table if not exists table sys_dict
+            create table if not exists sys_dict
             (
             id varchar(64) not null comment '主键'
             primary key,
