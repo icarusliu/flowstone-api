@@ -52,7 +52,7 @@ public class ApiDraftController {
         ApiDraftDTO dto = new ApiDraftDTO();
         BeanUtils.copyProperties(req, dto);
         if (req.getChangeStatus()) {
-            if (dto.getStatus() == 1) {
+            if (null == dto.getStatus() || dto.getStatus() == 1) {
                 dto.setStatus(2);
             }
         }

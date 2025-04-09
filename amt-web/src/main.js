@@ -48,6 +48,9 @@ sysApis.getInitInfo().then(resp => {
         // router.push('/login')
     }
 }).catch(() => {
+    // 启动websocket
+    window.websocket = startWebSocket()
+
     app.use(elementPlus)
         .use(router)
         .mount('#app')

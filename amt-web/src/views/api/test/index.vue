@@ -172,7 +172,7 @@ function saveTestData() {
         }
     }
 
-    emits('save', true)
+    emits('save', false)
 }
 
 function parseInputParamsFromJson(obj) {
