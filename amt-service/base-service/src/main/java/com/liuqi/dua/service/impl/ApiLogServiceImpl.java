@@ -79,7 +79,11 @@ public class ApiLogServiceImpl extends AbstractBaseEntityService<ApiLogEntity, A
         log.setApiId(api.getId());
         log.setApiPath(api.getPath());
         log.setApiName(api.getName());
-        log.setParams(JSON.toJSONString(params));
+        String paramStr = JSON.toJSONString(params);
+        if (paramStr.length() > 1000) {
+            paramStr = paramStr.substring(0, 1000);
+        }
+        log.setParams(paramStr);
         return log;
     }
 
