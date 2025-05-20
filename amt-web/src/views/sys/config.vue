@@ -7,7 +7,7 @@
     </entity-manager>
 </template>
 
-<script setup>
+<script setup name="sysConfig">
 import * as _ from 'lodash'
 import * as sysApis from '@/apis/sys'
 import { ElMessage } from 'element-plus';

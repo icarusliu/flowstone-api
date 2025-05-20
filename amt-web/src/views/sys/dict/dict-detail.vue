@@ -1,6 +1,6 @@
 <template>
     <!-- 字典详情 -->
-    <fullpanel title="字典详情" @close="close">
+    <fullpanel title="字典详情" @close="close" v-model="visible">
         <base-form :fields="fields" v-model="model" :readonly="!editing" ref="formRef">
             <template #default>
                 <el-form-item label="字典项清单" v-if="model.type != 'sql'" :rules="itemsRules" required prop="items">
@@ -100,6 +100,7 @@ const itemsRules = [{
         callback()
     }
 }]
+const visible = defineModel()
 
 onMounted(() => {
     if (!props.item) {
@@ -117,12 +118,13 @@ onMounted(() => {
 })
 
 function close() {
+    visible.value = false
     emits('close')
 }
 
 function cancel() {
     if (!model.id) {
-        emits('close')
+        close()
     }
     editing.value = false
 }

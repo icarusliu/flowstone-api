@@ -12,86 +12,86 @@
             </template>
         </entity-manager>
 
-        <dict-detail v-if="detailVisible" class="full-panel" :item="editingItem" @close="closeDetail" @reload="reload"/>
+        <dict-detail v-model="detailVisible" v-if="detailVisible" class="full-panel" :item="editingItem" @reload="reload" />
     </div>
 </template>
 
-<script setup>
-import dictDetail from './dict-detail.vue'
-import * as sysApis from '@/apis/sys'
-import { ElMessage } from 'element-plus'
-import * as _ from 'lodash'
+<script setup name="sysDict">
+    import dictDetail from './dict-detail.vue'
+    import * as sysApis from '@/apis/sys'
+    import { ElMessage } from 'element-plus'
+    import * as _ from 'lodash'
+    import { useSysStore } from '@/store/index'
 
-const fields = [
-    { label: '编码', prop: 'code', required: true },
-    { label: '名称', prop: 'name', required: true },
-    {
-        label: '状态', prop: 'status', width: '80px', needNew: false, tagType: val => {
-            return {
-                text: val ? '启用' : '停用',
-                type: val ? 'success' : 'danger'
+    const fields = [
+        { label: '编码', prop: 'code', required: true },
+        { label: '名称', prop: 'name', required: true },
+        {
+            label: '状态', prop: 'status', width: '80px', needNew: false, tagType: val => {
+                return {
+                    text: val ? '启用' : '停用',
+                    type: val ? 'success' : 'danger'
+                }
             }
-        }
-    },
-    { label: '备注', prop: 'remark' },
-    { label: '创建时间', prop: 'createTime', width: '200px', needNew: false },
-]
-const entityManagerRef = ref()
-const detailVisible = ref(false)
+        },
+        { label: '备注', prop: 'remark' },
+        { label: '创建时间', prop: 'createTime', width: '200px', needNew: false },
+    ]
+    const entityManagerRef = ref()
+    const detailVisible = ref(false)
+    const sysStore = useSysStore()
 
-function reload() {
-    entityManagerRef.value.reload()
-}
-
-function showNew() {
-    editingItem.value = null
-    detailVisible.value = true
-}
-
-const editingItem = ref()
-function goDetail(row) {
-    editingItem.value = row
-    detailVisible.value = true
-}
-
-function closeDetail(val) {
-    if (val) {
+    function reload() {
         entityManagerRef.value.reload()
+        hb.https.post('/sys/dict/query').then(resp => {
+            let dictInfo = {}
+            resp.forEach(item => {
+                dictInfo[item.code] = item
+            })
+
+            sysStore.setDictInfo(dictInfo)
+        })
     }
 
-    detailVisible.value = false
-}
+    function showNew() {
+        editingItem.value = null
+        detailVisible.value = true
+    }
 
-function doDelete(row) {
-    entityManagerRef.value.doDelete(row)
-}
+    const editingItem = ref()
+    function goDetail(row) {
+        editingItem.value = row
+        detailVisible.value = true
+    }
 
-function updateStatus(row, status) {
-    sysApis.updateDict({
-        id: row.id,
-        status
-    }).then(() => {
-        row.status = status
-        ElMessage.success('操作成功')
-    })
-}
+    function doDelete(row) {
+        entityManagerRef.value.doDelete(row)
+    }
+
+    function updateStatus(row, status) {
+        sysApis.updateDict({
+            id: row.id,
+            status
+        }).then(() => {
+            row.status = status
+            ElMessage.success('操作成功')
+        })
+    }
 
 </script>
 
 <style lang="scss" scoped>
-.page-content {
-    position: relative;
-    height: 100%;
-    box-sizing: border-box;
+    .page-content {
+        box-sizing: border-box;
 
-    .full-panel {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background: #fff;
-        z-index: 100;
+        .full-panel {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+        }
     }
-}
 </style>

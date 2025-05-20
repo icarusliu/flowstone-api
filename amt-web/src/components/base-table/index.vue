@@ -1,6 +1,6 @@
 <template>
     <!-- 基础数据表格 -->
-    <div>
+    <div class="base-table">
         <el-table
             :data="rows"
             row-key="id"
@@ -67,7 +67,7 @@ const props = defineProps([
     "pageSize",
     "showSelection",
     "height",
-    "border"
+    "border",
 ]);
 const total = ref(0);
 const rows = ref([]);
@@ -177,13 +177,13 @@ function selectionChange() {
 }
 
 function getTotal() {
-    return total.value 
+    return total.value;
 }
 
 defineExpose({
     reload,
     toggleRowExpansion,
     getSelectionRows,
-    getTotal
+    getTotal,
 });
 </script>

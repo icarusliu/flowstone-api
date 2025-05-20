@@ -23,7 +23,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup name="sysUser">
 import BaseTree from '@/components/base-tree.vue'
 import * as sysApis from '@/apis/sys.js'
 import { ElMessage } from 'element-plus';
@@ -80,7 +80,8 @@ function selectDept(dept) {
 
 <style lang="scss" scoped>
 .tree {
-    width: 300px;
-    height: calc(100vh - 120px)
+    width: 260px;
+    min-width: 260px;
+    min-height: calc(100vh - 160px)
 }
 </style>

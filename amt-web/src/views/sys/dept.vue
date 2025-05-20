@@ -4,7 +4,7 @@
     </entity-manager>
 </template>
 
-<script setup>
+<script setup name="sysDept">
 import * as _ from 'lodash'
 
 const fields = [

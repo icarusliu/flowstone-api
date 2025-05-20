@@ -1,5 +1,5 @@
 <template>
-    <full-panel :title="'模型详情_' + form.name" @close="close">
+    <full-panel v-model="visible" :title="'模型详情_' + form.name" @close="close">
         <el-tabs v-model="currentTab">
             <el-tab-pane label="基本信息" name="base">
                 <base-info v-model="form" :editing="editing" ref="baseRef" />
@@ -52,6 +52,7 @@ const editing = ref(false)
 const innerFields = ['createTime', 'createUser', 'updateTime', 'updateUser']
 const currentTab = ref('base')
 const baseRef = ref()
+const visible = defineModel(false)
 
 onMounted(() => {
     if (props.modelId) {
