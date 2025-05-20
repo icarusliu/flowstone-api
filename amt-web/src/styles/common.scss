@@ -32,6 +32,7 @@
 .remark {
     font-size: 13px;
     color: var(--follow_font_color);
+    line-height: 24px;
 }
 
 // 页面中使用标题
@@ -123,7 +124,7 @@
     padding: 4px;
 }
 
-@for $n from 1 through 10 {
+@for $n from 0 through 10 {
     // p1/p2/p3/p4
     .p-#{$n} {
         padding: $n * 4px;
@@ -170,6 +171,17 @@
     .my-#{$n} {
         @extend .mt-#{$n};
         @extend .mb-#{$n};
+    }
+}
+
+.pb-0 {
+    padding-bottom: 0px;
+}
+
+@for $n from 0 through 10 {
+    // mx-1/mx-2/mx-3/mx-4
+    .pt-#{$n} {
+        padding-top: $n * 4px;
     }
 }
 

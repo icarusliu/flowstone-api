@@ -22,7 +22,7 @@ import com.liuqi.etl.service.EtlJobDependService;
 import com.liuqi.etl.service.EtlJobHistoryService;
 import com.liuqi.etl.service.EtlJobPublishedService;
 import com.liuqi.etl.service.EtlJobService;
-import com.liuqi.etl.service.executors.EtlJobScheduler;
+import com.liuqi.etl.service.executors.EtlJobRedisManager;
 import com.liuqi.etl.service.executors.config.EtlNodeInfo;
 import com.liuqi.etl.service.executors.job.EtlMqJobService;
 import org.apache.commons.collections4.MapUtils;
@@ -51,10 +51,6 @@ public class EtlJobServiceImpl extends AbstractBaseEntityService<EtlJobEntity, E
 
     @Autowired
     @Lazy
-    private EtlJobScheduler etlJobScheduler;
-
-    @Autowired
-    @Lazy
     private EtlJobDependService dependService;
 
     @Autowired
@@ -63,6 +59,9 @@ public class EtlJobServiceImpl extends AbstractBaseEntityService<EtlJobEntity, E
 
     @Autowired
     private EtlJobHistoryService historyService;
+
+    @Autowired
+    private EtlJobRedisManager etlJobRedisManager;
 
     @Override
     public EtlJobDTO toDTO(EtlJobEntity entity) {
@@ -240,7 +239,7 @@ public class EtlJobServiceImpl extends AbstractBaseEntityService<EtlJobEntity, E
 
         // 如果是定时任务，提交定时执行
         if (!publishedDTO.getAutoTrigger() && StringUtils.isNotBlank(publishedDTO.getCron())) {
-            etlJobScheduler.restartJob(publishedDTO);
+            etlJobRedisManager.restartJob(jobId);
         }
 
         // 保存历史记录
@@ -267,7 +266,7 @@ public class EtlJobServiceImpl extends AbstractBaseEntityService<EtlJobEntity, E
         });
 
         publishedService.deletePhysical(jobId);
-        etlJobScheduler.stopJob(jobId);
+        etlJobRedisManager.stopJob(jobId);
 
         // 停止实时任务
         mqService.stopJob(jobId);

@@ -1,7 +1,6 @@
 package com.liuqi.dua.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.dua.bean.dto.ApiLogDTO;
 import com.liuqi.dua.bean.query.ApiLogQuery;
 import com.liuqi.dua.bean.req.ApiLogAddReq;
@@ -65,12 +64,6 @@ public class ApiLogController {
     @Operation(summary = "查询-分页")
     public IPage<ApiLogDTO> pageQuery(@RequestBody ApiLogQuery query) {
         return service.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<ApiLogDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

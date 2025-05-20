@@ -1,8 +1,8 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
-import com.liuqi.base.service.ModelDataService;
+import com.liuqi.base.service.data.ModelDataService;
+import com.liuqi.base.service.data.DynamicQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

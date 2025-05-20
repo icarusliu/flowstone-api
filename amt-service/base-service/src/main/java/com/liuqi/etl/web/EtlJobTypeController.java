@@ -1,7 +1,6 @@
 package com.liuqi.etl.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.common.utils.TreeUtils;
 import com.liuqi.etl.bean.dto.EtlJobTypeDTO;
 import com.liuqi.etl.bean.query.EtlJobTypeQuery;
@@ -62,12 +61,6 @@ public class EtlJobTypeController {
     @Operation(summary = "查询-分页")
     public IPage<EtlJobTypeDTO> pageQuery(@RequestBody EtlJobTypeQuery query) {
         return service.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<EtlJobTypeDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

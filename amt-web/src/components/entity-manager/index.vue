@@ -1,8 +1,7 @@
 <template>
     <!-- 实体类管理 -->
     <div>
-        <search-form class="bg-white mb-4 p-4 br-1" v-if="queryFields && queryFields.length" v-model="searchParams" :fields="queryFields"
-            @query="reload" />
+        <search-form class="bg-white mb-4 p-4 br-1" v-if="queryFields && queryFields.length" v-model="searchParams" :fields="queryFields" @query="reload" />
 
         <div class="bg-white p-4 br-1">
             <!-- 按钮 -->
@@ -12,24 +11,40 @@
             </div>
 
             <!-- 表格 -->
-            <base-table :fields="fields" :dataSupplier="dataSupplier" :pageable="pageable != false && !tree" :showIndex="true"
-                ref="tableRef" @rowClick="rowClick">
+            <base-table
+                :fields="fields"
+                :dataSupplier="dataSupplier"
+                :pageable="pageable != false && !tree"
+                :showIndex="true"
+                ref="tableRef"
+                @rowClick="rowClick"
+            >
                 <template #append>
                     <el-table-column label="操作" :width="operationsWidth || '130px'">
                         <template #default="{ row, $index }">
-                            <slot name="prefixButtons" :row="row" :index="$index">
-                                <!-- 附加按钮 -->
-                            </slot>
+                            <div class="row-buttons">
+                                <slot name="prefixButtons" :row="row" :index="$index">
+                                    <!-- 附加按钮 -->
+                                </slot>
 
-                            <!-- 操作按钮 -->
-                            <slot name="rowButtons" :row="row" :index="$index">
-                                <entity-manager-row-buttons :row="row" :index="$index" :tree="tree" :withEdit="withEdit"
-                                    :withDelete="withDelete" @addSub="addSub" @goEdit="goEdit" @doDelete="doDelete">
-                                </entity-manager-row-buttons>
-                            </slot>
-                            <slot name="appendButtons" :row="row" :index="$index">
-                                <!-- 附加按钮 -->
-                            </slot>
+                                <!-- 操作按钮 -->
+                                <slot name="rowButtons" :row="row" :index="$index">
+                                    <entity-manager-row-buttons
+                                        :row="row"
+                                        :index="$index"
+                                        :tree="tree"
+                                        :withEdit="withEdit"
+                                        :withDelete="withDelete"
+                                        @addSub="addSub"
+                                        @goEdit="goEdit"
+                                        @doDelete="doDelete"
+                                    >
+                                    </entity-manager-row-buttons>
+                                </slot>
+                                <slot name="appendButtons" :row="row" :index="$index">
+                                    <!-- 附加按钮 -->
+                                </slot>
+                            </div>
                         </template>
                     </el-table-column>
                 </template>
@@ -52,138 +67,150 @@
 </template>
 
 <script setup>
-import * as entityApis from '@/apis/entity.js'
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { ref, onMounted, reactive } from 'vue'
-import * as _ from 'lodash'
-import EntityManagerRowButtons from './entity-manager-row-buttons.vue'
-import SearchForm from '@/components/search-form.vue'
+import * as entityApis from "@/apis/entity.js";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { ref, onMounted, reactive } from "vue";
+import * as _ from "lodash";
+import EntityManagerRowButtons from "./entity-manager-row-buttons.vue";
+import SearchForm from "@/components/search-form.vue";
 
-const props = defineProps(["queryFields", "fields", "formFields", "apiPrefix", "withDelete", "withEdit", "withNew",
-    "tree", "operationsWidth", "params", "pageable", "dataSupplier", "queryParamConverter"])
-const visible = ref(false)
-const newFields = reactive([])
-const formModel = ref({})
-const formRef = ref()
-const tableRef = ref()
-const defModel = ref({})
-const emits = defineEmits(["rowClick", "startEdit"])
-const searchParams = ref({})
+const props = defineProps([
+    "queryFields",
+    "fields",
+    "formFields",
+    "apiPrefix",
+    "withDelete",
+    "withEdit",
+    "withNew",
+    "tree",
+    "operationsWidth",
+    "params",
+    "pageable",
+    "dataSupplier",
+    "queryParamConverter",
+]);
+const visible = ref(false);
+const newFields = reactive([]);
+const formModel = ref({});
+const formRef = ref();
+const tableRef = ref();
+const defModel = ref({});
+const emits = defineEmits(["rowClick", "startEdit"]);
+const searchParams = ref({});
 
 onMounted(() => {
     if (props.formFields) {
-        newFields.push(...props.formFields)
-        return
+        newFields.push(...props.formFields);
+        return;
     }
 
     if (!props.fields) {
-        return
+        return;
     }
-    props.fields.forEach(field => {
-        if (field.needNew != false && field.type != 'operations' && !field.system) {
+    props.fields.forEach((field) => {
+        if (field.needNew != false && field.type != "operations" && !field.system) {
             // field.system表示是否是系统字段
             newFields.push(field);
 
             // 处理唯一性校验
             if (field.unique) {
                 if (!field.validation) {
-                    field.validation = {}
+                    field.validation = {};
                 }
                 field.validation.validator = (rule, val, callback, form) => {
                     // 校验唯一性
-                    let params = {}
-                    params[field.prop] = val 
-                    entityApis.query(props.apiPrefix, params).then(resp => {
+                    let params = {};
+                    params[field.prop] = val;
+                    entityApis.query(props.apiPrefix, params).then((resp) => {
                         if (!resp || !resp.length) {
-                            return callback()
+                            return callback();
                         }
 
-                        let arr = resp.filter(item => item.id != form.id)
+                        let arr = resp.filter((item) => item.id != form.id);
                         if (!arr || !arr.length) {
-                            return callback()
+                            return callback();
                         }
 
-                        callback(new Error(field.label + '不能重复，请重新输入'))
-                    })
-                }
+                        callback(new Error(field.label + "不能重复，请重新输入"));
+                    });
+                };
             }
-
-        } else if (field.type == 'operations') {
-            hasOperation = true
+        } else if (field.type == "operations") {
+            hasOperation = true;
         }
 
         // 取默认值
         if (field.default || field.default == 0) {
-            defModel.value[field.prop] = field.default
+            defModel.value[field.prop] = field.default;
         }
-    })
-})
+    });
+});
 
 function loadDefModel() {
-    props.fields.forEach(field => {
+    props.fields.forEach((field) => {
         if (field.default || field.default == 0) {
-            defModel.value[field.prop] = field.default
+            defModel.value[field.prop] = field.default;
         }
-    })
+    });
 }
 
 // 添加子元素
 function addSub(row) {
-    loadDefModel()
-    const model = _.cloneDeep(defModel.value)
-    model.parentId = row.id
-    formModel.value = model
-    visible.value = true
+    loadDefModel();
+    const model = _.cloneDeep(defModel.value);
+    model.parentId = row.id;
+    formModel.value = model;
+    visible.value = true;
 }
 
 // 打开编辑界面
 function goEdit(row) {
-    formModel.value = _.cloneDeep(row)
-    emits('startEdit', row)
-    visible.value = true
+    formModel.value = _.cloneDeep(row);
+    emits("startEdit", row);
+    visible.value = true;
 }
 
 // 删除
 function doDelete(row) {
     if (row.children && row.children.length) {
-        ElMessage.error("存在子元素，请删除子元素后再删除当前记录")
-        return
+        ElMessage.error("存在子元素，请删除子元素后再删除当前记录");
+        return;
     }
 
-    ElMessageBox.confirm('确认删除当前数据么？数据删除后无法恢复！').then(() => {
+    ElMessageBox.confirm("确认删除当前数据么？数据删除后无法恢复！").then(() => {
         entityApis.remove(props.apiPrefix, row.id).then(() => {
-            ElMessage.success('删除成功')
-            tableRef.value.reload()
-        })
-    })
+            ElMessage.success("删除成功");
+            tableRef.value.reload();
+        });
+    });
 }
 
 // 打开新增界面
 function newItem() {
-    formModel.value = _.cloneDeep(defModel.value)
-    visible.value = true
+    formModel.value = _.cloneDeep(defModel.value);
+    visible.value = true;
 }
 
 // 数据查询
 function dataSupplier(params) {
-    let finalParams = params
+    let finalParams = params;
 
     if (props.params) {
         finalParams = {
             ...props.params,
             ...params,
-        }
+        };
     }
 
     if (searchParams.value) {
         finalParams = {
             ...finalParams,
-            ...searchParams.value
-        }
+            ...searchParams.value,
+        };
     }
 
     if (props.queryParamConverter) {
-        finalParams = props.queryParamConverter(finalParams)
+        finalParams = props.queryParamConverter(finalParams);
     }
 
     if (props.dataSupplier) {
@@ -191,7 +218,7 @@ function dataSupplier(params) {
     }
 
     if (props.tree) {
-        return entityApis.tree(props.apiPrefix, finalParams)
+        return entityApis.tree(props.apiPrefix, finalParams);
     } else {
         return entityApis.load(props.apiPrefix, finalParams);
     }
@@ -199,30 +226,38 @@ function dataSupplier(params) {
 
 // 保存
 function doSave() {
-    formRef.value.validate(result => {
+    formRef.value.validate((result) => {
         if (!result) {
             return;
         }
 
         entityApis.save(props.apiPrefix, formModel.value).then(() => {
-            ElMessage.success('操作成功');
-            tableRef.value.reload()
-            visible.value = false
-        })
-    })
+            ElMessage.success("操作成功");
+            tableRef.value.reload();
+            visible.value = false;
+        });
+    });
 }
 
 function rowClick() {
-    emits('rowClick', ...arguments)
+    emits("rowClick", ...arguments);
 }
 
 function reload() {
-    tableRef.value.reload()
+    tableRef.value.reload();
 }
 
 defineExpose({
     goEdit,
     doDelete,
-    reload
-})
+    reload,
+});
 </script>
+
+<style lang="scss" scoped>
+.row-buttons :deep() {
+    .el-link {
+        margin-right: 8px;
+    }
+}
+</style>

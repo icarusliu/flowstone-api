@@ -1,7 +1,6 @@
 package com.liuqi.dua.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiHistoryDTO;
 import com.liuqi.dua.bean.dto.ApiTypeDTO;
@@ -89,12 +88,6 @@ public class ApiController {
         page.getRecords().forEach(item -> item.setTypeName(typeMap.get(item.getTypeId())));
 
         return page;
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<ApiDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

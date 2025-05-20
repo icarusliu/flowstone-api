@@ -5,9 +5,9 @@ import com.liuqi.base.bean.dto.ScheduleTaskDTO;
 import com.liuqi.base.bean.query.ScheduleTaskQuery;
 import com.liuqi.base.bean.req.ScheduleTaskAddReq;
 import com.liuqi.base.bean.req.ScheduleTaskUpdateReq;
-import com.liuqi.base.service.ScheduleTaskExecutor;
+import com.liuqi.base.service.schedule.ApiTaskRedisManager;
+import com.liuqi.base.service.schedule.ScheduleTaskExecutor;
 import com.liuqi.base.service.ScheduleTaskService;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -32,21 +32,21 @@ public class ScheduleTaskController {
     private ScheduleTaskService service;
 
     @Autowired
-    private ScheduleTaskExecutor executor;
+    private ApiTaskRedisManager apiTaskRedisManager;
 
     @GetMapping("start/{id}")
     public void startTask(@PathVariable String id) {
-        executor.startTask(id);
+        apiTaskRedisManager.startTask(id);
     }
 
     @GetMapping("stop/{id}")
     public void stopTask(@PathVariable String id) {
-        executor.stopTask(id);
+        apiTaskRedisManager.stopTask(id);
     }
 
     @GetMapping("restart/{id}")
     public void restartTask(@PathVariable String id) {
-        executor.restartTask(id);
+        apiTaskRedisManager.restartTask(id);
     }
 
     @PostMapping("add")
@@ -64,12 +64,12 @@ public class ScheduleTaskController {
         BeanUtils.copyProperties(req, dto);
         service.update(dto);
 
-        executor.restartTask(req.getId());
+        apiTaskRedisManager.restartTask(req.getId());
     }
 
     @GetMapping("invalid/{id}")
     public void setInvalid(@PathVariable("id") String id) {
-        executor.stopTask(id);
+        apiTaskRedisManager.stopTask(id);
         ScheduleTaskDTO dto = new ScheduleTaskDTO();
         dto.setId(id);
         dto.setStatus(0);
@@ -82,13 +82,13 @@ public class ScheduleTaskController {
         dto.setId(id);
         dto.setStatus(1);
         service.update(dto);
-        executor.startTask(id);
+        apiTaskRedisManager.startTask(id);
     }
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
     public void delete(@PathVariable("id") String id) {
-        executor.stopTask(id);
+        apiTaskRedisManager.stopTask(id);
         service.delete(id);
     }
 
@@ -102,12 +102,6 @@ public class ScheduleTaskController {
     @Operation(summary = "查询-分页")
     public IPage<ScheduleTaskDTO> pageQuery(@RequestBody ScheduleTaskQuery query) {
         return service.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<ScheduleTaskDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

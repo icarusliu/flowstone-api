@@ -1,4 +1,4 @@
-package com.liuqi.common.base.bean.query;
+package com.liuqi.base.service.data;
 
 import liquibase.util.StringUtil;
 import lombok.Data;

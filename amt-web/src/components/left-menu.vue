@@ -11,51 +11,48 @@
                 </el-icon>
                 <template v-if="!menuFolded">{{ menu.name }}</template>
             </template>
-            <el-menu-item v-for="child in menu.children" :key="child.path" :index="child.path">{{ child.name
-                }}</el-menu-item>
+            <el-menu-item v-for="child in menu.children" :key="child.path" :index="child.path">{{ child.name }}</el-menu-item>
         </el-sub-menu>
     </el-menu>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import allMenus from '../data/menus';
-import { useSysStore } from '../store';
-import router from '../router';
+import { ref, computed } from "vue";
+import allMenus from "../data/menus";
+import { useSysStore } from "../store";
+import router from "../router";
 
 const menuFolded = computed(() => {
-    return useSysStore().getMenuFolded()
-})
+    return useSysStore().getMenuFolded();
+});
 const menus = ref(allMenus);
 const active = computed(() => {
-    return router.currentRoute.value.fullPath
-})
-
+    return router.currentRoute.value.fullPath;
+});
 </script>
 
 <style lang="scss" scoped>
 .left-menu {
-    --el-menu-bg-color: #343e5e;
-    --el-menu-text-color: #bfcbd9;
-    --el-menu-active-color: #409eff;
-    --el-menu-hover-bg-color: #242e4e;
-
     border-right: none;
+    box-shadow: 0 0 5px var(--el-menu-box-shadow-color);
+    z-index: 3;
 
     :deep() {
         .el-menu--inline {
-            background-color: #242e4eaa;
+            background-color: var(--el-menu-inline-bg-color);
+        }
+
+        .el-menu-item.is-active {
+            font-weight: bold;
         }
     }
 }
 
-
 .left-menu:not(.el-menu--collapse) {
     width: 240px;
-
 }
 
 .title {
-    color: #efefef;
+    color: var(--main_title_color);
 }
 </style>

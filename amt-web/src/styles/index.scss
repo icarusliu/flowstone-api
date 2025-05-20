@@ -1,9 +1,17 @@
-@import url('element-plus/dist/index.css');
-@import url("./themes/variables.scss");
-@import url('./element-cover.scss');
-@import url('./common.scss');
-@import url('./iconfont/iconfont.css');
+@import 'element-plus/dist/index.css';
+@import "./themes/default.scss";
+@import "./themes/green.scss";
+@import "./themes/dark.scss";
+@import "./themes/red.scss";
+@import './element-cover.scss';
+@import './common.scss';
+@import './iconfont/iconfont.css';
 
+@each $theme in default, "dark", "red", "range", "green" {
+    :root[theme="#{$theme}"] {
+        @extend %theme_#{$theme} !optional;
+    }
+}
 
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;

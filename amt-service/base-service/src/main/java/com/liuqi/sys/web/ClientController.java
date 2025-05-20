@@ -7,7 +7,6 @@ import com.liuqi.sys.bean.query.ClientQuery;
 import com.liuqi.sys.bean.req.ClientAddReq;
 import com.liuqi.sys.bean.req.ClientUpdateReq;
 import com.liuqi.sys.service.ClientService;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -77,12 +76,6 @@ public class ClientController {
     @Operation(summary = "查询-分页")
     public IPage<ClientDTO> pageQuery(@RequestBody ClientQuery query) {
         return service.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<ClientDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

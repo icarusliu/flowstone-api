@@ -1,6 +1,6 @@
 package com.liuqi.dua.executor.bean;
 
-import com.liuqi.common.base.bean.query.FilterOp;
+import com.liuqi.base.service.data.FilterOp;
 import lombok.Data;
 
 /**

@@ -1,7 +1,6 @@
 package com.liuqi.etl.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.etl.bean.dto.EtlLogDTO;
 import com.liuqi.etl.bean.query.EtlLogQuery;
 import com.liuqi.etl.bean.req.EtlLogAddReq;
@@ -61,12 +60,6 @@ public class EtlLogController {
     @Operation(summary = "查询-分页")
     public IPage<EtlLogDTO> pageQuery(@RequestBody EtlLogQuery query) {
         return service.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<EtlLogDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

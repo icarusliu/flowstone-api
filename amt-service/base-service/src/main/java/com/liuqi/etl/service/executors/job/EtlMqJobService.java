@@ -1,6 +1,5 @@
 package com.liuqi.etl.service.executors.job;
 
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.service.EtlJobPublishedService;
 import com.liuqi.etl.service.executors.config.EtlMqConfig;
@@ -37,7 +36,7 @@ public class EtlMqJobService {
     @PostConstruct
     public void init() {
         // 系统重启时需要启动监听
-        List<EtlJobPublishedDTO> list = publishedService.dynamicQuery(DynamicQuery.create().eq("type", "mq"));
+        List<EtlJobPublishedDTO> list = publishedService.queryBuilder().eq("type", "mq").query();
         list.forEach(job -> {
             try {
                 this.startJob(job);

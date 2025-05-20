@@ -80,7 +80,7 @@
     </el-descriptions>
 
     <div class="p-4 text-center">
-        <el-button type="primary">测试</el-button>
+        <!-- <el-button type="primary">测试</el-button> -->
     </div>
 
     <!-- 请求体配置 -->

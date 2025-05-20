@@ -1,20 +1,19 @@
 package com.liuqi.common.base.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
-import com.liuqi.common.base.bean.query.BaseQuery;
-import com.liuqi.common.base.bean.query.DynamicQueryBuilder;
+import com.liuqi.common.base.bean.query.*;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 public interface BaseService<D, Q extends BaseQuery> {
     D insert(D dto);
 
     List<D> insert(List<D> dtos);
 
     void update(D dto);
+
+    UpdateBuilder<?> updateBuilder();
 
     List<D> query(Q q);
 
@@ -32,24 +31,8 @@ public interface BaseService<D, Q extends BaseQuery> {
 
     /**
      * 动态查询
-     *
-     * @param query 查询对象
-     * @return 查询结果
      */
-    IPage<D> dynamicPageQuery(DynamicQuery query);
-
-    /**
-     * 动态查询
-     *
-     * @param query 查询对象
-     * @return 查询结果
-     */
-    List<D> dynamicQuery(DynamicQuery query);
-
-    /**
-     * 动态查询
-     */
-    DynamicQueryBuilder<D> dynamicQuery();
+    QueryBuilder<D, ?> queryBuilder();
 
     /**
      * 查询单个数据
@@ -67,7 +50,13 @@ public interface BaseService<D, Q extends BaseQuery> {
      * @param id id
      * @return id对应的记录
      */
-    Optional<D> findById(String id);
+    default Optional<D> findById(String id) {
+        return this.queryBuilder()
+                .eq("id", id)
+                .query()
+                .stream()
+                .findAny();
+    }
 
     /**
      * 根据id批量查询记录
@@ -75,12 +64,19 @@ public interface BaseService<D, Q extends BaseQuery> {
      * @param ids id列表
      * @return id列表对应的记录
      */
-    List<D> findByIds(List<String> ids);
+    default List<D> findByIds(List<String> ids) {
+        return this.queryBuilder()
+                .in("id", ids)
+                .query();
+    }
 
     /**
      * 查找所有记录
      */
-    List<D> findAll();
+    default List<D> findAll() {
+        return this.queryBuilder()
+                .query();
+    }
 
     /**
      * 查找所有记录，根据指定字段排序
@@ -89,15 +85,21 @@ public interface BaseService<D, Q extends BaseQuery> {
      * @param isAsc         是否升级
      * @return 结果
      */
-    List<D> findAll(String orderByColumn, boolean isAsc);
+    default List<D> findAll(String orderByColumn, boolean isAsc) {
+        return this.queryBuilder()
+                .orderBy(orderByColumn, isAsc)
+                .query();
+    }
 
     /**
-     * 查找所有记录，按指定字段升级
+     * 查找所有记录，按指定字段升级排序查询
      *
      * @param orderByColumn 排序字段
      * @return 结果
      */
     default List<D> findAll(String orderByColumn) {
-        return this.findAll(orderByColumn, true);
+        return this.queryBuilder()
+                .orderByAsc(orderByColumn)
+                .query();
     }
 }

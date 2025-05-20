@@ -3,7 +3,6 @@ package com.liuqi.base.web;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.sys.service.DictService;
 import com.liuqi.common.ErrorCodes;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.base.bean.dto.ModelDTO;
 import com.liuqi.base.bean.dto.ModelDetailDTO;
@@ -72,12 +71,6 @@ public class ModelController {
     @Operation(summary = "查询-分页")
     public IPage<ModelDTO> pageQuery(@RequestBody ModelQuery query) {
         return service.pageQuery(query);
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<ModelDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

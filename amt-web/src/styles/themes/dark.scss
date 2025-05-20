@@ -1,0 +1,36 @@
+%theme_default {
+    --primary_color: #3e62d8;
+    --sub_color: #5276ec;
+
+    // element变量
+    --el-color-primary: var(--primary_color) !important;
+    --el-menu-bg-color: #343e5e;
+    --el-menu-text-color: #bfcbd9;
+    --el-menu-active-color: #409eff;
+    --el-menu-hover-bg-color: #242e4e;
+    --el-disabled-text-color: #75757a;
+
+    // 背景
+    --focus_bg_color: #c8f6ff;
+    --focus_bg_color_1: #c8f6ff88;
+    --main_bg_color: #fafbfc;
+    --sub_bg_color: #f6fcff;
+    --follow_bg_color: #f7f8f9;
+    --reverse_bg_color: #3a3b3c;
+    --reverse_sub_bg_color: #4a4b4c;
+
+    --reverse_font_color: #f2f3f4;
+    --main_font_color: #323335;
+    --sub_font_color: #6a6b6c;
+    --follow_font_color: #8a8b8c;
+
+    --focus_border_color: #56ddf8;
+    --main_border_color: #dadbdc;
+    --sub_border_color: #eaebec;
+    --follow_border_color: #f3f4f5;
+
+    --focus_shadow_color: #56ddf8;
+    --main_shadow_color: #aaa;
+
+    --main_header_height: 58px;
+}

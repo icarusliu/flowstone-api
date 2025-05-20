@@ -45,11 +45,11 @@ spring:
     allow-circular-references: true
   data:
     redis:
-      enabled: false
+      enabled: true
       host: localhost
       port: 6379
       password:
-      connectTimeout: 100
+      connectTimeout: 400
   cache:
     type: simple
 

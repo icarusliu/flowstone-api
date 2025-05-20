@@ -1,8 +1,18 @@
-:root {
-    --primary_color: #2a55e5;
-    --sub_color: #409eff;
-    --el-color-primary: var(--primary_color)!important;
+%theme_green {
+    --primary_color: #1b793f;
+    --sub_color: #2a8949;
 
+    // element变量
+    --el-color-primary: var(--primary_color) !important;
+    --el-menu-bg-color: #fefefe;
+    --el-menu-hover-bg-color: #f5f5f5;
+    --el-menu-inline-bg-color: #f5f5f5;
+    --el-menu-box-shadow-color: #343e5e22;
+    --el-menu-text-color: #444;
+    --el-menu-active-color: var(--primary_color);
+    --el-disabled-text-color: #75757a;
+
+    // 背景
     --focus_bg_color: #c8f6ff;
     --focus_bg_color_1: #c8f6ff88;
     --main_bg_color: #fafbfc;
@@ -10,7 +20,7 @@
     --follow_bg_color: #f7f8f9;
     --reverse_bg_color: #3a3b3c;
     --reverse_sub_bg_color: #4a4b4c;
-    
+
     --reverse_font_color: #f2f3f4;
     --main_font_color: #323335;
     --sub_font_color: #6a6b6c;
@@ -25,4 +35,7 @@
     --main_shadow_color: #aaa;
 
     --main_header_height: 58px;
+
+    // 主菜单 
+    --main_title_color: var(--main_font_color);
 }

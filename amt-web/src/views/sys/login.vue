@@ -4,9 +4,7 @@
             <h1 class="color-primary">流石API管理工具</h1>
             <div class="content">
                 <div class="sub-title">
-                    <span class="title font-bold">
-                        账号登录
-                    </span>
+                    <span class="title font-bold"> 账号登录 </span>
                 </div>
                 <el-form class="form" :model="formData" :rules="rules" ref="formRef">
                     <el-form-item prop="username">
@@ -30,79 +28,83 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { login } from '@/apis/login.js'
-import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
-import { setToken } from '../../utils/token'
-import passwordInput from '../../components/password-input.vue'
-import { useSysStore } from '../../store'
+import { ref, reactive, onMounted } from "vue";
+import { login } from "@/apis/login.js";
+import * as sysApis from "@/apis/sys.js";
+import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
+import { setToken } from "../../utils/token";
+import passwordInput from "../../components/password-input.vue";
+import { useSysStore } from "../../store";
 
-const router = useRouter()
-const formData = ref({})
+const router = useRouter();
+const formData = ref({});
 const rules = reactive({
     username: {
         required: true,
-        message: '用户名或手机号不能为空'
+        message: "用户名或手机号不能为空",
     },
     password: {
         required: true,
-        message: '密码不能为空'
+        message: "密码不能为空",
     },
     code: {
         required: true,
-        message: '验证码不能为空'
-    }
-})
-const formRef = ref()
+        message: "验证码不能为空",
+    },
+});
+const formRef = ref();
 const errorInfo = ref({
-    restCount: 10
-})
+    restCount: 10,
+});
 
 onMounted(() => {
     // 如果用户登录过，那么跳转到对应页面或首页
-    const sysStore = useSysStore()
-    const userInfo = sysStore.getUserInfo()
+    const sysStore = useSysStore();
+    const userInfo = sysStore.getUserInfo();
     if (userInfo.userId) {
         // 登录过
-        goNextPage()
+        goNextPage();
     }
-})
+});
 
 // 跳转页面
 function goNextPage() {
     // 如果链接中带有next，则跳转next，否则跳转首页
-    const next = router.currentRoute.value.query?.next
-    if (!next || next.startsWith('/login')) {
-        router.push('/')
+    const next = router.currentRoute.value.query?.next;
+    if (!next || next.startsWith("/login")) {
+        window.open("/", "_self");
     } else {
-        router.push(next)
+        window.open(next, "_self");
     }
 }
 
 // 进行登录
 function doLogin() {
-    formRef.value.validate(resp => {
+    formRef.value.validate((resp) => {
         if (!resp) {
-            return
+            return;
         }
 
-        login(formData.value).then(resp => {
-            setToken(resp.accessToken)
+        login(formData.value)
+            .then((resp) => {
+                setToken(resp.accessToken);
 
-            const sysStore = useSysStore()
-            sysStore.setUserInfo(resp.userInfo)
+                sysApis.getInitInfo().then((resp) => {
+                    const sysStore = useSysStore();
+                    sysStore.setUserInfo(resp.userInfo);
+                    sysStore.setMenuTree(resp.menuTree);
 
-            ElMessage.success('登录成功')
-
-            goNextPage()
-        }).catch(err => {
-            ElMessage.error(err.msg)
-            errorInfo.value = err
-        })
-    })
+                    ElMessage.success("登录成功");
+                    goNextPage();
+                });
+            })
+            .catch((err) => {
+                ElMessage.error(err.msg);
+                errorInfo.value = err;
+            });
+    });
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -122,7 +124,7 @@ function doLogin() {
 }
 
 .main {
-    background-image: url('/login_bg.png');
+    background-image: url("/bg.webp");
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -168,7 +170,7 @@ function doLogin() {
         .form {
             :deep() {
                 .el-input {
-                    --el-input-height: 40px;
+                    --el-input-height: 48px;
                 }
             }
         }

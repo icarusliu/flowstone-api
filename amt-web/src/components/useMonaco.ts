@@ -40,6 +40,7 @@ export default function useMonaco(language = 'json') {
       language,
       minimap: { enabled: false },
       theme: 'vs-dark',
+      wordWrap: 'on',
       multiCursorModifier: 'ctrlCmd',
       scrollbar: {
         verticalScrollbarSize: 8,

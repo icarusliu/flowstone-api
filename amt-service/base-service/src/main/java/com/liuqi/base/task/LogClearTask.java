@@ -2,6 +2,7 @@ package com.liuqi.base.task;
 
 import com.liuqi.dua.service.ApiLogService;
 import com.liuqi.etl.service.EtlLogService;
+import com.liuqi.sys.task.NodePingTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,11 @@ public class LogClearTask {
 
     @Scheduled(cron = "0 0 1 * * ?")
     public void clearLogs() {
+        if (!NodePingTask.isMaster) {
+            // 非主节点不执行
+            return;
+        }
+
         try {
             apiLogService.clearLogsBefore(LocalDate.now().minusDays(apiLogKeepDays));
         } catch (Exception ex) {

@@ -90,7 +90,7 @@ const formFields = ref(authFormFields)
 const formData = ref({
     params: [],
     type: 'static',
-    dynamicType: 'get',
+    method: 'get',
     dynamicParams: [],
     targetParams: []
 })
@@ -116,7 +116,7 @@ function showNew() {
         name: '默认认证',
         params: [],
         type: 'static',
-        dynamicType: 'get',
+        method: 'get',
         dynamicParams: [],
         targetParams: []
     }

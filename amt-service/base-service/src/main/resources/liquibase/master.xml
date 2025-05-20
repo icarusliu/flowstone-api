@@ -645,26 +645,26 @@
     <changeSet id="create-table-b_etl_job_history" author="codeGenerator">
         <sql>
             create table b_etl_job_history(
-                id varchar(64) not null primary key comment '主键',
-                job_id varchar(64) not null comment '任务id',
-                type_id varchar(64) comment '分类id',
-                type varchar(64) comment '任务类型，sync:数据同步任务；process：数据处理任务',
-                code varchar(64) comment '任务编码',
-                name varchar(255) comment '任务名称',
-                enabled int(1) default 0 comment '是否启用',
-                sort varchar(32) comment '排序序号',
-                auto_trigger int(1) default 0 comment '是否自动触发，即当期依赖的任务执行完成后是否自动触发',
-                config text comment '任务运行配置',
-                metadata varchar(512) comment '任务其它配置',
-                cron varchar(32) comment '定时执行的表达式',
-                version integer default 0 comment '任务版本',
-                published_version integer default 0 comment '已发布版本',
-                tenant_id varchar(255) comment '租户编号',
-                create_user varchar(255) comment '创建用户',
-                create_time datetime default current_timestamp comment '创建时间',
-                update_user varchar(255) comment '更新用户',
-                update_time datetime on update current_timestamp comment '更新时间',
-                deleted int(1) default 0 comment '是否删除'
+            id varchar(64) not null primary key comment '主键',
+            job_id varchar(64) not null comment '任务id',
+            type_id varchar(64) comment '分类id',
+            type varchar(64) comment '任务类型，sync:数据同步任务；process：数据处理任务',
+            code varchar(64) comment '任务编码',
+            name varchar(255) comment '任务名称',
+            enabled int(1) default 0 comment '是否启用',
+            sort varchar(32) comment '排序序号',
+            auto_trigger int(1) default 0 comment '是否自动触发，即当期依赖的任务执行完成后是否自动触发',
+            config text comment '任务运行配置',
+            metadata varchar(512) comment '任务其它配置',
+            cron varchar(32) comment '定时执行的表达式',
+            version integer default 0 comment '任务版本',
+            published_version integer default 0 comment '已发布版本',
+            tenant_id varchar(255) comment '租户编号',
+            create_user varchar(255) comment '创建用户',
+            create_time datetime default current_timestamp comment '创建时间',
+            update_user varchar(255) comment '更新用户',
+            update_time datetime on update current_timestamp comment '更新时间',
+            deleted int(1) default 0 comment '是否删除'
             ) comment 'ETL任务历史记录'
         </sql>
     </changeSet>
@@ -688,18 +688,18 @@
         <sql>
             create table if not exists sys_dept
             (
-            id          varchar(64)                             not null comment '主键'
+            id varchar(64) not null comment '主键'
             primary key,
-            code        varchar(64)                             not null comment '编码',
-            name        varchar(255)                            not null comment '名称',
-            parent_id   varchar(64) default '-1'                null comment '父级机构',
-            sort        int         default 0                   null comment '排序',
-            tenant_id   varchar(64)                            null comment '租户编号',
-            create_user varchar(255)                            null comment '创建用户',
-            create_time timestamp   default current_timestamp() null comment '创建时间',
-            update_user varchar(255)                            null comment '更新用户',
-            update_time timestamp                               null on update current_timestamp() comment '更新时间',
-            deleted     int(1)      default 0                   null comment '是否删除'
+            code varchar(64) not null comment '编码',
+            name varchar(255) not null comment '名称',
+            parent_id varchar(64) default '-1' null comment '父级机构',
+            sort int default 0 null comment '排序',
+            tenant_id varchar(64) null comment '租户编号',
+            create_user varchar(255) null comment '创建用户',
+            create_time timestamp default current_timestamp() null comment '创建时间',
+            update_user varchar(255) null comment '更新用户',
+            update_time timestamp null on update current_timestamp() comment '更新时间',
+            deleted int(1) default 0 null comment '是否删除'
             );
         </sql>
     </changeSet>

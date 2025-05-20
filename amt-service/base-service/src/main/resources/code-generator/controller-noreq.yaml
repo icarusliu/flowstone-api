@@ -20,7 +20,6 @@ imports:
   - org.springframework.web.bind.annotation.RestController
   - org.springframework.validation.annotation.Validated
   - com.baomidou.mybatisplus.core.metadata.IPage
-  - com.liuqi.common.base.bean.query.DynamicQuery
   - org.apache.commons.lang3.StringUtils
   - java.util.List
 template: "@RestController
@@ -70,12 +69,6 @@ template: "@RestController
   @Operation(summary = \"查询-分页\")
   public IPage<$T$DTO> pageQuery(@RequestBody $T$Query query) {
   return service.pageQuery(query);
-  }
-  
-  @PostMapping(\"filter\")
-  @Operation(summary = \"查询-动态\")
-  public IPage<$T$DTO> pageQuery(@RequestBody DynamicQuery query) {
-  return service.dynamicPageQuery(query);
   }
   
   @PostMapping(\"query\")

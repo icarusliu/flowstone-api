@@ -17,6 +17,8 @@
             <span v-else-if="field.converter">{{ field.converter(model, row) }}</span>
             <span v-else-if="field.type == 'text'">{{ model }}</span>
 
+            <BaseRender v-else-if="field.render" :content="field.render(model, row)"></BaseRender>
+
             <!-- 其它编辑组件 -->
             <component v-else :is="is" v-model="model" :disabled="readonly || getDisabled(field, row)" autofocus :options="field.options"
                 :placeholder="placeholder" @change="doChange(field, $event, row, index)" valueFormat="YYYY-MM-DD">
@@ -43,6 +45,7 @@
     import BaseAutoComplete from '../base-autocomplete.vue'
     import ScriptDialog from '../script-dialog.vue'
     import BaseTableColumn from '../base-table/base-table-column.vue'
+    import BaseRender from '../base-render'
     import * as _ from 'lodash'
     import SelectScriptDialog from '../select-script-dialog.vue'
 

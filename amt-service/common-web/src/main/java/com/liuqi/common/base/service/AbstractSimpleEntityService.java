@@ -119,7 +119,22 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
      */
     @Override
     public List<D> query(Q q) {
-        return this.queryInternal(q, null);
+        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
+
+        if (null == queryWrapper) {
+            return new ArrayList<>(0);
+        }
+
+        if (null != q.getPageNo() && null != q.getPageSize()) {
+            long start = (q.getPageNo() - 1) * q.getPageSize();
+            queryWrapper.last(" limit " + start + "," + q.getPageSize());
+        }
+
+        if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
+            queryWrapper.select(field -> !q.getExcludeFields().contains(field.getProperty()));
+        }
+
+        return this.queryInternal(queryWrapper);
     }
 
     /**
@@ -143,63 +158,52 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     /**
      * 查询实现
      *
-     * @param q         查询对象，可为空
-     * @param processor 查询附加处理器，可为空
      * @return 查询结果
      */
-    protected List<D> queryInternal(Q q, Consumer<QueryWrapper<E>> processor) {
-        QueryWrapper<E> queryWrapper;
-        if (null != q) {
-            queryWrapper = this.queryToWrapper(q);
-
-            if (null != q.getPageNo() && null != q.getPageSize()) {
-                long start = (q.getPageNo() - 1) * q.getPageSize();
-                queryWrapper.last(" limit " + start + "," + q.getPageSize());
-            }
-
-        } else {
-            queryWrapper = this.createQueryWrapper();
-        }
-        if (processor != null) {
-            processor.accept(queryWrapper);
-        }
+    protected List<D> queryInternal(QueryWrapper<E> queryWrapper) {
         List<D> list = this.toDTO(this.list(queryWrapper));
         this.processAfterQuery(list);
         return list;
     }
 
     /**
-     * 查找所有记录
+     * 分页查询
      *
-     * @return 所有记录
+     * @param q 查询对象
+     * @return 查询结果
      */
     @Override
-    public List<D> findAll() {
-        return this.query(null);
+    @Transactional
+    public IPage<D> pageQuery(Q q) {
+        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
+        if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
+            queryWrapper.select(field -> !q.getExcludeFields().contains(field.getProperty()));
+        }
+        return this.pageQueryInternal(q.getPageNo(), q.getPageSize(), queryWrapper);
     }
 
-    /**
-     * 查找所有记录，根据传入字段进行排序
-     *
-     * @param orderByColumn 排序字段
-     * @param isAsc         是否升序
-     * @return 所有记录
-     */
-    @Override
-    public List<D> findAll(String orderByColumn, boolean isAsc) {
-        return this.queryInternal(null, queryWrapper -> queryWrapper.orderBy(true, isAsc, orderByColumn));
+    private IPage<D> pageQueryInternal(Long pageNo, Long pageSize, QueryWrapper<E> queryWrapper) {
+        IPage<E> pageReq = new Page<>();
+        pageReq.setCurrent(pageNo);
+        pageReq.setSize(pageSize);
+        IPage<E> result = this.page(pageReq, queryWrapper);
+
+        IPage<D> finalResult = new Page<>();
+        finalResult.setTotal(result.getTotal());
+        finalResult.setSize(pageSize);
+        finalResult.setCurrent(pageNo);
+        finalResult.setPages(result.getPages());
+        finalResult.setRecords(this.toDTO(result.getRecords()));
+
+        this.processAfterQuery(finalResult.getRecords());
+        return finalResult;
     }
 
-    /**
-     * 根据id查找记录
-     *
-     * @param id id
-     * @return id对应的记录
-     */
     @Override
-    public Optional<D> findById(String id) {
-        return this.queryInternal(null, queryWrapper -> queryWrapper.eq("id", id))
-                .stream().findAny();
+    public QueryBuilder<D, E> queryBuilder() {
+        return QueryBuilder.create(this::queryInternal,
+                qb -> this.pageQueryInternal(qb.getPageNo(), qb.getPageSize(), qb.getQueryWrapper()),
+                this::count);
     }
 
     /**
@@ -229,80 +233,6 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     }
 
     /**
-     * 分页查询
-     *
-     * @param q 查询对象
-     * @return 查询结果
-     */
-    @Override
-    @Transactional
-    public IPage<D> pageQuery(Q q) {
-        return this.pageQueryInternal(q.getPageNo(), q.getPageSize(), this.queryToWrapper(q));
-    }
-
-    private IPage<D> pageQueryInternal(Long pageNo, Long pageSize, QueryWrapper<E> queryWrapper) {
-        IPage<E> pageReq = new Page<>();
-        pageReq.setCurrent(pageNo);
-        pageReq.setSize(pageSize);
-        IPage<E> result = this.page(pageReq, queryWrapper);
-
-        IPage<D> finalResult = new Page<>();
-        finalResult.setTotal(result.getTotal());
-        finalResult.setSize(pageSize);
-        finalResult.setCurrent(pageNo);
-        finalResult.setPages(result.getPages());
-        finalResult.setRecords(this.toDTO(result.getRecords()));
-
-        this.processAfterQuery(finalResult.getRecords());
-        return finalResult;
-    }
-
-    /**
-     * 动态查询
-     *
-     * @param query 查询对象
-     * @return 查询结果
-     */
-    @Override
-    public IPage<D> dynamicPageQuery(DynamicQuery query) {
-        QueryWrapper<E> queryWrapper = this.createQueryWrapper();
-        List<Filter> filters = query.getFilters();
-        if (!CollectionUtils.isEmpty(filters)) {
-            filters.forEach(filter -> this.processFilter(filter, queryWrapper));
-        }
-
-        if (null == query.getPageNo()) {
-            query.setPageNo(1L);
-        }
-        if (null == query.getPageSize()) {
-            query.setPageSize(1000L);
-        }
-
-        return this.pageQueryInternal(query.getPageNo(), query.getPageSize(), queryWrapper);
-    }
-
-    @Override
-    public DynamicQueryBuilder<D> dynamicQuery() {
-        return DynamicQueryBuilder.create(this);
-    }
-
-    /**
-     * 动态查询
-     *
-     * @param query 查询对象
-     * @return 查询结果
-     */
-    @Override
-    public List<D> dynamicQuery(DynamicQuery query) {
-        return this.queryInternal(null, w -> {
-            List<Filter> filters = query.getFilters();
-            if (!CollectionUtils.isEmpty(filters)) {
-                filters.forEach(filter -> this.processFilter(filter, w));
-            }
-        });
-    }
-
-    /**
      * 删除前处理
      *
      * @return true时进行删除，false时不进行删除
@@ -318,25 +248,33 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     }
 
     /**
-     * 物理删除
+     * 逻辑
      *
      * @param id 待删除记录id
      */
     @Override
     @Transactional
     public void delete(String id) {
-        this.deletePhysical(id);
+        this.updateBuilder()
+                .set("deleted", true)
+                .eq("id", id)
+                .update();
+        this.processAfterDelete(Collections.singletonList(id));
     }
 
     /**
-     * 物理删除
+     * 逻辑删除
      *
      * @param ids 待删除记录id列表
      */
     @Override
     @Transactional
     public void delete(Collection<String> ids) {
-        this.deletePhysical(ids);
+        this.updateBuilder()
+                .set("deleted", true)
+                .in("id", ids)
+                .update();
+        this.processAfterDelete(ids);
     }
 
     /**
@@ -352,7 +290,6 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
         }
 
         this.removeById(id);
-
         this.processAfterDelete(Collections.singleton(id));
     }
 
@@ -377,61 +314,6 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     }
 
     /**
-     * 处理动态查询条件
-     *
-     * @param filter       动态查询条件
-     * @param queryWrapper 查询对象
-     */
-    private void processFilter(Filter filter, QueryWrapper<E> queryWrapper) {
-        FilterOp op = Optional.ofNullable(filter.getOp()).orElse(FilterOp.EQ);
-        List<Filter> subFilters = filter.getFilters();
-        if (!CollectionUtils.isEmpty(subFilters)) {
-            // 有子查询，处理子查询
-            if (op == FilterOp.EQ || op == FilterOp.AND) {
-                queryWrapper.and(q -> subFilters.forEach(subFilter -> this.processFilter(subFilter, q)));
-            } else if (op == FilterOp.OR) {
-                queryWrapper.or(q -> subFilters.forEach(subFilter -> this.processFilter(subFilter, q)));
-            }
-            return;
-        }
-
-        String key = filter.getKey();
-        if (StringUtils.isEmpty(key)) {
-            log.warn("Key is empty for condition!");
-            return;
-        }
-
-        // key支持驼峰，自动转下划线
-        key = StringUtil.toKabobCase(key).replaceAll("-", "_");
-
-        // 查询条件
-        if (op == FilterOp.NULL) {
-            queryWrapper.isNull(key);
-            return;
-        } else if (op == FilterOp.NOT_NULL) {
-            queryWrapper.isNotNull(key);
-        }
-
-        Object value = filter.getValue();
-        Object value1 = filter.getValue1();
-        if (null == value && null == value1) {
-            return;
-        }
-
-        switch (op) {
-            case IN -> queryWrapper.in(key, (Collection<?>) value);
-            case EQ -> queryWrapper.eq(key, value);
-            case LIKE -> queryWrapper.like(key, value);
-            case NEQ -> queryWrapper.ne(key, value);
-            case BETWEEN -> queryWrapper.between(key, value, value1);
-            case LT -> queryWrapper.lt(key, value);
-            case LE -> queryWrapper.le(key, value);
-            case GT -> queryWrapper.gt(key, value);
-            case GE -> queryWrapper.ge(key, value);
-        }
-    }
-
-    /**
      * 查询记录数
      *
      * @param q 查询对象
@@ -441,18 +323,6 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     public long count(Q q) {
         return this.count(this.queryToWrapper(q));
     }
-
-    /**
-     * 根据id批量查询
-     *
-     * @param ids id列表
-     * @return 对象列表
-     */
-    @Override
-    public List<D> findByIds(List<String> ids) {
-        return this.queryInternal(null, q -> q.in("id", ids));
-    }
-
 
     protected D toDTO(E e) {
         D d = createDTO();
@@ -494,5 +364,12 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
 
     private Q createQuery() {
         return this.createBean(3);
+    }
+
+    /**
+     * 创建链式更新对象
+     */
+    public UpdateBuilder<E> updateBuilder() {
+        return new UpdateBuilder<>(this);
     }
 }

@@ -3,7 +3,7 @@ package com.liuqi.etl.service.executors;
 import com.liuqi.etl.bean.dto.EtlJobPublishedDTO;
 import com.liuqi.etl.bean.query.EtlJobPublishedQuery;
 import com.liuqi.etl.service.EtlJobPublishedService;
-import jakarta.annotation.PostConstruct;
+import com.liuqi.sys.service.ScheduleTaskExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -24,7 +24,7 @@ import java.util.concurrent.ScheduledFuture;
  **/
 @Service
 @Slf4j
-public class EtlJobScheduler {
+public class EtlJobScheduler implements ScheduleTaskExecutorService {
     @Autowired
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
@@ -36,7 +36,7 @@ public class EtlJobScheduler {
 
     private final Map<String, ScheduledFuture<?>> scheduledFutureMap = new ConcurrentHashMap<>(16);
 
-    @PostConstruct
+    @Override
     public void startAll() {
         // 系统启动时启动所有不自动执行的作业（自动执行的由其依赖任务启动）
         EtlJobPublishedQuery query = new EtlJobPublishedQuery();
@@ -72,10 +72,9 @@ public class EtlJobScheduler {
 
     /**
      * 重启作业
-     * @param job 作业
      */
-    public void restartJob(EtlJobPublishedDTO job) {
-        this.stopJob(job.getId());
-        this.startJob(job);
+    public void restartJob(String jobId) {
+        this.stopJob(jobId);
+        publishedService.findById(jobId).ifPresent(this::startJob);
     }
 }

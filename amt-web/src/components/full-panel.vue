@@ -1,5 +1,5 @@
 <template>
-    <div class="full-panel bg-white p-4">
+    <div class="full-panel bg-white p-4" v-if="visible">
         <div class="top-bar d-flex">
             <div class="return cursor-pointer" @click="close">
                 <el-icon>
@@ -17,12 +17,14 @@
     </div>
 </template>
 <script setup>
+const visible = defineModel()
 const props = defineProps({
     title: { type: String }
 })
 const emits = defineEmits(['close'])
 
 function close() {
+    visible.value = false
     emits('close')
 }
 </script>
@@ -34,8 +36,9 @@ function close() {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 100;
+    z-index: 4;
     box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .top-bar {

@@ -1,5 +1,6 @@
 package com.liuqi.dua.executor.tasks.http;
 
+import cn.hutool.core.map.MapBuilder;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
 
 import java.net.HttpCookie;
 import java.util.*;
@@ -83,7 +85,7 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
      */
     private Map<String, String> getRequestHeaders(RequestContext requestContext) {
         Map<String, String> finalHeaders = new HashMap<>(16);
-        
+
         // 处理contentType
         String contentType = this.getNodeConfig().getContentType();
         if (StringUtils.isNotBlank(contentType)) {
@@ -274,7 +276,13 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
                 request = HttpUtil.createRequest(Method.PUT, url);
             }
 
-            request.body(JSON.toJSONString(body));
+            if (null != body) {
+                if (body instanceof String || body instanceof Number || body instanceof Boolean) {
+                    request.body(body.toString());
+                } else {
+                    request.body(JSON.toJSONString(body));
+                }
+            }
         }
 
         request.addHeaders(finalHeaders);
@@ -300,7 +308,15 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
             return body;
         }
 
-        return JSON.parse(body);
+        if (body.startsWith("[") || body.startsWith("{")) {
+            try {
+                return JSON.parse(body);
+            } catch (Exception ex) {
+                return body;
+            }
+        } else {
+            return body;
+        }
     }
 
     /**
@@ -313,7 +329,19 @@ public class HttpTask extends AbstractDagTask<HttpNodeConfig> {
     }
 
     public static void main(String[] args) {
-        String a = "{\"a\": 1}";
-        System.out.println(JSON.parse(a));
+        HttpResponse response = HttpUtil.createPost("http://www.webxml.com.cn/WebServices/WeatherWebService.asmx")
+                .addHeaders(MapBuilder.<String, String>create().put("Content-Type", "application/soap+xml; charset=utf-8").build())
+                .body("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                        "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+                        "  <soap12:Body>\n" +
+                        "    <getSupportCity xmlns=\"http://WebXml.com.cn/\">\n" +
+                        "      <byProvinceName>湖南</byProvinceName>\n" +
+                        "    </getSupportCity>\n" +
+                        "  </soap12:Body>\n" +
+                        "</soap12:Envelope>")
+                .execute();
+        System.out.println(response.getStatus());
+        String body = response.body();
+        System.out.println(body);
     }
 }

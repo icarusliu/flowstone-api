@@ -1,7 +1,6 @@
 package com.liuqi.base.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.base.bean.dto.DsDTO;
 import com.liuqi.base.bean.query.DsQuery;
 import com.liuqi.base.bean.req.DsAddReq;
@@ -70,12 +69,6 @@ public class DsController {
             list.forEach(item -> item.setPassword("******"));
         }
         return pageData;
-    }
-
-    @PostMapping("filter")
-    @Operation(summary = "查询-动态")
-    public IPage<DsDTO> pageQuery(@RequestBody DynamicQuery query) {
-        return service.dynamicPageQuery(query);
     }
 
     @PostMapping("query")

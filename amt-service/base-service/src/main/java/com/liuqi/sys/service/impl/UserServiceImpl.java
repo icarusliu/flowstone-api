@@ -1,9 +1,7 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.liuqi.common.base.bean.query.DynamicQuery;
 import com.liuqi.sys.bean.dto.RoleResourceDTO;
 import com.liuqi.sys.bean.dto.UserDTO;
 import com.liuqi.sys.bean.dto.UserRoleDTO;

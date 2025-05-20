@@ -105,7 +105,7 @@ public class JsUtils {
      */
     private static String processScript(String script) {
         // 先替换单行
-        String regex = "//.*";
+        String regex = "^//.*";
         Pattern pattern = Pattern.compile(regex);
         script = pattern.matcher(script).replaceAll("");
 

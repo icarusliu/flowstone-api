@@ -1,7 +1,7 @@
 package com.liuqi.dua.executor.tasks.table;
 
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.liuqi.common.base.bean.query.FilterOp;
+import com.liuqi.base.service.data.FilterOp;
 import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.dua.bean.dto.TableFieldDTO;
 import com.liuqi.dua.executor.AbstractDagTask;

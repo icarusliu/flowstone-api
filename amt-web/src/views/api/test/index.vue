@@ -14,7 +14,7 @@
         </el-form-item> -->
 
         <div class="text-center mb-4">
-            <el-button type="primary" @click="doTest">测试</el-button>
+            <el-button type="primary" @click="doTest" :loading="testing">测试</el-button>
             <el-button @click="saveTestData">保存测试数据</el-button>
         </div>
 
@@ -29,7 +29,7 @@
                         <span>返回数据</span>
                         <el-link type="primary" class="ml-4" @click="doSaveExample" v-if="!testFailed">保存成示例</el-link>
                     </div>
-                    <MonacoEditor height="600px" v-model="testResult" language="json" />
+                    <MonacoEditor height="600px" v-model="testResult" :language="resultType" />
                 </el-col>
 
                 <el-col :span="12">
@@ -49,22 +49,24 @@
 </template>
 
 <script setup>
-import * as _ from 'lodash'
-import * as apiApis from '@/apis/api'
-import { ElMessage } from 'element-plus';
-import MonacoEditor from '@/components/monaco-editor.vue'
-import QueryParams from './query-params.vue';
-import * as jsonUtils from '@/utils/json'
+import * as _ from "lodash";
+import * as apiApis from "@/apis/api";
+import { ElMessage } from "element-plus";
+import MonacoEditor from "@/components/monaco-editor.vue";
+import QueryParams from "./query-params.vue";
+import * as jsonUtils from "@/utils/json";
 
-const props = defineProps(["apiInfo", "editing"])
-const testResult = ref("")
-const testFailed = ref(false)
-const logs = ref([])
-const emits = defineEmits(["save"])
-const model = defineModel()
+const props = defineProps(["apiInfo", "editing"]);
+const testResult = ref("");
+const testFailed = ref(false);
+const logs = ref([]);
+const emits = defineEmits(["save"]);
+const model = defineModel();
+const resultType = ref("json");
+const testing = ref(false);
 
 onMounted(() => {
-    window.websocket.addListener('apiTest', ({ level, title, content, time }) => {
+    window.websocket.addListener("apiTest", ({ level, title, content, time }) => {
         // content = _.isString(content) ? content : JSON.stringify(content)
         // content = content.replace(/(\r\n)/g, '<br/>')
         if (_.isString(content)) {
@@ -72,152 +74,171 @@ onMounted(() => {
                 content = JSON.stringify(JSON.parse(content), null, "\t");
             }
         } else {
-            content = JSON.stringify(content, null, "\t")
+            content = JSON.stringify(content, null, "\t");
         }
         logs.value.push({
             level,
             title,
             time,
-            content
-        })
-    })
-})
-
+            content,
+        });
+    });
+});
 
 // 进行接口测试
 function doTest() {
     let finalParams = {};
 
-    if (props.apiInfo.method == 'post') {
+    if (props.apiInfo.method == "post") {
         // post请求
-        finalParams = model.value.testData.body || {}
+        finalParams = model.value.testData.body || {};
     } else {
         // get请求
-        let params = model.value.testData.queryParams
+        let params = model.value.testData.queryParams;
         if (params) {
-            params.forEach(param => {
-                finalParams[param.code] = param.value
-            })
+            params.forEach((param) => {
+                finalParams[param.code] = param.value;
+            });
         }
     }
-    apiApis.testApi(props.apiInfo.method, props.apiInfo.path, finalParams).then(resp => {
-        ElMessage.success('测试成功')
-        testResult.value = JSON.stringify(resp)
-        testFailed.value = false
-    }).catch(err => {
-        testFailed.value = true
-        testResult.value = JSON.stringify(err)
-    })
+    testing.value = true;
+    apiApis
+        .testApi(props.apiInfo.method, props.apiInfo.path, finalParams)
+        .then((resp) => {
+            ElMessage.success("测试成功");
+            if (resp instanceof Object) {
+                testResult.value = JSON.stringify(resp);
+                resultType.value = "json";
+            } else {
+                testResult.value = resp;
+                if (resp.startsWith("<?xml")) {
+                    resultType.value = "xml";
+                } else {
+                    resultType.value = "text";
+                }
+            }
+
+            testFailed.value = false;
+        })
+        .catch((err) => {
+            testFailed.value = true;
+            testResult.value = JSON.stringify(err);
+        })
+        .finally(() => (testing.value = false));
 }
 
 // 保存示例及输入输出参数
 function doSaveExample() {
-    let result = testResult.value
+    let result = testResult.value;
     if (!result) {
-        ElMessage.warning("内容为空")
-        return
+        ElMessage.warning("内容为空");
+        return;
     }
 
     // 列表只取第一个元素
-    result = JSON.parse(result)
-    if (_.isArray(result) && result.length > 1) {
-        result = result[0]
-    } else if (_.isObject(result)) {
-        // object处理第一层数据
-        _.forIn(result, (v, k) => {
-            if (_.isArray(v) && v.length > 1) {
-                result.put(k, v[0])
-            }
-        })
+    if (result.startsWith("[") || result.startsWith("{")) {
+        result = JSON.parse(result);
+        if (_.isArray(result) && result.length > 1) {
+            result = result[0];
+        } else if (_.isObject(result)) {
+            // object处理第一层数据
+            _.forIn(result, (v, k) => {
+                if (_.isArray(v) && v.length > 1) {
+                    result.put(k, v[0]);
+                }
+            });
+        }
     }
 
-    let params = jsonUtils.loadJsonSchema(result)
-    model.value.output = params || []
-    model.value.outputExample = JSON.stringify(result)
-    emits('save', true)
+    let params = jsonUtils.loadJsonSchema(result);
+    model.value.output = params || [];
+    model.value.outputExample = JSON.stringify(result);
+    emits("save", true);
 }
 
 // 保存测试数据
 function saveTestData() {
-    let inputParams = model.value.inputParams
+    let inputParams = model.value.inputParams;
 
     if (!inputParams || !inputParams.length) {
-        inputParams = model.value.inputParams = []
+        inputParams = model.value.inputParams = [];
 
         // 没有配置输入参数时，使用测试参数进行填充
-        let method = props.apiInfo.method
-        let testData = model.value.testData
+        let method = props.apiInfo.method;
+        let testData = model.value.testData;
         if (testData) {
-            if (method == 'get' && testData.queryParams) {
-                testData.queryParams.forEach(param => {
-                    let value = param.value
-                    let type = 'string'
+            if (method == "get" && testData.queryParams) {
+                testData.queryParams.forEach((param) => {
+                    let value = param.value;
+                    let type = "string";
                     if (_.isInteger(value)) {
-                        type = 'int'
+                        type = "int";
                     } else if (_.isNumber(value)) {
-                        type = 'float'
+                        type = "float";
                     }
 
                     inputParams.push({
                         code: param.code,
                         name: param.code,
                         default: param.value,
-                        type
-                    })
-                })
-            } else if (method == 'post' && testData.body) {
-                let arr = parseInputParamsFromJson(testData.body)
-                inputParams.splice(0, 0, arr)
+                        type,
+                    });
+                });
+            } else if (method == "post" && testData.body) {
+                let arr = parseInputParamsFromJson(testData.body);
+                inputParams.splice(0, 0, arr);
             }
         }
     }
 
-    emits('save', false)
+    emits("save", false);
 }
 
 function parseInputParamsFromJson(obj) {
-    obj = JSON.parse(obj)
+    if (obj.startsWith("[") || obj.startsWith("{")) {
+        obj = JSON.parse(obj);
+    }
 
     if (_.isArray(obj)) {
         // 暂只解析第一级
         let item = {
-            code: '*',
-            name: '*',
-            type: 'array',
-            default: JSON.stringify(obj)
-        }
+            code: "*",
+            name: "*",
+            type: "array",
+            default: JSON.stringify(obj),
+        };
 
-        return item
+        return item;
     } else if (_.isObject(obj)) {
         // 对象
-        let children = []
+        let children = [];
         let item = {
-            code: '*',
-            name: '*',
-            type: 'object',
-            children: children
-        }
+            code: "*",
+            name: "*",
+            type: "object",
+            children: children,
+        };
 
         _.forEach(obj, (value, key) => {
-            let subItem = parseInputParamsFromJson(value)
-            subItem.name = key
-            subItem.code = key
-            children.push(subItem)
-        })
+            let subItem = parseInputParamsFromJson(value);
+            subItem.name = key;
+            subItem.code = key;
+            children.push(subItem);
+        });
 
-        return item
+        return item;
     } else {
         // 不是数组也不是对象，是直接值
-        let type = 'string'
+        let type = "string";
         if (_.isInteger(obj)) {
-            type = 'int'
+            type = "int";
         } else if (_.isNumber(obj)) {
-            type = 'float'
+            type = "float";
         }
         return {
             type,
-            default: obj
-        }
+            default: obj,
+        };
     }
 }
 </script>

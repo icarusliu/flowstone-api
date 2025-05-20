@@ -1,12 +1,13 @@
-package com.liuqi.base.service;
+package com.liuqi.base.service.schedule;
 
 import com.liuqi.base.bean.dto.ScheduleTaskDTO;
+import com.liuqi.base.service.ScheduleTaskService;
 import com.liuqi.common.ErrorCodes;
 import com.liuqi.common.exception.AppException;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.service.ApiService;
 import com.liuqi.dua.service.DuaService;
-import jakarta.annotation.PostConstruct;
+import com.liuqi.sys.service.ScheduleTaskExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ import java.util.regex.Pattern;
  **/
 @Component
 @Slf4j
-public class ScheduleTaskExecutor {
+public class ScheduleTaskExecutor implements ScheduleTaskExecutorService {
     @Autowired
     private ScheduleTaskService taskService;
 
@@ -54,7 +55,7 @@ public class ScheduleTaskExecutor {
     /**
      * 启动所有任务
      */
-    @PostConstruct
+    @Override
     public void startAll() {
         taskService.findAll().forEach(task -> {
             if (task.getStarted() || task.getStatus() == 0) {
@@ -222,9 +223,5 @@ public class ScheduleTaskExecutor {
             }
         }
         return format;
-    }
-
-    public static void main(String[] args) {
-
     }
 }
