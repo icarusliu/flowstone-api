@@ -10,7 +10,7 @@
     >
         <div class="p-4 font-bold title text-center">
             <i class="iconfont icon-liushuixian-liushuixianx" />
-            <span class="ml-2" v-if="!menuFolded">航空后台管理系统</span>
+            <span class="ml-2" v-if="!menuFolded">流石数据管理</span>
         </div>
         <template v-for="menu in menus">
             <el-menu-item v-if="!menu.children?.length" :key="menu.path" :index="menu.path">

@@ -779,4 +779,27 @@
             );
         </sql>
     </changeSet>
+
+    <changeSet id="init-sys-menu-buttons" author="liuqi">
+        <sql>
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743680447553538', '新增', 'new', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743680447553539', '删除', 'delete', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743680447553540', '修改', 'update', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743771543642114', '新增', 'new', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743771543642115', '删除', 'delete', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743771610750977', '修改', 'update', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743799779696641', '新增', 'new', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743799779696642', '删除', 'delete', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743799779696643', '修改', 'update', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743814854025217', '新增', 'new', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743814854025218', '删除', 'delete', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743814854025219', '修改', 'update', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743824811302914', '新增', 'new', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743824811302915', '删除', 'delete', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743824811302916', '修改', 'update', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834340761601', '新增', 'new', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834340761602', '删除', 'delete', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834407870466', '修改', 'update', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

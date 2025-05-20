@@ -65,7 +65,7 @@
     const router = useRouter()
     const title = computed(() => {
         let meta = router.currentRoute.value.meta
-        return meta?.title || '航空后台管理系统'
+        return meta?.title || '流石数据管理'
     })
     const fields = [
         { label: '原密码', prop: 'oldPassword', inputType: 'password', required: true },
