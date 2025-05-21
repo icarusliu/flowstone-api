@@ -1,5 +1,7 @@
 package com.liuqi.common.bean;
 
+import com.liuqi.common.exception.UnauthorizedException;
+
 import java.util.Optional;
 
 /**
@@ -18,6 +20,10 @@ public class UserContextHolder {
 
     public static Optional<UserContext> get() {
         return Optional.ofNullable(holder.get());
+    }
+
+    public static String getUserIdOrThrow() {
+        return getUserId().orElseThrow(UnauthorizedException::new);
     }
 
     public static Optional<String> getUserId() {

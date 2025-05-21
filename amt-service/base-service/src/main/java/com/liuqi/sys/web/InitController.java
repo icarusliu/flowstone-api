@@ -1,8 +1,10 @@
 package com.liuqi.sys.web;
 
+import com.liuqi.sys.bean.dto.SysConfigDTO;
 import com.liuqi.sys.bean.dto.UserDTO;
 import com.liuqi.sys.bean.resp.InitInfo;
 import com.liuqi.sys.service.MenuService;
+import com.liuqi.sys.service.SysConfigService;
 import com.liuqi.sys.service.UserService;
 import com.liuqi.common.bean.UserContextHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -11,10 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.stream.Collectors;
+
 /**
  * 初始化控制器
  *
- * @author  LiuQi 2024/10/4-9:27
+ * @author LiuQi 2024/10/4-9:27
  * @version V1.0
  **/
 @RestController
@@ -25,6 +29,9 @@ public class InitController {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private SysConfigService sysConfigService;
 
     @GetMapping("info")
     public InitInfo getInitInfo() {
@@ -40,6 +47,11 @@ public class InitController {
 
         // 获取菜单信息
         initInfo.setMenuTree(menuService.getTree("sys", false, true));
+        initInfo.setConfigInfo(
+                sysConfigService.queryBuilder()
+                        .eq("enabled", true)
+                        .query(SysConfigDTO::getCode, SysConfigDTO::getValue)
+        );
 
         return initInfo;
     }

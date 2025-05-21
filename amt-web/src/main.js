@@ -15,6 +15,7 @@ import * as loginApis from '@/apis/login'
 import * as sysApis from '@/apis/sys'
 import { directives } from './utils/directives';
 import * as utils from './utils/utils'
+import https from './utils/https'
 
 const app = createApp(App)
 
@@ -34,15 +35,14 @@ app
     .use(directives)
 
 window.app = {
-    utils
+    utils,
+    https
 }
-
 
 // 获取初始化信息
 sysApis.getInitInfo().then(resp => {
     const sysStore = useSysStore()
-    sysStore.setUserInfo(resp.userInfo)
-    sysStore.setMenuTree(resp.menuTree)
+    sysStore.init(resp)
 
     // 启动websocket
     window.websocket = startWebSocket()

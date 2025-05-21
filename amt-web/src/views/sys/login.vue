@@ -93,8 +93,7 @@ function doLogin() {
 
             sysApis.getInitInfo().then(resp => {
                 const sysStore = useSysStore()
-                sysStore.setUserInfo(resp.userInfo)
-                sysStore.setMenuTree(resp.menuTree)
+                sysStore.init(resp)
 
                 ElMessage.success('登录成功')
                 goNextPage()

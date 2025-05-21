@@ -5,7 +5,11 @@ import com.liuqi.common.base.bean.query.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public interface BaseService<D, Q extends BaseQuery> {
     D insert(D dto);
 
@@ -76,6 +80,28 @@ public interface BaseService<D, Q extends BaseQuery> {
     default List<D> findAll() {
         return this.queryBuilder()
                 .query();
+    }
+
+    /**
+     * 查找所有记录并转换成map返回
+     * @param func key转换函数
+     * @return 转换后的map
+     */
+    default <K> Map<K, D> findAll(Function<D, K> func) {
+        return this.findAll()
+                .stream()
+                .collect(Collectors.toMap(func, d -> d));
+    }
+
+    /**
+     * 查找所有记录并转换成map返回
+     * @param func key转换函数
+     * @return 转换后的map
+     */
+    default <K, V> Map<K, V> findAll(Function<D, K> func, Function<D, V> valueFunc) {
+        return this.findAll()
+                .stream()
+                .collect(Collectors.toMap(func, valueFunc));
     }
 
     /**

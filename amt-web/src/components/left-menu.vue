@@ -39,9 +39,7 @@ import { ref, computed } from "vue";
 import { useSysStore } from "../store";
 import { useRouter } from "vue-router";
 
-const menuFolded = computed(() => {
-    return useSysStore().getMenuFolded();
-});
+const menuFolded = computed(useSysStore().getMenuFolded);
 const opened = computed(() => {
     if (!menus.value || !menus.value.length) {
         return [];
@@ -55,9 +53,7 @@ const active = computed(() => {
     return router.currentRoute.value.fullPath;
 });
 
-const menus = computed(() => {
-    return useSysStore().getMenuTree();
-});
+const menus = computed(useSysStore().getMenuTree);
 </script>
 
 <style lang="scss" scoped>
@@ -78,7 +74,7 @@ const menus = computed(() => {
 }
 
 .left-menu:not(.el-menu--collapse) {
-    width: 240px;
+    width: 220px;
 }
 
 .title {

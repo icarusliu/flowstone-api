@@ -7,7 +7,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 更新构建器
@@ -172,6 +174,32 @@ public class QueryBuilder<D, E> {
 
     public List<D> query() {
         return queryFunc.apply(this.queryWrapper);
+    }
+
+    /**
+     * 执行查询将将结果转换成map
+     * @param keyFunc key的转换函数
+     * @return 转换后的结果
+     * @param <K> key类型
+     */
+    public <K> Map<K, D> query(Function <D, K> keyFunc) {
+        return this.query()
+                .stream()
+                .collect(Collectors.toMap(keyFunc, d -> d));
+    }
+
+    /**
+     * 执行查询并将结果转换成map
+     * @param keyFunc key的转换函数
+     * @param valueFunc value的转换函数
+     * @return 转换结果
+     * @param <K> key类型
+     * @param <V> value类型
+     */
+    public <K, V> Map<K, V> query(Function<D, K> keyFunc, Function<D, V> valueFunc) {
+        return this.query()
+                .stream()
+                .collect(Collectors.toMap(keyFunc, valueFunc));
     }
 
     public IPage<D> pageQuery() {

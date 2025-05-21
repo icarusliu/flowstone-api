@@ -1,7 +1,7 @@
 <template>
     <!-- 实体类管理 -->
     <div>
-        <search-form class="bg-white mb-4 p-4 br-1" v-if="queryFields && queryFields.length" v-model="searchParams" :fields="queryFields" @query="reload" />
+        <search-form class="bg-white mb-4 p-4 pb-0 br-1" v-if="queryFields && queryFields.length" v-model="searchParams" :fields="queryFields" @query="reload" />
 
         <div class="bg-white p-4 br-1">
             <!-- 按钮 -->

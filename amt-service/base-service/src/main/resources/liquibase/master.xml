@@ -724,40 +724,40 @@
         </sql>
     </changeSet>
 
-    <changeSet id="init-sys-menus-v2" author="liuqi">
+    <changeSet id="init-sys-menus-v3" author="liuqi">
         <sql>
             truncate table sys_menu;
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
             values ('A01','数据接口管理', '/', 'path', 0, -1, 1, 'Switch'),
-            ('A0101',  '接口管理', '/apis/list', 'path', 0, 'A01', 0, null),
-            ('A0102',  '接入方管理', '/apis/supplier', 'path', 0, 'A01', 1, null),
-            ('A0103',  '定时任务', '/apis/schedule-task', 'path', 0, 'A01', 2, null),
-            ('A0104',  '运行日志', '/apis/logs', 'path', 0, 'A01', 3, null),
+            ('A0101',  '接口管理', '/apis/list', 'path', 0, 'A01', 0, 'Switch'),
+            ('A0102',  '接入方管理', '/apis/supplier', 'path', 0, 'A01', 1, 'MessageBox'),
+            ('A0103',  '定时任务', '/apis/schedule-task', 'path', 0, 'A01', 2, 'Operation'),
+            ('A0104',  '运行日志', '/apis/logs', 'path', 0, 'A01', 3, 'Document'),
 
             ('A02',  '数据集成加工', '/etl', 'path', 0, -1, 2, 'Operation'),
-            ('A0201',  '任务管理', '/etl/job', 'path', 0, 'A02', 0, null),
-            ('A0202',  '执行日志', '/etl/logs', 'path', 0, 'A02', 1, null),
+            ('A0201',  '任务管理', '/etl/job', 'path', 0, 'A02', 0, 'Operation'),
+            ('A0202',  '执行日志', '/etl/logs', 'path', 0, 'A02', 1, 'Document'),
 
             ('A03',  '基础管理', '/base', 'path', 0, -1, 3, 'Guide'),
-            ('A0301',  '数据源管理', '/base/ds', 'path', 0, 'A03', 0, null),
-            ('A0302',  '数据模型管理', '/base/model', 'path', 0, 'A03', 1, null);
+            ('A0301',  '数据源管理', '/base/ds', 'path', 0, 'A03', 0, 'coin'),
+            ('A0302',  '数据模型管理', '/base/model', 'path', 0, 'A03', 1, 'Memo');
 
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
             values ('S01','系统配置', '/sys-manager', 'path', 0, -1, 9,
             'Setting');
-            insert into sys_menu(id, name, path, type, hide, parent_id, sort)
-            values ('S0101',  '客户端管理', '/sys/client', 'path', 0, 'S01', 0),
-            ('S0102',  '组织管理', '/sys/dept', 'path', 0, 'S01', 1);
-            insert into sys_menu(id, name, path, type, hide, parent_id, sort)
-            values ('S0103','用户管理', '/sys/user', 'path', 0, 'S01', 2);
-            insert into sys_menu(id, name, path, type, hide, parent_id, sort)
-            values ('S0104', '菜单管理', '/sys/menu', 'path', 0, 'S01', 3);
-            insert into sys_menu(id, name, path, type, hide, parent_id, sort)
-            values ('S0105', '角色管理', '/sys/role', 'path', 0, 'S01', 4);
-            insert into sys_menu(id, name, path, type, hide, parent_id, sort)
-            values ('S0106', '系统配置', '/sys/config', 'path', 0, 'S01', 5);
-            insert into sys_menu(id, name, path, type, hide, parent_id, sort)
-            values ('S0107', '字典管理', '/sys/dict', 'path', 0, 'S01', 6);
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S0101',  '客户端管理', '/sys/client', 'path', 0, 'S01', 0, 'Monitor'),
+            ('S0102',  '组织管理', '/sys/dept', 'path', 0, 'S01', 1, 'Box');
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S0103','用户管理', '/sys/user', 'path', 0, 'S01', 2, 'User');
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S0104', '菜单管理', '/sys/menu', 'path', 0, 'S01', 3, 'Memo');
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S0105', '角色管理', '/sys/role', 'path', 0, 'S01', 4, 'Postcard');
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S0106', '系统配置', '/sys/config', 'path', 0, 'S01', 5, 'Setting');
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S0107', '字典管理', '/sys/dict', 'path', 0, 'S01', 6, 'Notebook');
         </sql>
     </changeSet>
 
@@ -800,6 +800,14 @@
             INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834340761601', '新增', 'new', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
             INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834340761602', '删除', 'delete', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
             INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834407870466', '修改', 'update', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+        </sql>
+    </changeSet>
+
+    <changeSet id="init-sys-config-v1" author="liuqi">
+        <sql>
+            truncate table sys_config;
+            INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924987313239134209', 'showTopMenus', 'true', '是否展示顶部菜单', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28', 0);
+            INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924987313239134210', 'showTagsTab', 'false', '是否多标签展示', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28', 0);
         </sql>
     </changeSet>
 </databaseChangeLog>

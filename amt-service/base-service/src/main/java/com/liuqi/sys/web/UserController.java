@@ -1,6 +1,7 @@
 package com.liuqi.sys.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.liuqi.common.exception.AppException;
 import com.liuqi.sys.bean.dto.UserDTO;
 import com.liuqi.sys.bean.query.NoRoleUserQuery;
 import com.liuqi.sys.bean.query.UserQuery;
@@ -11,6 +12,7 @@ import com.liuqi.sys.service.UserService;
 import com.liuqi.common.bean.UserContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -93,5 +95,14 @@ public class UserController {
     @PostMapping("query-no-role")
     public IPage<UserDTO> findNoRoleUsers(@RequestBody NoRoleUserQuery query) {
         return userManager.queryUserNoRole(query);
+    }
+
+    @PostMapping("update-mine")
+    public void updateMyInfo(@RequestBody UserUpdateReq req) {
+        String userId = UserContextHolder.getUserIdOrThrow();
+        UserDTO dto = new UserDTO();
+        BeanUtils.copyProperties(req, dto);
+        dto.setId(userId);
+        userService.update(dto);
     }
 }
