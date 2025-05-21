@@ -11,6 +11,7 @@ import com.liuqi.dua.executor.bean.NodeParam;
 import com.liuqi.base.service.DsService;
 import liquibase.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.CollectionUtils;
 
@@ -146,24 +147,18 @@ public class TableTask extends AbstractDagTask<TableNodeConfig> {
                         .append(column);
 
                 // 字符串需要转换
-                if (isChar && !(value instanceof Map) && !(value instanceof Collection<?>) && op != FilterOp.IN) {
-                    value = "'" + value + "'";
-                }
+                value = "'" + value + "'";
 
-                if (isChar && null != value1 && !(value1 instanceof Number)) {
+                if (null != value1 && !(value1 instanceof Number)) {
                     value1 = "'" + value1 + "'";
                 }
 
                 switch (op) {
                     case IN -> {
                         Collection<?> list;
-                        if (value instanceof String) {
-                            // 如果值是字符串时，需要进行处理
-                            list = Arrays.stream(((String) value).split(","))
-                                    .toList();
-                        } else {
-                            list = (Collection<?>) value;
-                        }
+                        // 如果值是字符串时，需要进行处理
+                        list = Arrays.stream(((String) value).split(","))
+                                .toList();
 
                         if (CollectionUtils.isEmpty(list)) {
                             return;

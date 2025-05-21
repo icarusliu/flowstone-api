@@ -152,6 +152,7 @@ function getApiInfo() {
         } else if (exp.startsWith("<?xml")) {
             outputLang.value = "xml";
             exp = exp.replace(/\\"/g, '"');
+            exp = app.utils.formatXml(exp)
         } else {
             outputLang.value = "text";
         }

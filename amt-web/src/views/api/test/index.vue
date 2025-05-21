@@ -110,10 +110,11 @@ function doTest() {
                 testResult.value = JSON.stringify(resp);
                 resultType.value = "json";
             } else {
-                testResult.value = resp;
                 if (resp.startsWith("<?xml")) {
+                    testResult.value = app.utils.formatXml(resp);
                     resultType.value = "xml";
                 } else {
+                    testResult.value = resp;
                     resultType.value = "text";
                 }
             }

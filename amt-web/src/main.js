@@ -14,6 +14,7 @@ import { useSysStore } from './store'
 import * as loginApis from '@/apis/login'
 import * as sysApis from '@/apis/sys'
 import { directives } from './utils/directives';
+import * as utils from './utils/utils'
 
 const app = createApp(App)
 
@@ -31,6 +32,10 @@ app
     .use(router)
     .use(pinia)
     .use(directives)
+
+window.app = {
+    utils
+}
 
 
 // 获取初始化信息

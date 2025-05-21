@@ -64,7 +64,7 @@ const menus = computed(() => {
 .left-menu {
     border-right: none;
     box-shadow: 0 0 5px var(--el-menu-box-shadow-color);
-    z-index: 5;
+    z-index: 6;
 
     :deep() {
         .el-menu--inline {
