@@ -139,6 +139,18 @@ public class DagExecutor implements ApplicationContextAware {
             throw AppException.of(ErrorCodes.API_CALL_ERROR);
         }
 
+        return parseResult(api, requestParams, isTest, config, startTime, client);
+    }
+
+    /**
+     * 解析接口处理结果
+     */
+    private Object parseResult(ApiDTO api,
+                               Map<String, Object> requestParams,
+                               boolean isTest,
+                               DexecutorConfig<NodeInput, Object> config,
+                               long startTime,
+                               ClientDTO client) {
         // 获取结果，默认取最后的节点的数据做返回数据
         // 如果有多个节点没有子节点，那么返回的数据是几个节点的返回数据组成的Map
         Collection<Node<NodeInput, Object>> processedNodes = config.getDexecutorState().getProcessedNodes();

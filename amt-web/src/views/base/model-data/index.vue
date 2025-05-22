@@ -1,15 +1,16 @@
 <template>
-    <div class="bg-white p-4">
-        <search-form :fields="queryFields" @query="reload" v-model="queryParams" />
-        <div class="mb-2">
-            <el-button type="primary" @click="newRow" v-if="listConfig.withNew != false" icon="plus">新增记录</el-button>
+    <div>
+        <search-form :fields="queryFields" @query="reload" v-model="queryParams" class="bg-white p-4 pb-0 mb-4 br-1" />
+        <div class="bg-white br-1 p-4">
+            <div class="mb-2">
+                <el-button type="primary" @click="newRow" v-if="listConfig.withNew != false" icon="plus">新增</el-button>
+            </div>
+
+            <el-skeleton :rows="5" v-if="!modelInfo.id" />
+            <base-table :fields="fields" :dataSupplier="loadData" ref="tableRef" :pageable="listConfig.pagination" v-else :pageSize="listConfig.pageSize" />
         </div>
 
-        <el-skeleton :rows="5" v-if="!modelInfo.id"/>
-        <base-table :fields="fields" :dataSupplier="loadData" ref="tableRef" :pageable="listConfig.pagination" v-else
-            :pageSize="listConfig.pageSize" />
-
-        <component :is="'el-' + (formConfig.displayType || 'drawer')" v-model="visible" title="新增记录">
+        <component :is="'el-' + (formConfig.displayType || 'drawer')" v-model="visible" title="新增">
             <base-form :fields="newFields" v-model="form" labelPosition="top" ref="formRef" />
 
             <template #footer>
@@ -20,179 +21,179 @@
     </div>
 </template>
 <script setup>
-import baseTable from '@/components/base-table/index.vue'
-import searchForm from '@/components/search-form.vue'
-import https from '@/utils/https'
-import { onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import baseForm from '@/components/base-form/index.vue'
-import { useRouter } from 'vue-router'
-import * as _ from 'lodash'
+import baseTable from "@/components/base-table/index.vue";
+import searchForm from "@/components/search-form.vue";
+import https from "@/utils/https";
+import { onMounted } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import baseForm from "@/components/base-form/index.vue";
+import { useRouter } from "vue-router";
+import * as _ from "lodash";
 
-const router = useRouter()
-const fields = ref([])
-const tableRef = ref()
-const visible = ref(false)
-const innerFields = ['id', 'createTime', 'createUser', 'updateTime', 'updateUser']
-const newFields = ref([])
-const queryFields = ref([])
-const form = ref({})
-const formRef = ref()
-let primaryField
-const modelInfo = ref({})
-const queryParams = ref({})
+const router = useRouter();
+const fields = ref([]);
+const tableRef = ref();
+const visible = ref(false);
+const innerFields = ["id", "createTime", "createUser", "updateTime", "updateUser"];
+const newFields = ref([]);
+const queryFields = ref([]);
+const form = ref({});
+const formRef = ref();
+let primaryField;
+const modelInfo = ref({});
+const queryParams = ref({});
 
 const modelId = computed(() => {
     return router.currentRoute.value.query.modelId;
-})
+});
 const listConfig = computed(() => {
-    return modelInfo.value.listConfig || {}
-})
+    return modelInfo.value.listConfig || {};
+});
 const formConfig = computed(() => {
-    return modelInfo.value.formConfig || {}
-})
+    return modelInfo.value.formConfig || {};
+});
 
 onMounted(() => {
-    https.get('/base/model/published/' + modelId.value).then(resp => {
-        const model = resp
-        modelInfo.value = resp
+    https.get("/base/model/published/" + modelId.value).then((resp) => {
+        const model = resp;
+        modelInfo.value = resp;
 
         // 处理所使用的字典
-        let dictList = resp.dictList 
-        let dictMap = {}
-        dictList && dictList.forEach(dict => {
-            dictMap[dict.code] = dict.items.map(item => {
-                return {
-                    label: item.name,
-                    value: item.value
-                }
-            })
-        })
+        let dictList = resp.dictList;
+        let dictMap = {};
+        dictList &&
+            dictList.forEach((dict) => {
+                dictMap[dict.code] = dict.items.map((item) => {
+                    return {
+                        label: item.name,
+                        value: item.value,
+                    };
+                });
+            });
 
         for (var i in model.fields) {
-            const item = model.fields[i]
+            const item = model.fields[i];
             if (item.primaryKey) {
-                primaryField = item.code
+                primaryField = item.code;
                 break;
             }
         }
         if (!primaryField) {
-            primaryField = 'id'
+            primaryField = "id";
         }
 
         let sourceFields = model.listFields || model.fields;
-        sourceFields.forEach(field => {
+        sourceFields.forEach((field) => {
             const listField = {
                 label: field.name,
                 prop: field.code,
-                width: field.width
-            }
+                width: field.width,
+            };
 
-            let dictCode = field.dictCode 
-            let options = dictMap[dictCode]
-            
+            let dictCode = field.dictCode;
+            let options = dictMap[dictCode];
+
             if (options) {
                 // 处理列表字段转换
-                listField.converter = val => {
+                listField.converter = (val) => {
                     for (var i in options) {
-                        let option = options[i]
+                        let option = options[i];
                         if (option.value == val) {
-                            return option.label 
+                            return option.label;
                         }
                     }
 
-                    return val
-                }
+                    return val;
+                };
             }
 
-
             // 处理列表字段
-            !field.hide && fields.value.push(listField)
+            !field.hide && fields.value.push(listField);
 
             // 处理查询字段
             if (field.asQuery) {
                 let item = {
                     label: field.name,
                     prop: field.code,
-                    placeholder: field.queryCmp == 'select' ? '请选择...' : '请输入...',
+                    placeholder: field.queryCmp == "select" ? "请选择..." : "请输入...",
                     queryType: field.queryType,
-                    options
-                }
+                    options,
+                };
 
                 // 查询类型
-                let queryCmp = field.queryCmp
-                if (queryCmp == 'datePicker') {
-                    item.type = 'datePicker'
-                } else if (queryCmp == 'dateRange') {
-                    item.type = 'datePicker'
-                    item.dateType = 'daterange'
+                let queryCmp = field.queryCmp;
+                if (queryCmp == "datePicker") {
+                    item.type = "datePicker";
+                } else if (queryCmp == "dateRange") {
+                    item.type = "datePicker";
+                    item.dateType = "daterange";
                 } else {
-                    item.type = field.queryCmp
+                    item.type = field.queryCmp;
                 }
 
-                queryFields.value.push(item)
+                queryFields.value.push(item);
             }
-        })
+        });
 
         // 处理表单字段
         if (model.formFields && model.formFields.length) {
-            model.formFields.forEach(field => {
+            model.formFields.forEach((field) => {
                 if (field.hide) {
-                    return
+                    return;
                 }
 
-                const dictCode = field.dictCode
-                const options = dictMap[dictCode]
+                const dictCode = field.dictCode;
+                const options = dictMap[dictCode];
 
                 // 有配置好的表单字段
-                const code = field.code
+                const code = field.code;
                 // 添加到新增记录中
-                let cmp = field.cmp
-                let type
-                let format
-                let dateType
+                let cmp = field.cmp;
+                let type;
+                let format;
+                let dateType;
                 switch (cmp) {
                     case "number": {
-                        type = 'number'
+                        type = "number";
                         break;
                     }
                     case "radio": {
-                        type = 'radioGroup'
-                        break
-                    }
-                    case 'checkbox': {
-                        type = 'checkbox'
-                        break
-                    }
-                    case 'select': {
-                        type = 'select'
-                        break
-                    }
-                    case 'textarea': {
-                        type = 'textarea'
+                        type = "radioGroup";
                         break;
                     }
-                    case 'switch': {
-                        type = 'switch'
+                    case "checkbox": {
+                        type = "checkbox";
                         break;
                     }
-                    case 'datePicker': {
-                        type = 'datePicker'
-                        format = 'YYYY-MM-DD'
+                    case "select": {
+                        type = "select";
                         break;
                     }
-                    case 'dateTime': {
-                        type = 'datePicker'
-                        dateType = 'datetime'
-                        format = 'YYYY-MM-DD HH:mm:ss'
+                    case "textarea": {
+                        type = "textarea";
                         break;
                     }
-                    case 'time': {
-                        type = 'timePicker'
-                        format = 'HH:mm:ss'
+                    case "switch": {
+                        type = "switch";
                         break;
                     }
-                    default: ;
+                    case "datePicker": {
+                        type = "datePicker";
+                        format = "YYYY-MM-DD";
+                        break;
+                    }
+                    case "dateTime": {
+                        type = "datePicker";
+                        dateType = "datetime";
+                        format = "YYYY-MM-DD HH:mm:ss";
+                        break;
+                    }
+                    case "time": {
+                        type = "timePicker";
+                        format = "HH:mm:ss";
+                        break;
+                    }
+                    default:
                 }
 
                 newFields.value.push({
@@ -203,33 +204,33 @@ onMounted(() => {
                     dateType: dateType,
                     required: !field.nullable,
                     options,
-                    default: field.defaultValue
-                })
-            })
+                    default: field.defaultValue,
+                });
+            });
         } else {
-            model.fields.forEach(field => {
-                const dictCode = field.dictCode
-                const options = dictMap[dictCode]
+            model.fields.forEach((field) => {
+                const dictCode = field.dictCode;
+                const options = dictMap[dictCode];
 
-                const code = field.code
+                const code = field.code;
                 if (innerFields.includes(code)) {
-                    return
+                    return;
                 }
-                let dataType = field.dataType
-                let type
-                let format
-                let dateType
-                if (dataType == 'date') {
-                    type = 'datePicker'
-                    format = 'YYYY-MM-DD'
-                    dateType = 'date'
-                } else if (dataType == 'datetime') {
-                    type = 'datePicker'
-                    format = 'YYYY-MM-DD HH:mm:ss'
-                    dateType = 'datetime'
-                } else if (dataType == 'time') {
-                    type = 'timePicker'
-                    format = 'HH:mm:ss'
+                let dataType = field.dataType;
+                let type;
+                let format;
+                let dateType;
+                if (dataType == "date") {
+                    type = "datePicker";
+                    format = "YYYY-MM-DD";
+                    dateType = "date";
+                } else if (dataType == "datetime") {
+                    type = "datePicker";
+                    format = "YYYY-MM-DD HH:mm:ss";
+                    dateType = "datetime";
+                } else if (dataType == "time") {
+                    type = "timePicker";
+                    format = "HH:mm:ss";
                 }
 
                 newFields.value.push({
@@ -240,101 +241,101 @@ onMounted(() => {
                     dateType: dateType,
                     required: !field.nullable,
                     options,
-                    default: field.defaultValue
-                })
-            })
+                    default: field.defaultValue,
+                });
+            });
         }
 
         // 增加操作按钮
         if (listConfig.value.withDelete != false) {
-            const buttons = []
+            const buttons = [];
             if (listConfig.value.withEdit) {
-                buttons.push( { label: '编辑', type: 'primary', action: goEdit })
+                buttons.push({ label: "编辑", type: "primary", action: goEdit });
             }
             if (listConfig.value.withDelete) {
-                buttons.push({ label: '删除', type: 'danger', action: deleteRow })
+                buttons.push({ label: "删除", type: "danger", action: deleteRow });
             }
 
             fields.value.push({
-                label: '操作',
-                type: 'operations',
-                width: '100px',
-                buttons
-            })
+                label: "操作",
+                type: "operations",
+                width: "100px",
+                buttons,
+            });
         }
-    })
-})
+    });
+});
 
 function reload() {
-    tableRef.value.reload()
+    tableRef.value.reload();
 }
 
 function loadData(params) {
-    let finalParams = _.cloneDeep(params)
+    let finalParams = _.cloneDeep(params);
 
-    // 补充查询条件 
-    let filters = []
-    queryFields.value.forEach(field => {
-        let code = field.prop
-        let value = queryParams.value[code]
+    // 补充查询条件
+    let filters = [];
+    queryFields.value.forEach((field) => {
+        let code = field.prop;
+        let value = queryParams.value[code];
         if (!value && value != 0) {
-            return
+            return;
         }
 
         // 主要是处理日期区间
-        if (field.dateType == 'daterange') {
+        if (field.dateType == "daterange") {
             filters.push({
                 key: code,
-                op: 'between',
+                op: "between",
                 value: value[0],
-                value1: value[1] + ' 23:59:59'
-            })
+                value1: value[1] + " 23:59:59",
+            });
         } else {
             filters.push({
                 key: code,
-                op: field.queryType || 'eq',
-                value
-            })
+                op: field.queryType || "eq",
+                value,
+            });
         }
-    })
-    finalParams.filters = filters
+    });
+    finalParams.filters = filters;
 
-    return https.post(`/base/model/data/${modelId.value}/page-query`, finalParams)
+    return https.post(`/base/model/data/${modelId.value}/page-query`, finalParams);
 }
 
 function newRow() {
-    form.value = {}
-    visible.value = true
+    form.value = {};
+    visible.value = true;
 }
 
 function save() {
-    formRef.value.validate(resp => {
+    formRef.value.validate((resp) => {
         if (!resp) {
-            return
+            return;
         }
 
-        https.post(`/base/model/data/${modelId.value}/save`, form.value).then(resp => {
-            visible.value = false
-            ElMessage.success('操作成功');
-            reload()
-        })
-    })
+        https.post(`/base/model/data/${modelId.value}/save`, form.value).then((resp) => {
+            visible.value = false;
+            ElMessage.success("操作成功");
+            reload();
+        });
+    });
 }
 
 function goEdit(row) {
-    form.value = _.cloneDeep(row)
-    visible.value = true
+    form.value = _.cloneDeep(row);
+    visible.value = true;
 }
 
 function deleteRow(row) {
-    let primaryCode = primaryField.value || 'id'
-    ElMessageBox.confirm('确定删除当前记录？').then(() => {
+    let primaryCode = primaryField.value || "id";
+    ElMessageBox.confirm("确定删除当前记录？").then(() => {
         https.del(`/base/model/data/${modelId.value}/delete?${primaryCode}=${row[primaryCode]}`).then(() => {
-            ElMessage.success('删除成功')
-            tableRef.value.reload()
-        })
-    })
+            ElMessage.success("删除成功");
+            tableRef.value.reload();
+        });
+    });
 }
 </script>
 
-<style lang='scss' scoped></style>
+<style lang="scss" scoped></style>

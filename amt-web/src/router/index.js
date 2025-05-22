@@ -67,6 +67,12 @@ const routes = [
                         meta: {
                             title: "运行日志",
                         },
+                    }, {
+                        path: "/apis/stat",
+                        component: () => import("../views/api/stat.vue"),
+                        meta: {
+                            title: "数据概览",
+                        },
                     },
                 ],
             },

@@ -23,4 +23,14 @@ public class ApiDraftEntity extends BaseEntity {
     private String method;
     private String typeId;
     private Integer status;
+
+    /**
+     * 调用失败次数
+     */
+    private Integer successCount;
+
+    /**
+     * 调用成功次数
+     */
+    private Integer failedCount;
 }

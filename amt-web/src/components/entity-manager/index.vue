@@ -1,9 +1,15 @@
 <template>
     <!-- 实体类管理 -->
-    <div>
-        <search-form class="bg-white mb-4 p-4 pb-0 br-1" v-if="queryFields && queryFields.length" v-model="searchParams" :fields="queryFields" @query="reload" />
+    <div class="d-flex-col">
+        <search-form
+            class="bg-white mb-4 p-4 pb-0 br-1"
+            v-if="showSearch"
+            v-model="searchParams"
+            :fields="queryFields"
+            @query="reload"
+        />
 
-        <div class="bg-white p-4 br-1">
+        <div class="bg-white p-4 br-1 flex-auto">
             <!-- 按钮 -->
             <div class="mb-2">
                 <el-button type="primary" @click="newItem()" v-perm="'new'" icon="plus" v-if="withNew != false">新增</el-button>
@@ -16,11 +22,12 @@
                 :dataSupplier="dataSupplier"
                 :pageable="pageable != false && !tree"
                 :showIndex="true"
+                :height="tableHeight"
                 ref="tableRef"
                 @rowClick="rowClick"
             >
                 <template #append>
-                    <el-table-column label="操作" :width="operationsWidth || '130px'">
+                    <el-table-column label="操作" :width="operationsWidth || '180px'">
                         <template #default="{ row, $index }">
                             <div class="row-buttons">
                                 <slot name="prefixButtons" :row="row" :index="$index">
@@ -88,6 +95,7 @@ const props = defineProps([
     "pageable",
     "dataSupplier",
     "queryParamConverter",
+    "tableHeight",
 ]);
 const visible = ref(false);
 const newFields = reactive([]);
@@ -97,6 +105,7 @@ const tableRef = ref();
 const defModel = ref({});
 const emits = defineEmits(["rowClick", "startEdit"]);
 const searchParams = ref({});
+const showSearch = computed(() => props.queryFields?.length)
 
 onMounted(() => {
     if (props.formFields) {

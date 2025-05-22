@@ -32,6 +32,24 @@ export const useSysStore = defineStore("sysStore", {
     },
 
     actions: {
+        topMenusVisible() {
+            let userConfig = this.userInfo.metadata || {}
+            if (userConfig.showTopMenus || userConfig.showTopMenus == false) {
+                return userConfig.showTopMenus
+            }
+
+            return this.sysConfig.showTopMenus;
+        },
+
+        tagTabsVisible() {
+            let userConfig = this.userInfo.metadata || {}
+            if (userConfig.showTagTabs || userConfig.showTagTabs == false) {
+                return userConfig.showTagTabs
+            }
+
+            return this.sysConfig.showTagTabs;
+        },
+
         init(resp) {
             this.userInfo = resp.userInfo || {};
             this.sysConfig = resp.configInfo || {};

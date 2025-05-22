@@ -64,7 +64,7 @@
 
 // 应用内容面板
 .content-panel {
-    @extend .w-box-10, .bg-white, .br-1, .p-4;
+    @extend .bg-white, .br-1, .p-4;
     box-sizing: border-box;
 }
 
@@ -252,12 +252,22 @@
     flex-direction: column;
 }
 
+.d-grid-col {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-column-gap: 16px;
+}
+
 .d-block {
     display: block;
 }
 
 .d-iblock {
     display: inline-block;
+}
+
+.relative {
+    position: relative;
 }
 
 .space-between {
@@ -313,6 +323,10 @@
 
 .color-green, .color-success {
     color: green;
+}
+
+.color-warning {
+    color: rgb(174, 174, 10);
 }
 
 .color-remark, .color-info {
@@ -443,4 +457,8 @@
 
 .f-left {
     float: left;
+}
+
+.shadow {
+    box-shadow: 0 0 5px #eee;
 }

@@ -1,10 +1,10 @@
 <template>
     <entity-manager apiPrefix="/base/schedule-task" :fields="fields" operationsWidth="200px">
         <template #prefixButtons="{ row }">
-            <el-link type="primary" v-show="!row.started && row.status" @click="start(row)" class="mr-2">启动</el-link>
+            <el-link type="primary" v-show="!row.started && row.status" @click="start(row)" class="mr-2" icon="Check">启动</el-link>
             <!-- <el-link type="primary" v-show="row.started && row.status" @click="stop(row)" class="mr-2">停止</el-link> -->
-            <el-link type="primary" v-show="row.status" @click="setInvalid(row)" class="mr-2">停用</el-link>
-            <el-link type="primary" v-show="!row.status" @click="setValid(row)" class="mr-2">启用</el-link>
+            <el-link type="primary" v-show="row.status" @click="setInvalid(row)" class="mr-2" icon="remove">停用</el-link>
+            <el-link type="primary" v-show="!row.status" @click="setValid(row)" class="mr-2" icon="check">启用</el-link>
         </template>
     </entity-manager>
 </template>

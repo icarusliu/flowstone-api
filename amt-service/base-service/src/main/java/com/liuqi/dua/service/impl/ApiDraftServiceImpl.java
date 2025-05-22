@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 接口草稿服务实现
@@ -144,5 +146,13 @@ public class ApiDraftServiceImpl extends AbstractBaseEntityService<ApiDraftEntit
         apiDraftDTO.setStatus(3);
         apiService.deletePhysical(id);
         this.update(apiDraftDTO);
+    }
+
+    /**
+     * 根据状态统计接口数量
+     */
+    @Override
+    public List<Map<String, Object>> statByStatus() {
+        return baseMapper.statByStatus();
     }
 }

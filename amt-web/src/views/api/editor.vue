@@ -18,7 +18,7 @@
                 <outputParams v-model="formModel.content.output" :editing="editing" :apiInfo="formModel" v-if="loaded"
                     ref="outputRef" />
             </el-tab-pane>
-            <el-tab-pane label="接口测试" v-if="!editing" name="test">
+            <el-tab-pane label="接口调试" v-if="!editing" name="test">
                 <apiTest :apiInfo="formModel" :editing="editing" v-if="loaded" @save="doSaveTest"
                     v-model="formModel.content" />
             </el-tab-pane>
@@ -43,12 +43,12 @@
 
         <div class="buttons text-center">
             <template v-if="editing">
-                <el-link type="primary" class="mr-4" @click="doCancel">取消</el-link>
-                <el-button type="primary" @click="doSave">保存</el-button>
+                <el-link type="primary" class="mr-4" @click="doCancel" icon="Close">取消</el-link>
+                <el-button type="primary" @click="doSave" icon="finished">保存</el-button>
             </template>
             <template v-else>
-                <el-button type="primary" @click="startEdit">编辑</el-button>
-                <el-button type="success" @click="doPublish" :disabled="formModel.status == 1">发布</el-button>
+                <el-button type="primary" @click="startEdit" icon="Edit">编辑</el-button>
+                <el-button type="success" @click="doPublish" :disabled="formModel.status == 1" icon="check">发布</el-button>
             </template>
         </div>
     </div>
@@ -292,10 +292,6 @@ function setSimpleModel() {
 <style lang="scss" scoped>
 .new-api {
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 400;
     overflow-y: auto;
     max-height: calc(100vh - 76px);
     padding: 16px 16px 0px 16px;
@@ -313,8 +309,8 @@ function setSimpleModel() {
 
 .buttons {
     position: absolute;
-    top: 58px;
-    right: 16px;
+    top: 74px;
+    right: 32px;
 }
 
 .more {

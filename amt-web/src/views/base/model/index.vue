@@ -11,14 +11,14 @@
                 ref="entityManagerRef"
                 :params="params"
                 :withNew="false"
-                operationsWidth="220px"
+                operationsWidth="240px"
             >
                 <template #rowButtons="{ row }">
                     <buttons :buttons="rowButtons" :data="row" />
                 </template>
 
                 <template #buttons>
-                    <el-button type="primary" @click="showNewModel">新增</el-button>
+                    <el-button type="primary" @click="showNewModel" icon="Plus">新增</el-button>
                 </template>
             </entity-manager>
         </div>
@@ -74,11 +74,11 @@ const params = ref({});
 const editingModel = ref({});
 const entityManagerRef = ref();
 const rowButtons = ref([
-    { label: "详情", action: goEdit },
-    { label: "应用", action: publish, type: "success", display: (row) => row.status != 1 },
-    { label: "下线", action: offline, type: "danger", display: (row) => row.status == 1 },
-    { label: "删除", type: "danger", action: doDelete },
-    { label: "数据管理", action: showData, display: (row) => row.status != 0 && row.status != 3 },
+    { label: "详情", action: goEdit, icon: "Memo" },
+    { label: "应用", action: publish, type: "success", display: (row) => row.status != 1, icon: "Check" },
+    { label: "下线", action: offline, type: "danger", display: (row) => row.status == 1, icon: "Remove" },
+    { label: "删除", type: "danger", action: doDelete, icon: "delete" },
+    { label: "数据管理", action: showData, display: (row) => row.status != 0 && row.status != 3, icon: "Tickets" },
 ]);
 
 function goEdit(row) {

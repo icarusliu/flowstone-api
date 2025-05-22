@@ -69,7 +69,7 @@ onMounted(() => {
                     withEdit: true,
                     withImport: false,
                     withExport: false,
-                    pageSize: 10
+                    pageSize: 15
                 }
             }
 
@@ -111,7 +111,7 @@ onMounted(() => {
                 withEdit: true,
                 withImport: false,
                 withExport: false,
-                pageSize: 10
+                pageSize: 15
             },
             formConfig: {
                 displayType: 'drawer'

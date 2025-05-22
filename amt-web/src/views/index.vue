@@ -6,9 +6,9 @@
 
         <div class="right-panel flex-auto h-100">
             <TopNav />
-            <div class="right-content b-box br-1 flex-auto">
+            <div class="right-content b-box br-1 flex-auto d-flex-col">
                 <TagsTab v-if="showTagsTab"/>
-                <div class="main-content p-4">
+                <div class="main-content p-4 flex-auto" :class="{tags: showTagsTab}">
                     <router-view v-slot="{ Component, route }">
                         <keep-alive :include="cachedRoutes">
                             <component :is="Component" :key="route.path" />
@@ -54,11 +54,16 @@ watchEffect(() => {
     background-color: #f2f3f5;
 
     .right-content {
-        position: relative;
+        height: calc(100% - 48px);
 
         .main-content {
-            height: calc(100vh - 100px);
+            height: calc(100% - 96px);
             overflow-y: auto;
+            box-sizing: border-box;
+
+            &.tags {
+                height: calc(100% - 154px);
+            }
         }
     }
 }

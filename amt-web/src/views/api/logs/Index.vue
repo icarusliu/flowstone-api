@@ -1,40 +1,47 @@
 <template>
-    <div class="bg-white p-4">
+    <div class="content-panel">
         <SearchForm v-model="params" :fields="queryFields" @query="reload"></SearchForm>
-        <base-table :fields="fields" :dataSupplier="dataSupplier" :defaultExpandAll="false" @rowClick="onRowClick" :pageSimple="true"
-            ref="tableRef" :params="params" />
+        <base-table
+            :fields="fields"
+            :dataSupplier="dataSupplier"
+            :defaultExpandAll="false"
+            @rowClick="onRowClick"
+            :pageSimple="true"
+            ref="tableRef"
+            :params="params"
+        />
     </div>
 </template>
 
 <script setup>
-import * as entityApis from '@/apis/entity.js'
-import { ref, onMounted } from 'vue'
-import * as clientApis from '@/apis/client'
-import SearchForm from '@/components/search-form.vue';
-import * as logFields from './fields'
+import * as entityApis from "@/apis/entity.js";
+import { ref, onMounted } from "vue";
+import * as clientApis from "@/apis/client";
+import SearchForm from "@/components/search-form.vue";
+import * as logFields from "./fields";
 
-const clients = ref([])
-const tableRef = ref()
-const params = ref({})
-const fields = ref(logFields.tableFields)
-const queryFields = ref(logFields.queryFields)
+const clients = ref([]);
+const tableRef = ref();
+const params = ref({});
+const fields = ref(logFields.tableFields);
+const queryFields = ref(logFields.queryFields);
 
 onMounted(() => {
-    clientApis.getAllClients().then(resp => {
-        clients.value = resp
-    })
-})
+    clientApis.getAllClients().then((resp) => {
+        clients.value = resp;
+    });
+});
 
 function onRowClick(row) {
-    tableRef.value.toggleRowExpansion(row)
+    tableRef.value.toggleRowExpansion(row);
 }
 
 function dataSupplier(params) {
-    return entityApis.load('/base/api-log', params);
+    return entityApis.load("/base/api-log", params);
 }
 
 function reload() {
-    tableRef.value.reload()
+    tableRef.value.reload();
 }
 </script>
 

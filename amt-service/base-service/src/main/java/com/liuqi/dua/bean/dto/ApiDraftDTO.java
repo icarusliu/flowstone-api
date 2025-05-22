@@ -19,4 +19,14 @@ public class ApiDraftDTO extends BaseDTO {
     private Integer status;
     private String typeId;
     private String typeName;
+
+    /**
+     * 调用失败次数
+     */
+    private Integer successCount;
+
+    /**
+     * 调用成功次数
+     */
+    private Integer failedCount;
 }

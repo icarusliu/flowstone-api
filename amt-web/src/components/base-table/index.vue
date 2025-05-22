@@ -11,6 +11,7 @@
             ref="tableRef"
             @selectionChange="selectionChange"
             :height="height"
+            stripe
         >
             <el-table-column v-if="showSelection" type="selection" align="center" width="40px" />
             <el-table-column width="52px" label="序号" type="index" fixed v-else-if="showIndex != false" align="center" />

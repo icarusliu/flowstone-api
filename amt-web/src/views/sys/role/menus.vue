@@ -7,13 +7,13 @@
             ref="dataTableRef"
             :rowSelectable="editing"
             :showSelection="true"
-            height="calc(100vh - 250px)"
+            height="calc(100vh - 252px)"
         />
         <div class="text-center mt-4">
-            <el-button type="primary" v-if="!editing" @click="startEdit" v-perm="'update'"> 编辑 </el-button>
+            <el-button type="primary" v-if="!editing" @click="startEdit" v-perm="'update'" icon="Edit"> 编辑 </el-button>
             <template v-else>
-                <el-button type="primary" @click="saveRoleResources">保存</el-button>
-                <el-button @click="cancelEdit">取消</el-button>
+                <el-button type="primary" @click="saveRoleResources" icon="Finished">保存</el-button>
+                <el-button @click="cancelEdit" icon="close">取消</el-button>
             </template>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-4">
+    <div class="bg-white p-4 br-1">
         <el-page-header content="接口说明" @back="goBack"></el-page-header>
 
         <el-descriptions border :column="2" class="mb-8 mt-4">

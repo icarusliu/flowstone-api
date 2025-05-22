@@ -1,5 +1,5 @@
 <template>
-    <entity-manager :fields="fields" apiPrefix="/base/ds" operationsWidth="100px">
+    <entity-manager :fields="fields" apiPrefix="/base/ds" operationsWidth="140px">
         <template #formButtons="{ model }">
             <el-button @click="doTest(model)" :loading="loading">测试</el-button>
         </template>

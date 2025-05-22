@@ -810,4 +810,19 @@
             INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924987313239134210', 'showTagsTab', 'false', '是否多标签展示', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28', 0);
         </sql>
     </changeSet>
+
+    <changeSet id="alter-d_api_draft-add-count" author="liuqi">
+        <sql>
+            alter table d_api_draft add column success_count bigint default 0 comment '调用成功次数';
+            alter table d_api_draft add column failed_count bigint default 0 comment '调用失败次数';
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-menu-stat-v3" author="liuqi">
+        <sql>
+            delete from sys_menu where id = 'A0105';
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('A0105',  '接口概览', '/apis/stat', 'path', 0, 'A01', -1, 'Monitor')
+        </sql>
+    </changeSet>
 </databaseChangeLog>

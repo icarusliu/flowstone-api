@@ -71,4 +71,13 @@ public class ApiLogController {
     public List<ApiLogDTO> query(@RequestBody ApiLogQuery query) {
         return service.query(query);
     }
+
+    /**
+     * 查找耗时前N的记录
+     * 取一个月内的记录；超过一个月的因为历史记录被清理不做处理
+     */
+    @GetMapping("top-spent-time")
+    public List<ApiLogDTO> getTopSpentTime(@RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return service.getTopSpentTime(size);
+    }
 }

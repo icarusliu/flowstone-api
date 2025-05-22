@@ -1,7 +1,7 @@
 <template>
-    <entity-manager :fields="fields" apiPrefix="/base/supplier">
+    <entity-manager :fields="fields" apiPrefix="/base/supplier" >
         <template #prefixButtons="{row}">
-            <el-link type="primary" class="mr-2" @click="configAuth(row)">鉴权</el-link>
+            <el-link type="primary" class="mr-2" @click="configAuth(row)" icon="Lock">鉴权</el-link>
         </template>
     </entity-manager>
 </template>

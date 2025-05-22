@@ -2,6 +2,7 @@ package com.liuqi.dua.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.liuqi.dua.service.ApiDraftService;
 import com.liuqi.sys.bean.dto.ClientDTO;
 import com.liuqi.common.base.service.AbstractBaseEntityService;
 import com.liuqi.common.utils.ExceptionUtils;
@@ -14,6 +15,8 @@ import com.liuqi.dua.domain.mapper.ApiLogMapper;
 import com.liuqi.dua.service.ApiLogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,10 @@ import java.util.Map;
  **/
 @Service
 public class ApiLogServiceImpl extends AbstractBaseEntityService<ApiLogEntity, ApiLogDTO, ApiLogMapper, ApiLogQuery> implements ApiLogService {
+    @Autowired
+    @Lazy
+    private ApiDraftService apiDraftService;
+
     @Override
     public ApiLogDTO toDTO(ApiLogEntity entity) {
         ApiLogDTO dto = new ApiLogDTO();
@@ -124,6 +131,11 @@ public class ApiLogServiceImpl extends AbstractBaseEntityService<ApiLogEntity, A
         log.setResult(detail);
 
         this.insertAsync(log, UserContextHolder.getUserId().orElse("guest"));
+
+        // 运行失败次数加1
+        apiDraftService.updateBuilder().setSql("failed_count = failed_count + 1")
+                .eq("id", api.getId())
+                .update();
     }
 
     /**
@@ -146,6 +158,11 @@ public class ApiLogServiceImpl extends AbstractBaseEntityService<ApiLogEntity, A
         log.setResult(JSON.toJSONString(result));
         log.setSpentTime((int) spentTime);
         this.insertAsync(log, UserContextHolder.getUserId().orElse("guest"));
+
+        // 运行成功次数加1
+        apiDraftService.updateBuilder().setSql("success_count = success_count + 1")
+                .eq("id", api.getId())
+                .update();
     }
 
     /**
@@ -158,5 +175,13 @@ public class ApiLogServiceImpl extends AbstractBaseEntityService<ApiLogEntity, A
         QueryWrapper<ApiLogEntity> queryWrapper = this.createQueryWrapper();
         queryWrapper.le("create_time", localDate);
         this.remove(queryWrapper);
+    }
+
+    /**
+     * 查找耗时前n的接口id列表
+     */
+    @Override
+    public List<ApiLogDTO> getTopSpentTime(int size) {
+        return baseMapper.getTopSpentTime(size);
     }
 }

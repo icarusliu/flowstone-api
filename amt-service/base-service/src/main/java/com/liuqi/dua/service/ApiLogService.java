@@ -52,4 +52,6 @@ public interface ApiLogService extends BaseService<ApiLogDTO, ApiLogQuery> {
      * @param localDate 日志日期
      */
     void clearLogsBefore(LocalDate localDate);
+
+    List<ApiLogDTO> getTopSpentTime(int size);
 }

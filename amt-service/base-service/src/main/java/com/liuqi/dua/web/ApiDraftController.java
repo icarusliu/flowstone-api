@@ -107,4 +107,27 @@ public class ApiDraftController {
     public void offline(@PathVariable String id) {
         service.offline(id);
     }
+
+    @GetMapping("top-called")
+    public List<ApiDraftDTO> getTopCalled(@RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return service.queryBuilder()
+                .setPageNo(1L)
+                .setPageSize(size.longValue())
+                .orderByDesc("success_count + failed_count")
+                .query();
+    }
+
+    @GetMapping("top-failed")
+    public List<ApiDraftDTO> getTopFailed(@RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return service.queryBuilder()
+                .setPageNo(1L)
+                .setPageSize(Long.valueOf(size))
+                .orderByDesc("failed_count / (failed_count + success_count)")
+                .query();
+    }
+
+    @GetMapping("stat-by-status")
+    public List<Map<String, Object>> count() {
+        return service.statByStatus();
+    }
 }

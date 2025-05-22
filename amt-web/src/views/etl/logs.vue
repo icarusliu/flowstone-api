@@ -1,5 +1,5 @@
 <template>
-    <div class="page-content bg-white p-4">
+    <div class="content-panel">
         <search-form :fields="queryFields" v-model="params" @query="doQuery"></search-form>
         <base-table :fields="fields" :params="params" ref="tableRef" :dataSupplier="loadData" :pageSimple="true"></base-table>
     </div>
@@ -37,10 +37,3 @@ function doQuery() {
     tableRef.value.reload()
 }
 </script>
-
-<style lang='scss' scoped>
-.page-content {
-    background: #fff;
-
-}
-</style>

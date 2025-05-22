@@ -69,13 +69,13 @@ template: "@RestController
     return service.findById(id).orElse(null);
   }
   
-  
   @PostMapping(\"page-query\")
   @Operation(summary = \"查询-分页\")
   public IPage<$T$DTO> pageQuery(@RequestBody $T$Query query) {
   return service.pageQuery(query);
   }
   
+  @PostMapping(\"query\")
   @Operation(summary = \"查询-不分页\")
   public List<$T$DTO> query(@RequestBody $T$Query query) {
   return service.query(query);

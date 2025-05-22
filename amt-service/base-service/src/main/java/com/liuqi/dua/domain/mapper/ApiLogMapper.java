@@ -5,9 +5,13 @@ package com.liuqi.dua.domain.mapper; /**
  **/
 
 import com.liuqi.common.base.domain.mapper.BaseMapper;
+import com.liuqi.dua.bean.dto.ApiLogDTO;
 import com.liuqi.dua.domain.entity.ApiLogEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface ApiLogMapper extends BaseMapper<ApiLogEntity> {
+    List<ApiLogDTO> getTopSpentTime(int size);
 }

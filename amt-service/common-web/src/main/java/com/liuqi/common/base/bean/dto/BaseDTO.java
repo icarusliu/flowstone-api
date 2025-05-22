@@ -5,6 +5,12 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 基础数据类
+ *
+ * @author  LiuQi 2025/5/21-20:40
+ * @version V1.0
+ **/
 @Data
 public class BaseDTO {
     private String id;

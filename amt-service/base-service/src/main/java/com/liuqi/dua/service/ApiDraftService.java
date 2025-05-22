@@ -4,6 +4,8 @@ import com.liuqi.common.base.service.BaseService;
 import com.liuqi.dua.bean.dto.ApiDraftDTO;
 import com.liuqi.dua.bean.query.ApiDraftQuery;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -37,4 +39,9 @@ public interface ApiDraftService extends BaseService<ApiDraftDTO, ApiDraftQuery>
      * @param id 接口id
      */
     void offline(String id);
+
+    /**
+     * 根据状态统计接口数量
+     */
+    List<Map<String, Object>> statByStatus();
 }

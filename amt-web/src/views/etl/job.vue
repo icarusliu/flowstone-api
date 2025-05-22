@@ -11,14 +11,14 @@
                 ref="entityManagerRef"
                 :params="params"
                 :withNew="false"
-                operationsWidth="240px"
+                operationsWidth="280px"
             >
                 <template #rowButtons="{ row }">
                     <buttons :buttons="rowButtons" :data="row" />
                 </template>
 
                 <template #buttons>
-                    <el-button type="primary" @click="showNewJob">新增</el-button>
+                    <el-button type="primary" @click="showNewJob" icon="Plus">新增</el-button>
                 </template>
             </entity-manager>
         </div>
@@ -123,12 +123,12 @@ const params = ref({});
 const editingJob = ref({});
 const entityManagerRef = ref();
 const rowButtons = ref([
-    { label: "详情", action: goEdit },
-    { label: "任务依赖", action: showDepend, disabled: (row) => row.type == "mq" },
-    { label: "发布", action: publish, type: "success", display: (row) => row.version != row.publishedVersion || !row.publishedVersion },
-    { label: "下线", action: offline, type: "danger", display: (row) => row.version == row.publishedVersion && row.publishedVersion },
-    { label: "血缘分析", action: showBlood },
-    { label: "删除", type: "danger", action: doDelete },
+    { label: "详情", action: goEdit, icon: "memo" },
+    { label: "任务依赖", action: showDepend, disabled: (row) => row.type == "mq", icon: "DArrowRight" },
+    { label: "发布", action: publish, type: "success", display: (row) => row.version != row.publishedVersion || !row.publishedVersion, icon: "check" },
+    { label: "下线", action: offline, type: "danger", display: (row) => row.version == row.publishedVersion && row.publishedVersion, icon: "remove" },
+    { label: "血缘分析", action: showBlood, icon: "switch" },
+    { label: "删除", type: "danger", action: doDelete, icon: "delete" },
 ]);
 
 function goEdit(row) {

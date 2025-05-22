@@ -38,7 +38,7 @@ export function getSuppliers() {
 
 // 下拉使用的接口列表
 export function selectApi(params = {}) {
-    params.pageSize = 10
+    params.pageSize = 15
     params.pageNo = 1
     return https.post('/base/api/page-query', params).then(resp => {
         return resp.records;

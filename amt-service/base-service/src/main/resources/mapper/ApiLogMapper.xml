@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuqi.dua.domain.mapper.ApiLogMapper">
+    <select id="getTopSpentTime">
+        select api_id, api_name, api_path, avg(spent_time) as spent_time from d_api_log
+        where create_time >= date_sub(current_timestamp, interval 1 month )
+        group by api_id
+        order by avg(spent_time) desc
+        limit #{size}
+    </select>
+</mapper>

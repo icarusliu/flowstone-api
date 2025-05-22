@@ -1,7 +1,13 @@
 <template>
     <span class="buttons">
-        <el-link v-for="button in disButtons" :type="button.type || 'primary'" @click="button.action(data)" class="button"
-            :disabled="button.finalDisabled">
+        <el-link
+            v-for="button in disButtons"
+            :type="button.type || 'primary'"
+            @click="button.action(data)"
+            class="button"
+            :disabled="button.finalDisabled"
+            :icon="button.icon"
+        >
             {{ button.label }}
         </el-link>
         <el-dropdown v-if="hideButtons.length">
@@ -10,7 +16,7 @@
             </el-icon>
             <template #dropdown>
                 <el-dropdown-item v-for="button in hideButtons">
-                    <el-link :type="button.type || 'primary'" @click="button.action(data)" class="button" :disabled="button.finalDisabled">
+                    <el-link :type="button.type || 'primary'" @click="button.action(data)" class="button" :disabled="button.finalDisabled" :icon="button.icon">
                         {{ button.label }}
                     </el-link>
                 </el-dropdown-item>
@@ -19,65 +25,68 @@
     </span>
 </template>
 <script setup>
-import { computed } from 'vue';
-import * as _ from 'lodash'
+import { computed } from "vue";
+import * as _ from "lodash";
 
 const props = defineProps({
     buttons: { type: Array, required: true },
     data: {},
-    showCount: { type: Number, default: 4 }
-})
+    showCount: { type: Number, default: 4 },
+});
 
 const finalButtons = computed(() => {
-    const buttons = _.cloneDeep(props.buttons)
+    const buttons = _.cloneDeep(props.buttons);
 
-    return buttons.filter(button => {
-        if (button.display == false) {
-            return false
-        } else if (!button.display) {
-            return true
-        }
-        return button.display(props.data)
-    }).map(button => {
-        if (button.disabled == true) {
-            button.finalDisabled = true
-        } else if (!button.disabled) {
-            button.finalDisabled = false
-        } else {
-            button.finalDisabled = button.disabled(props.data)
-        }
-        return button
-    });
-})
+    return buttons
+        .filter((button) => {
+            if (button.display == false) {
+                return false;
+            } else if (!button.display) {
+                return true;
+            }
+            return button.display(props.data);
+        })
+        .map((button) => {
+            if (button.disabled == true) {
+                button.finalDisabled = true;
+            } else if (!button.disabled) {
+                button.finalDisabled = false;
+            } else {
+                button.finalDisabled = button.disabled(props.data);
+            }
+            return button;
+        });
+});
 
 const disButtons = computed(() => {
-    let buttons = finalButtons.value
+    let buttons = finalButtons.value;
 
-    const len = buttons.length
+    const len = buttons.length;
     if (len < props.showCount) {
-        return buttons
+        return buttons;
     }
 
     return buttons.slice(0, props.showCount);
-})
+});
 
 const hideButtons = computed(() => {
-    const buttons = finalButtons.value
-    const len = buttons.length
+    const buttons = finalButtons.value;
+    const len = buttons.length;
     if (len < props.showCount) {
-        return []
+        return [];
     }
 
     return buttons.slice(props.showCount);
-})
+});
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .buttons {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 
-    .button:not(:last-child) {
+    .button {
         margin-right: 8px;
     }
 }

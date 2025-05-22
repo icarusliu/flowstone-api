@@ -126,6 +126,11 @@ public class UpdateBuilder<D> {
         return this;
     }
 
+    public UpdateBuilder<D> setSql(String sql) {
+        updateWrapper.setSql(sql);
+        return this;
+    }
+
     public boolean update() {
         return serviceImpl.update(updateWrapper);
     }

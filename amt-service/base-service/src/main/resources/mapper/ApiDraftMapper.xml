@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuqi.dua.domain.mapper.ApiDraftMapper">
+    <select id="statByStatus">
+        select status, count(1) as c from d_api_draft where deleted = 0 group by status
+    </select>
+</mapper>

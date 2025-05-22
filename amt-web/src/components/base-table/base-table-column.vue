@@ -7,8 +7,9 @@
                 v-if="!button.visible || button.visible(row)"
                 @click="button.action(row, index)"
                 :class="clazz"
+                :icon="button.icon"
                 v-perm="button.code"
-                class="mr-1"
+                class="mr-2"
             >
                 {{ button.label }}
             </el-link>
@@ -107,7 +108,7 @@ function defaultShow() {
         return "--";
     } else {
         if (!props.field.unit) {
-            return value
+            return value;
         }
         return value + props.field.unit;
     }
