@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -140,6 +141,16 @@ public class QueryBuilder<D, E> {
 
     public QueryBuilder<D, E> notNull(String key) {
         queryWrapper.isNotNull(key);
+        return this;
+    }
+
+    /**
+     * 增加or条件
+     * @param consumer 消费函数
+     * @return 当前对象
+     */
+    public QueryBuilder<D, E> or(Consumer<QueryWrapper<E>> consumer) {
+        this.queryWrapper.or(consumer);
         return this;
     }
 

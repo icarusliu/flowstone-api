@@ -4,23 +4,26 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.liuqi.common.base.bean.dto.BaseDTO;
+import com.liuqi.common.base.bean.query.BaseQuery;
+import com.liuqi.common.base.bean.query.QueryBuilder;
+import com.liuqi.common.base.bean.query.UpdateBuilder;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.liuqi.common.base.bean.dto.BaseDTO;
-import com.liuqi.common.base.bean.query.*;
-import liquibase.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -119,7 +122,7 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
      */
     @Override
     public List<D> query(Q q) {
-        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
+        QueryWrapper<E> queryWrapper = this.createQueryWrapper(q);
 
         if (null == queryWrapper) {
             return new ArrayList<>(0);
@@ -130,11 +133,37 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
             queryWrapper.last(" limit " + start + "," + q.getPageSize());
         }
 
-        if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
-            queryWrapper.select(field -> !q.getExcludeFields().contains(field.getProperty()));
+        return this.queryInternal(queryWrapper);
+    }
+
+    /**
+     * 将查询对象转换成QueryWrapper，并处理排序及排除字段
+     * @param q 查询对象
+     * @return QueryWrapper
+     */
+    private QueryWrapper<E> createQueryWrapper(Q q) {
+        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
+        if (null == queryWrapper) {
+            return null;
         }
 
-        return this.queryInternal(queryWrapper);
+        if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
+            List<String> fields = q.getExcludeFields().stream().map(StringUtils::camelToUnderline).toList();
+            queryWrapper.select(field -> !fields.contains(field.getProperty()));
+        }
+        
+        if (!CollectionUtils.isEmpty(q.getOrderBys())) {
+            q.getOrderBys().forEach(orderBy -> {
+                String column = orderBy.getColumn();
+
+                // 如果是驼峰需要转成下划线
+                column = StringUtils.camelToUnderline(column);
+
+                queryWrapper.orderBy(true, orderBy.isAsc(), column);
+            });
+        }
+        
+        return queryWrapper;
     }
 
     /**
@@ -175,10 +204,7 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     @Override
     @Transactional
     public IPage<D> pageQuery(Q q) {
-        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
-        if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
-            queryWrapper.select(field -> !q.getExcludeFields().contains(field.getProperty()));
-        }
+        QueryWrapper<E> queryWrapper = this.createQueryWrapper(q);
         return this.pageQueryInternal(q.getPageNo(), q.getPageSize(), queryWrapper);
     }
 

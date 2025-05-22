@@ -12,6 +12,31 @@
     </div>
 
     <el-row :gutter="16">
+        <el-col :span="24" class="mb-4">
+            <div class="content-panel shadow">
+                <div class="page-title">最近失败接口</div>
+                <el-table :data="failedList" stripe>
+                    <el-table-column type="index" label="序号" width="60px"></el-table-column>
+                    <el-table-column label="名称" prop="apiName" width="200px"></el-table-column>
+                    <el-table-column label="路径" prop="apiPath" width="200px" />
+                    <el-table-column label="执行时间" prop="createTime" width="160px" />
+                    <el-table-column label="异常信息" width="120px" prop="errorMsg"> </el-table-column>
+                    <el-table-column label="异常详情" prop="result">
+                        <template #default="{ row }">
+                            <el-popover width="800px" effect="dark" trigger="click">
+                                <template #reference>
+                                    <div>
+                                        <span class="ellipsis-1 cursor-pointer">{{ row.result }}</span>
+                                    </div>
+                                </template>
+                                <div class="detail">{{ row.result }}</div>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-col>
+
         <el-col :span="8">
             <div class="content-panel shadow">
                 <div class="page-title">接口调用Top10</div>
@@ -61,6 +86,7 @@ const topSpentTime = ref([]);
 const topFailed = ref([]);
 const statInfo = ref({});
 const total = ref(0);
+const failedList = ref([]);
 
 onMounted(() => {
     app.https.get("/base/api-draft/top-called").then((resp) => {
@@ -87,11 +113,15 @@ onMounted(() => {
 
             let status = item.status;
             item.name = status == 0 ? "未发布" : status == 1 ? "已发布" : status == 2 ? "修改中" : "已下线";
-            item.color = status == 0 ? "#aaa" : status == 1 ? "green" : status == 2 ? "#cdcd34" : "gray";
+            item.color = status == 0 ? "red" : status == 1 ? "green" : status == 2 ? "#cdcd34" : "#aaa";
 
             return item;
         });
         total.value = t;
+    });
+
+    app.https.post("/base/api-log/query", { pageNo: 1, pageSize: 10, orderBys: [{ asc: false, column: "createTime" }], status: 1 }).then((resp) => {
+        failedList.value = resp;
     });
 });
 </script>

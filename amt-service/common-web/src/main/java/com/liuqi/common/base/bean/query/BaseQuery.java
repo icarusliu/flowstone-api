@@ -5,34 +5,23 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * 基础查询条件
- *
- * @author  LiuQi 2025/5/21-20:40
- * @version V1.0
- **/
 @Data
 public class BaseQuery {
-    /**
-     * id
-     */
+    @Schema(description = "id")
     private String id;
 
-    /**
-     * id列表
-     */
+    @Schema(description = "id列表")
     private List<String> ids;
 
-    /**
-     * 每页记录数
-     */
+    @Schema(description = "每页记录数")
     private Long pageSize;
 
-    /**
-     * 页码，从1开始
-     */
+    @Schema(description = "页码，从1开始")
     private Long pageNo;
 
-    @Schema(description = "排除的字段列表")
+    @Schema(description = "排除的字段列表", hidden = true)
     private List<String> excludeFields;
+
+    @Schema(description = "排序字段")
+    private List<OrderBy> orderBys;
 }

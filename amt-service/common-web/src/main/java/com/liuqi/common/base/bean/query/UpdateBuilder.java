@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * 更新构建器
@@ -118,6 +119,16 @@ public class UpdateBuilder<D> {
 
     public UpdateBuilder<D> notNull(String key) {
         updateWrapper.isNotNull(key);
+        return this;
+    }
+
+    /**
+     * 增加or条件
+     * @param consumer 消费函数
+     * @return 当前对象
+     */
+    public UpdateBuilder<D> or(Consumer<UpdateWrapper<D>> consumer) {
+        this.updateWrapper.or(consumer);
         return this;
     }
 
