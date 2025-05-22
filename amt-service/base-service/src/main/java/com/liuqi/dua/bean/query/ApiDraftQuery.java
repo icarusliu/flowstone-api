@@ -16,4 +16,5 @@ public class ApiDraftQuery extends BaseQuery {
     private String key;
     private String keyLike;
     private List<String> typeIds;
+    private Integer status;
 }

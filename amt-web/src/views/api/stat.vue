@@ -1,13 +1,8 @@
 <template>
     <div class="stat-items mb-4 d-grid-col">
-        <div class="stat-item br-1 shadow">
-            <div>接口总数</div>
-            <div>{{ total }}</div>
-        </div>
-
-        <div class="stat-item shadow br-1" v-for="item in statInfo" :key="item.status">
+        <div class="stat-item shadow br-1 cursor-pointer" v-for="item in statInfo" :key="item.name" @click="goList">
             <div>{{ item.name }}</div>
-            <div :style="{ color: item.color }">{{ item.c }}</div>
+            <div :style="{ color: item.color }">{{ item.value }}</div>
         </div>
     </div>
 
@@ -17,10 +12,14 @@
                 <div class="page-title">最近失败接口</div>
                 <el-table :data="failedList" stripe>
                     <el-table-column type="index" label="序号" width="60px"></el-table-column>
-                    <el-table-column label="名称" prop="apiName" width="200px"></el-table-column>
+                    <el-table-column label="名称" prop="apiName" width="200px">
+                        <template #default="{ row }">
+                            <el-link :href="'/apis/editor?id=' + row.apiId">{{ row.apiName }}</el-link>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="路径" prop="apiPath" width="200px" />
                     <el-table-column label="执行时间" prop="createTime" width="160px" />
-                    <el-table-column label="异常信息" width="120px" prop="errorMsg"> </el-table-column>
+                    <el-table-column label="失败信息" width="220px" prop="errorMsg"> </el-table-column>
                     <el-table-column label="异常详情" prop="result">
                         <template #default="{ row }">
                             <el-popover width="800px" effect="dark" trigger="click">
@@ -42,7 +41,11 @@
                 <div class="page-title">接口调用Top10</div>
                 <el-table :data="topCalled" stripe>
                     <el-table-column type="index" label="序号" width="60px"></el-table-column>
-                    <el-table-column label="名称" prop="name"></el-table-column>
+                    <el-table-column label="名称" prop="name">
+                        <template #default="{ row }">
+                            <el-link :href="'/apis/editor?id=' + row.id">{{ row.name }}</el-link>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="路径" prop="path" />
                     <el-table-column label="调用次数" width="100px">
                         <template #default="{ row }"> {{ row.successCount + row.failedCount }}次 </template>
@@ -56,7 +59,11 @@
                 <div class="page-title">接口耗时Top10</div>
                 <el-table :data="topSpentTime" stripe>
                     <el-table-column type="index" label="序号" width="60px"></el-table-column>
-                    <el-table-column label="名称" prop="apiName"></el-table-column>
+                    <el-table-column label="名称" prop="apiName">
+                        <template #default="{ row }">
+                            <el-link :href="'/apis/editor?id=' + row.apiId">{{ row.apiName }}</el-link>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="路径" prop="apiPath" />
                     <el-table-column label="耗时" width="120px">
                         <template #default="{ row }"> {{ row.spentTime }}ms </template>
@@ -70,7 +77,11 @@
                 <div class="page-title">接口失败率Top10</div>
                 <el-table :data="topFailed" stripe>
                     <el-table-column type="index" label="序号" width="60px"></el-table-column>
-                    <el-table-column label="名称" prop="name"></el-table-column>
+                    <el-table-column label="名称" prop="name">
+                        <template #default="{ row }">
+                            <el-link :href="'/apis/editor?id=' + row.id">{{ row.name }}</el-link>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="路径" prop="path" />
                     <el-table-column label="失败率" width="120px" prop="failRatio"> </el-table-column>
                 </el-table>
@@ -80,12 +91,18 @@
 </template>
 <script setup>
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 const topCalled = ref([]);
 const topSpentTime = ref([]);
 const topFailed = ref([]);
-const statInfo = ref({});
-const total = ref(0);
+const statInfo = reactive([
+    { name: "全部接口", value: 0 },
+    { name: "草稿", value: 0, color: "red" },
+    { name: "已发布", value: 0, color: "green" },
+    { name: "修改中", value: 0, color: "#cdcd34" },
+    { name: "已下线", value: 0, color: "#aaa" },
+]);
 const failedList = ref([]);
 
 onMounted(() => {
@@ -108,22 +125,21 @@ onMounted(() => {
 
     app.https.get("/base/api-draft/stat-by-status").then((resp) => {
         let t = 0;
-        statInfo.value = resp.map((item) => {
-            t += item.c;
-
-            let status = item.status;
-            item.name = status == 0 ? "未发布" : status == 1 ? "已发布" : status == 2 ? "修改中" : "已下线";
-            item.color = status == 0 ? "red" : status == 1 ? "green" : status == 2 ? "#cdcd34" : "#aaa";
-
-            return item;
+        resp.forEach(({ c, status }) => {
+            statInfo[0].value += c;
+            statInfo[status + 1].value += c;
         });
-        total.value = t;
     });
 
     app.https.post("/base/api-log/query", { pageNo: 1, pageSize: 10, orderBys: [{ asc: false, column: "createTime" }], status: 1 }).then((resp) => {
         failedList.value = resp;
     });
 });
+
+const router = useRouter()
+function goList() {
+    router.push('/apis/list')
+}
 </script>
 
 <style lang="scss" scoped>

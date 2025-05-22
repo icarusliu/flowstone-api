@@ -64,6 +64,7 @@ public class ApiDraftServiceImpl extends AbstractBaseEntityService<ApiDraftEntit
                     q.eq("id", query.getKey())
                             .or().eq("path", query.getKey());
                 })
+                .eq(null != query.getStatus(), "status", query.getStatus())
                 .orderByDesc("create_time");
     }
 

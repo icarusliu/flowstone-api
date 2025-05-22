@@ -116,13 +116,13 @@ const configFields = [
 ];
 const configFormRef = ref();
 const showTopMenus = computed(() => {
-    let userShow = userInfo.value.metadata?.showTopMenus
+    let userShow = userInfo.value.metadata?.showTopMenus;
     if (!userShow && userShow != false) {
-        return configInfo.value.showTopMenus
+        return configInfo.value.showTopMenus;
     }
 
-    return userShow
-})
+    return userShow;
+});
 
 onMounted(() => {
     if (!showTopMenus.value) {
@@ -149,6 +149,12 @@ onMounted(() => {
                 }
             }
         }
+    }
+
+    // 没找到，选中第一个
+    if (menus.value.length) {
+        currentTopMenu.value = menus.value[0];
+        sysStore.setMenuTree(menus.value[0].children);
     }
 });
 
@@ -209,9 +215,9 @@ function updateConfig() {
             // 要刷新右侧菜单
             if (userConfig.value.showTopMenus) {
                 // 显示顶部菜单
-                sysStore.setMenuTree(currentTopMenu.value.children)
+                sysStore.setMenuTree(currentTopMenu.value.children);
             } else {
-                sysStore.setMenuTree(menus.value)
+                sysStore.setMenuTree(menus.value);
             }
 
             configVisible.value = false;
