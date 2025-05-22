@@ -7,6 +7,7 @@
         :collapse-transition="false"
         :default-active="active"
         unique-opened
+        v-if="menus.length"
     >
         <div class="p-4 font-bold title text-center">
             <i class="iconfont icon-liushuixian-liushuixianx" />

@@ -5,6 +5,7 @@ import elementPlus from 'element-plus';
 import router from './router';
 import BaseTable from './components/base-table/index.vue'
 import BaseForm from './components/base-form/index.vue'
+import BaseTree from './components/base-tree.vue'
 import EntityManager from './components/entity-manager/index.vue'
 import TitleBar from './components/title-bar.vue'
 import { createPinia } from 'pinia'
@@ -29,6 +30,7 @@ app
     .component('BaseTable', BaseTable)
     .component('EntityManager', EntityManager)
     .component('titleBar', TitleBar)
+    .component('baseTree', BaseTree)
     .use(elementPlus)
     .use(router)
     .use(pinia)

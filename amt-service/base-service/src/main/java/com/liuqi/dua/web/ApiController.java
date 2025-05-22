@@ -2,15 +2,18 @@ package com.liuqi.dua.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.dua.bean.dto.ApiDTO;
+import com.liuqi.dua.bean.dto.ApiDraftDTO;
 import com.liuqi.dua.bean.dto.ApiHistoryDTO;
 import com.liuqi.dua.bean.dto.ApiTypeDTO;
 import com.liuqi.dua.bean.query.ApiHistoryQuery;
 import com.liuqi.dua.bean.query.ApiQuery;
 import com.liuqi.dua.bean.req.ApiAddReq;
 import com.liuqi.dua.bean.req.ApiUpdateReq;
+import com.liuqi.dua.service.ApiDraftService;
 import com.liuqi.dua.service.ApiHistoryService;
 import com.liuqi.dua.service.ApiService;
 import com.liuqi.dua.service.ApiTypeService;
+import com.liuqi.sys.bean.dto.DeptDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +45,9 @@ public class ApiController {
 
     @Autowired
     private ApiHistoryService historyService;
+
+    @Autowired
+    private ApiDraftService apiDraftService;
 
     @PostMapping("add")
     @Operation(summary = "新增")
@@ -75,17 +82,31 @@ public class ApiController {
     public IPage<ApiDTO> pageQuery(@RequestBody ApiQuery query) {
         IPage<ApiDTO> page = service.pageQuery(query);
 
-        // 需要补充分类名称
+        // 需要补充分类名称及使用次数
         if (page.getTotal() == 0) {
             return page;
         }
 
-        List<String> typeIds = page.getRecords().stream().map(ApiDTO::getTypeId)
+        List<String> apiIds = new ArrayList<>(16);
+        List<String> typeIds = page.getRecords().stream()
+                .peek(item -> apiIds.add(item.getId()))
+                .map(ApiDTO::getTypeId)
                 .toList();
         Map<String, String> typeMap = typeService.findByIds(typeIds)
                 .stream()
                 .collect(Collectors.toMap(ApiTypeDTO::getId, ApiTypeDTO::getName));
-        page.getRecords().forEach(item -> item.setTypeName(typeMap.get(item.getTypeId())));
+        Map<String, ApiDraftDTO> draftMap = apiDraftService.queryBuilder()
+                .in("id", apiIds)
+                .query(ApiDraftDTO::getId);
+
+        page.getRecords().forEach(item -> {
+            item.setTypeName(typeMap.get(item.getTypeId()));
+            ApiDraftDTO draft = draftMap.get(item.getId());
+            if (null != draft) {
+                item.setSuccessCount(draft.getSuccessCount());
+                item.setFailedCount(draft.getFailedCount());
+            }
+        });
 
         return page;
     }

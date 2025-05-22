@@ -73,6 +73,13 @@ const routes = [
                         meta: {
                             title: "数据概览",
                         },
+                    }, {
+                        path: "/apis/browser",
+                        component: () => import("../views/api/browser.vue"),
+                        meta: {
+                            title: "接口浏览",
+                            pad: false
+                        },
                     },
                 ],
             },

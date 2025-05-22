@@ -14,5 +14,7 @@ import java.util.List;
 public class ApiQuery extends BaseQuery {
     private Boolean guestMode;
     private String key;
+    private String keyLike;
     private List<String> idsNot;
+    private String typeId;
 }

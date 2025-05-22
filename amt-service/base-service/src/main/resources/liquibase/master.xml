@@ -825,4 +825,11 @@
             values ('A0105',  '接口概览', '/apis/stat', 'path', 0, 'A01', -1, 'Monitor')
         </sql>
     </changeSet>
+
+    <changeSet id="add-menu-browser" author="liuqi">
+        <sql>
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('A00','接口浏览', '/apis/browser', 'path', 0, -1, 0, 'Search')
+        </sql>
+    </changeSet>
 </databaseChangeLog>

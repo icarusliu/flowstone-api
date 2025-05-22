@@ -186,6 +186,12 @@ function updatePassword() {
 function selectTopMenu(menu) {
     currentTopMenu.value = menu;
     sysStore.setMenuTree(menu.children);
+
+    if (!menu.children.length && menu.path) {
+        router.push(menu.path);
+    } else if (menu.children.length) {
+        router.push(menu.children[0].path)
+    }
 }
 
 function showConfigDialog() {

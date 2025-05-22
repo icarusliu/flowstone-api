@@ -21,4 +21,18 @@ public class ApiDTO extends BaseDTO {
     private String method;
     private String typeId;
     private String typeName;
+
+    /**
+     * 调用失败次数
+     */
+    private int successCount;
+
+    /**
+     * 调用成功次数
+     */
+    private int failedCount;
+
+    public int getTotalCount() {
+        return successCount + failedCount;
+    }
 }

@@ -47,6 +47,11 @@ public class ApiServiceImpl extends AbstractBaseEntityService<ApiEntity, ApiDTO,
                     q.eq("id", query.getKey())
                             .or().eq("path", query.getKey());
                 })
+                .and(StringUtils.isNotBlank(query.getKeyLike()), q -> {
+                    q.like("name", query.getKeyLike())
+                            .or().like("path", query.getKeyLike());
+                })
+                .eq(StringUtils.isNotBlank(query.getTypeId()), "type_id", query.getTypeId())
                 .notIn(CollectionUtils.isNotEmpty(query.getIdsNot()), "id", query.getIdsNot())
                 .orderByDesc("create_time");
     }

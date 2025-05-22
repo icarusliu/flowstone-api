@@ -8,7 +8,7 @@
             <TopNav />
             <div class="right-content b-box br-1 flex-auto d-flex-col">
                 <TagsTab v-if="showTagsTab"/>
-                <div class="main-content p-4 flex-auto" :class="{tags: showTagsTab}">
+                <div class="main-content flex-auto" :class="{tags: showTagsTab, 'p-4': pad}">
                     <router-view v-slot="{ Component, route }">
                         <keep-alive :include="cachedRoutes">
                             <component :is="Component" :key="route.path" />
@@ -35,6 +35,9 @@ const type = computed(() => {
 });
 const cachedRoutes = computed(sysStore.getCachedRoutes);
 const showTagsTab = ref(false)
+const pad = computed(() => {
+    return router.currentRoute.value.meta.pad != false
+})
 
 watchEffect(() => {
   let metadata = sysStore.userInfo.metadata || {}

@@ -1,6 +1,6 @@
 <template>
     <div class="tree-panel">
-        <div class="space-between top-bar">
+        <div class="space-between top-bar" v-if="showTitle">
             <div v-if="title && title.length" class="title">
                 {{ title }}
             </div>
@@ -24,7 +24,8 @@ const emits = defineEmits(["currentChange"])
 const props = defineProps({
     apiPrefix: {type: String},
     title: {type: String},
-    showRoot: {type: Boolean, default: true}
+    showRoot: {type: Boolean, default: true},
+    showTitle: {type: Boolean, default: true}
 })
 const currentNode = defineModel("current", {
     default: {}

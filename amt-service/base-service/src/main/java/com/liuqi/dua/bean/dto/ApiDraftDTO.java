@@ -29,4 +29,8 @@ public class ApiDraftDTO extends BaseDTO {
      * 调用成功次数
      */
     private Integer failedCount;
+
+    public Integer getTotalCount() {
+        return successCount + failedCount;
+    }
 }
