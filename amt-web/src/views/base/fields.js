@@ -15,8 +15,10 @@ export const dsFields = [
         default: "mysql",
         type: "radioGroup",
         options: [
-            { label: "mysql", value: "mysql" },
+            { label: "MySql", value: "mysql" },
             { label: "SqlServer", value: "sqlserver" },
+            { label: "Oracle", value: "oracle" },
+            { label: "PostgreSql", value: "pg" },
         ],
         width: "80px",
     },

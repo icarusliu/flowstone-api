@@ -2,7 +2,8 @@
     <div class="top-nav">
         <div class="content pl-4 space-between pr-4">
             <div class="v-center">
-                <el-icon @click="reverseMenuFold" class="cursor-pointer icon mr-2">
+                <!-- 折叠按钮 -->
+                <el-icon @click="reverseMenuFold" class="cursor-pointer icon mr-2" v-if="!showTopMenus || showLeftMenu">
                     <Fold v-if="!menuFolded" />
                     <Expand v-else />
                 </el-icon>
@@ -11,6 +12,13 @@
                 <label v-if="!showTopMenus">{{ title }}</label>
                 <div v-else class="d-flex">
                     <!-- 否则展示顶部菜单 -->
+
+                    <!-- 如果未展示左侧菜单，则需要展示LOGO -->
+                    <div class="font-bold title text-center mx-4" v-if="!showLeftMenu">
+                        <i class="iconfont icon-liushuixian-liushuixianx" />
+                        <span class="ml-2" v-if="!menuFolded">流石数据管理</span>
+                    </div>
+
                     <div
                         v-for="menu in menus"
                         :key="menu.id"
@@ -123,6 +131,9 @@ const showTopMenus = computed(() => {
 
     return userShow;
 });
+const showLeftMenu = computed(() => {
+    return currentTopMenu.value?.children?.length;
+});
 
 onMounted(() => {
     if (!showTopMenus.value) {
@@ -131,9 +142,9 @@ onMounted(() => {
 
     // 获取当前选中的顶部菜单
     let path = router.currentRoute.value.path;
-    
+
     // 有可能是二级界面未配置到菜单中，因此，如果未找到对应的菜单配置，需要找到其上级路由
-    let backupMenu
+    let backupMenu;
 
     for (var i in menus.value) {
         let menu = menus.value[i];
@@ -155,13 +166,13 @@ onMounted(() => {
         }
 
         if (path.startsWith(menu.path)) {
-            backupMenu = menu 
+            backupMenu = menu;
         }
     }
 
     if (backupMenu) {
-        currentTopMenu.value = backupMenu
-        sysStore.setMenuTree(backupMenu.children)
+        currentTopMenu.value = backupMenu;
+        sysStore.setMenuTree(backupMenu.children);
     } else if (menus.value.length) {
         // 没找到，选中第一个
         currentTopMenu.value = menus.value[0];
@@ -201,7 +212,7 @@ function selectTopMenu(menu) {
     if (!menu.children.length && menu.path) {
         router.push(menu.path);
     } else if (menu.children.length) {
-        router.push(menu.children[0].path)
+        router.push(menu.children[0].path);
     }
 }
 
