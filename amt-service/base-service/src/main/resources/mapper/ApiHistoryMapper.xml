@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuqi.dua.domain.mapper.ApiHistoryMapper">
+    <select id="query" parameterType="com.liuqi.dua.bean.query.ApiHistoryQuery" resultType="com.liuqi.dua.bean.dto.ApiHistoryDTO">
+        select
+        api_id
+        ,guest_mode
+        ,content
+        ,name
+        ,remark
+        ,path
+        ,method
+        ,type_id
+        ,tenant_id
+        ,create_user
+        ,create_time
+        ,update_user
+        ,update_time
+        ,deleted
+        from d_api_history
+        where deleted = 0
+        <if test="null != id and '' != id">
+            and id = #{id}
+        </if>
+        <if test="null != ids">
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="null != orderBy and '' != orderBy"> order by ${orderBy}</if>
+        <if test="null == orderBy or '' == orderBy"> order by create_time desc
+        </if>
+    </select>
+</mapper>

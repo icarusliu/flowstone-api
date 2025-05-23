@@ -6,6 +6,7 @@ import com.liuqi.common.exception.BaseErrorCodes;
  * 错误信息
  */
 public enum ErrorCodes implements BaseErrorCodes {
+    BASE_PASSWORD_INVALID("A01001", "原密码错误"),
     // ---------------------------机构相关异常
     // 机构编码已存在
     // ---------------------------机构相关异常

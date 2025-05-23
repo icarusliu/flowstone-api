@@ -5,6 +5,7 @@ import com.liuqi.common.exception.AppException;
 import com.liuqi.sys.bean.dto.UserDTO;
 import com.liuqi.sys.bean.query.NoRoleUserQuery;
 import com.liuqi.sys.bean.query.UserQuery;
+import com.liuqi.sys.bean.req.PwdUpdateReq;
 import com.liuqi.sys.bean.req.UserAddReq;
 import com.liuqi.sys.bean.req.UserUpdateReq;
 import com.liuqi.sys.manager.UserManager;
@@ -104,5 +105,10 @@ public class UserController {
         BeanUtils.copyProperties(req, dto);
         dto.setId(userId);
         userService.update(dto);
+    }
+
+    @PostMapping("update-pwd")
+    public void updatePwd(@RequestBody @Validated PwdUpdateReq req) {
+        userManager.updatePwd(req);
     }
 }

@@ -48,9 +48,17 @@
             </template>
             <template v-else>
                 <el-button type="primary" @click="startEdit" icon="Edit">编辑</el-button>
-                <el-button type="success" @click="doPublish" :disabled="formModel.status == 1" icon="check">发布</el-button>
+                <el-button type="success" @click="doPublish" :disabled="formModel.status == 1" icon="check" class="mr-2" v-if="!historyId">发布</el-button>
+                <el-link type="primary" icon="more" @click="showHistory" v-if="!historyId">发布历史</el-link>
             </template>
         </div>
+
+        <el-drawer size="600px" v-model="historyVisible" title="发布历史">
+            <history-list :apiId="id"/>
+            <template #footer>
+                <el-button @click="historyVisible = false">关闭</el-button>
+            </template>
+        </el-drawer>
     </div>
 </template>
 
@@ -66,6 +74,7 @@ import * as apiApis from '@/apis/api'
 import { useRouter } from 'vue-router'
 import * as nodeUtils from '@/utils/node'
 import OutputParams from './output/index.vue'
+import historyList from './components/history-list.vue'
 
 const router = useRouter()
 const fields = ref([
@@ -86,11 +95,14 @@ let originModel = {}
 const editing = ref(true)
 const activeTab = ref('base')
 const id = computed(() => router.currentRoute.value.query?.id)
+const historyId = computed(() => router.currentRoute.value.query?.historyId)
 const loaded = ref(false)
 const showMore = ref(false) // 是否高级配置模式
 const flowRef = ref()
 const formRef = ref()
 const inputRef = ref()
+const historyVisible = ref(false)
+
 
 watch(() => router.currentRoute.value.query?.id, val => {
     if (!val) {
@@ -122,7 +134,18 @@ function goBack() {
 
 // 获取接口详情
 function getApiInfo() {
-    return entityApis.findById('/base/api-draft', id.value).then(resp => {
+    // 有历史id时，展示历史id记录
+    let fetch = () => entityApis.findById('/base/api-draft', id.value)
+    if (historyId.value) {
+        fetch = () => app.https.get('/base/api-history/detail/' + historyId.value)
+    }
+    
+    return fetch().then(resp => {
+        // 如果是历史记录时，需要将id改成apiId 
+        if (historyId.value) {
+            resp.id = resp.apiId
+        }
+
         // 接口信息转换
         // 主要需要转换content下的内容
         if (resp.content) {
@@ -240,6 +263,9 @@ function doSaveInternal() {
 
             // 新增后跳转编辑页面
             router.push('/apis/editor?id=' + resp.id)
+        } else if (historyId.value) {
+            // 存在历史记录时，也需要跳转
+            router.push('/apis/editor?id=' + id.value)
         } else {
             formModel.value.status = 2
         }
@@ -287,6 +313,10 @@ function setSimpleModel() {
 
     showMore.value = false
 }
+
+function showHistory() {
+    historyVisible.value = true
+}
 </script>
 
 <style lang="scss" scoped>
@@ -309,7 +339,7 @@ function setSimpleModel() {
 
 .buttons {
     position: absolute;
-    top: 74px;
+    top: 84px;
     right: 32px;
 }
 

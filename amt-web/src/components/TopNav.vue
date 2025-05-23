@@ -131,6 +131,10 @@ onMounted(() => {
 
     // 获取当前选中的顶部菜单
     let path = router.currentRoute.value.path;
+    
+    // 有可能是二级界面未配置到菜单中，因此，如果未找到对应的菜单配置，需要找到其上级路由
+    let backupMenu
+
     for (var i in menus.value) {
         let menu = menus.value[i];
         if (menu.path == path) {
@@ -149,10 +153,17 @@ onMounted(() => {
                 }
             }
         }
+
+        if (path.startsWith(menu.path)) {
+            backupMenu = menu 
+        }
     }
 
-    // 没找到，选中第一个
-    if (menus.value.length) {
+    if (backupMenu) {
+        currentTopMenu.value = backupMenu
+        sysStore.setMenuTree(backupMenu.children)
+    } else if (menus.value.length) {
+        // 没找到，选中第一个
         currentTopMenu.value = menus.value[0];
         sysStore.setMenuTree(menus.value[0].children);
     }
