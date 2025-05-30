@@ -68,11 +68,15 @@ function uploadSuccess(res) {
         return;
     }
 
-    model.value.push(res.visitUrl);
+    if (!model.value) {
+        model.value = [res.visitUrl]
+    } else {
+        model.value.push(res.visitUrl);
+    }
 }
 
 function onExceed(val) {
-    hb.error("上传数量超出限制，最多只能上传" + props.limit + "张图片")
+    app.error("上传数量超出限制，最多只能上传" + props.limit + "张图片")
 }
 </script>
 

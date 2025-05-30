@@ -11,7 +11,7 @@
     >
         <div class="p-4 font-bold title text-center">
             <i class="iconfont icon-liushuixian-liushuixianx" />
-            <span class="ml-2" v-if="!menuFolded">流石数据管理</span>
+            <span class="ml-2" v-if="!menuFolded">{{ pageTitle }}</span>
         </div>
         <template v-for="menu in menus">
             <el-menu-item v-if="!menu.children?.length" :key="menu.path" :index="menu.path">
@@ -49,6 +49,7 @@ const opened = computed(() => {
     return [menus.value[0].path];
 });
 const router = useRouter();
+const pageTitle = document.title;
 
 const active = computed(() => {
     return router.currentRoute.value.fullPath;

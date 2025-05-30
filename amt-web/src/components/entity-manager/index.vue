@@ -1,13 +1,7 @@
 <template>
     <!-- 实体类管理 -->
     <div class="d-flex-col">
-        <search-form
-            class="bg-white mb-4 p-4 pb-0 br-1"
-            v-if="showSearch"
-            v-model="searchParams"
-            :fields="queryFields"
-            @query="reload"
-        />
+        <search-form class="bg-white mb-4 p-4 pb-0 br-1" v-if="showSearch" v-model="searchParams" :fields="queryFields" @query="reload" />
 
         <div class="bg-white p-4 br-1 flex-auto">
             <!-- 按钮 -->
@@ -27,7 +21,7 @@
                 @rowClick="rowClick"
             >
                 <template #append>
-                    <el-table-column label="操作" :width="operationsWidth || '180px'">
+                    <el-table-column label="操作" :width="operationsWidth || '180px'" fixed="right" v-if="withOperations != false">
                         <template #default="{ row, $index }">
                             <div class="row-buttons">
                                 <slot name="prefixButtons" :row="row" :index="$index">
@@ -59,17 +53,29 @@
         </div>
 
         <!-- 新增或编辑界面 -->
-        <el-drawer v-model="visible" :title="formModel.id ? '编辑' : '新增'" :close-on-click-modal="false" :close-on-press-escape="false">
-            <base-form :fields="newFields" v-model="formModel" labelPosition="top" ref="formRef" />
+        <component
+            :is="newMode != 'dialog' ? 'el-drawer' : 'el-dialog'"
+            v-model="visible"
+            :title="formModel.id ? '编辑' : '新增'"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            :width="dialogWidth"
+            destroy-on-close
+        >
+            <base-form
+                :fields="newFields"
+                v-model="formModel"
+                :labelPosition="newMode != 'dialog' ? 'top' : 'right'"
+                ref="formRef"
+                :labelWidth="formLabelWidth"
+            />
             <slot name="newRemark" v-if="!formModel.id"></slot>
             <template #footer>
-                <div class="text-right">
-                    <el-link type="primary" class="mr-2" @click="visible = false">取消</el-link>
-                    <el-button type="primary" @click="doSave">保存</el-button>
-                    <slot name="formButtons" :model="formModel"></slot>
-                </div>
+                <el-button type="primary" @click="doSave">保存</el-button>
+                <el-button @click="visible = false">取消</el-button>
+                <slot name="formButtons" :model="formModel"></slot>
             </template>
-        </el-drawer>
+        </component>
     </div>
 </template>
 
@@ -89,13 +95,17 @@ const props = defineProps([
     "withDelete",
     "withEdit",
     "withNew",
+    "tableHeight",
     "tree",
     "operationsWidth",
+    "withOperations",
     "params",
     "pageable",
     "dataSupplier",
     "queryParamConverter",
-    "tableHeight",
+    "newMode",
+    "dialogWidth",
+    "formLabelWidth",
 ]);
 const visible = ref(false);
 const newFields = reactive([]);
@@ -105,10 +115,11 @@ const tableRef = ref();
 const defModel = ref({});
 const emits = defineEmits(["rowClick", "startEdit"]);
 const searchParams = ref({});
-const showSearch = computed(() => props.queryFields?.length)
+const showSearch = computed(() => props.queryFields?.length);
 
 onMounted(() => {
     if (props.formFields) {
+        props.formFields.forEach(processFormField);
         newFields.push(...props.formFields);
         return;
     }
@@ -120,40 +131,43 @@ onMounted(() => {
         if (field.needNew != false && field.type != "operations" && !field.system) {
             // field.system表示是否是系统字段
             newFields.push(field);
-
-            // 处理唯一性校验
-            if (field.unique) {
-                if (!field.validation) {
-                    field.validation = {};
-                }
-                field.validation.validator = (rule, val, callback, form) => {
-                    // 校验唯一性
-                    let params = {};
-                    params[field.prop] = val;
-                    entityApis.query(props.apiPrefix, params).then((resp) => {
-                        if (!resp || !resp.length) {
-                            return callback();
-                        }
-
-                        let arr = resp.filter((item) => item.id != form.id);
-                        if (!arr || !arr.length) {
-                            return callback();
-                        }
-
-                        callback(new Error(field.label + "不能重复，请重新输入"));
-                    });
-                };
-            }
         } else if (field.type == "operations") {
             hasOperation = true;
         }
 
-        // 取默认值
-        if (field.default || field.default == 0) {
-            defModel.value[field.prop] = field.default;
-        }
+        processFormField(field);
     });
 });
+
+function processFormField(field) {
+    // 处理唯一性校验
+    if (field.unique) {
+        if (!field.validation) {
+            field.validation = {};
+        }
+        field.validation.validator = (rule, val, callback, form) => {
+            // 校验唯一性
+            let params = {};
+            params[field.prop] = val;
+            entityApis.query(props.apiPrefix, params).then((resp) => {
+                if (!resp || !resp.length) {
+                    return callback();
+                }
+
+                let arr = resp.filter((item) => item.id != form.id);
+                if (!arr || !arr.length) {
+                    return callback();
+                }
+
+                callback(new Error(field.label + "不能重复，请重新输入"));
+            });
+        };
+    }
+
+    if (field.default || field.default == 0) {
+        defModel.value[field.prop] = field.default;
+    }
+}
 
 function loadDefModel() {
     props.fields.forEach((field) => {
@@ -228,8 +242,10 @@ function dataSupplier(params) {
 
     if (props.tree) {
         return entityApis.tree(props.apiPrefix, finalParams);
-    } else {
+    } else if (props.pageable != false) {
         return entityApis.load(props.apiPrefix, finalParams);
+    } else {
+        return entityApis.query(props.apiPrefix, finalParams);
     }
 }
 
@@ -252,21 +268,28 @@ function rowClick() {
     emits("rowClick", ...arguments);
 }
 
-function reload() {
-    tableRef.value.reload();
+function reload(queryReset = true) {
+    tableRef.value.reload(queryReset);
+}
+
+function getTotal() {
+    return tableRef.value.getTotal();
 }
 
 defineExpose({
     goEdit,
     doDelete,
     reload,
+    getTotal,
 });
 </script>
 
 <style lang="scss" scoped>
-.row-buttons :deep() {
-    .el-link {
-        margin-right: 8px;
+.row-buttons {
+    :deep() {
+        .el-link {
+            margin-right: 8px;
+        }
     }
 }
 </style>

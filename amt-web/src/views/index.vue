@@ -8,7 +8,7 @@
             <TopNav />
             <div class="right-content b-box br-1 flex-auto d-flex-col">
                 <TagsTab v-if="showTagsTab"/>
-                <div class="main-content flex-auto" :class="{tags: showTagsTab, 'p-4': pad}">
+                <div class="main-content flex-auto relative" :class="{tags: showTagsTab, 'p-4': pad}">
                     <router-view v-slot="{ Component, route }">
                         <keep-alive :include="cachedRoutes">
                             <component :is="Component" :key="route.path" />

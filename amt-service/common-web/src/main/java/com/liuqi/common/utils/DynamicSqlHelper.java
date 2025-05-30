@@ -17,10 +17,7 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DynamicSqlHelper {
     private static final XMLLanguageDriver xmlLangDriver = new XMLLanguageDriver();
+    private static final Hashtable<String, String> sqlCache = new Hashtable<>();
 
     /**
      * 批量插入
@@ -103,10 +101,20 @@ public class DynamicSqlHelper {
         // 添加执行脚本到上下文中
         SqlSessionFactory sqlSessionFactory = SqlHelper.FACTORY;
         MybatisConfiguration configuration = (MybatisConfiguration) sqlSessionFactory.getConfiguration();
-        synchronized (configuration.getMappedStatements()) {
-            // 后续可以考虑做成自动刷新，而不是每次执行的时候刷新
-            configuration.getMappedStatementNames().removeIf(s -> s.equals(key));
-            configuration.addMappedStatement(createMappedStatement(configuration, sql, key));
+        if (configuration.hasStatement(key)) {
+            synchronized (configuration.getMappedStatements()) {
+                configuration.addMappedStatement(createMappedStatement(configuration, sql, key));
+                sqlCache.put(key, sql);
+            }
+        } else {
+            String cachedSql = sqlCache.get(key);
+            if (!StringUtils.equals(cachedSql, sql)) {
+                synchronized (configuration.getMappedStatements()) {
+                    configuration.getMappedStatementNames().removeIf(key::equals);
+                    configuration.addMappedStatement(createMappedStatement(configuration, sql, key));
+                    sqlCache.put(key, sql);
+                }
+            }
         }
 
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {

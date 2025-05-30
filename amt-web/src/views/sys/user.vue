@@ -1,8 +1,8 @@
 <template>
-    <div class="d-flex">
+    <div class="container">
         <base-tree apiPrefix="/sys/dept" class="tree mr-4 p-4" @currentChange="selectDept" title="组织机构"></base-tree>
 
-        <div class="flex-auto">
+        <div class="right">
             <entity-manager apiPrefix="/sys/user" :fields="fields" :queryFields="queryFields" ref="entityManagerRef" :params="params" operationsWidth="200px">
                 <template #rowButtons="{ row }">
                     <el-link type="danger" v-show="row.status && !row.isSuperAdmin" class="mr-2" @click="updateStatus(row, 0)" v-perm="'update'" icon="Remove"
@@ -80,9 +80,12 @@ function selectDept(dept) {
 </script>
 
 <style lang="scss" scoped>
-.tree {
-    width: 260px;
-    min-width: 260px;
-    min-height: calc(100vh - 160px);
+.container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+
+    .right {
+        overflow-x: auto;
+    }
 }
 </style>

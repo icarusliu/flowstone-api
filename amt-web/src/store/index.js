@@ -27,24 +27,24 @@ export const useSysStore = defineStore("sysStore", {
             dictInfo: {},
 
             // keepAlive缓存的路由name
-            cacheRoutes: []
-        }
+            cacheRoutes: [],
+        };
     },
 
     actions: {
         topMenusVisible() {
-            let userConfig = this.userInfo.metadata || {}
+            let userConfig = this.userInfo.metadata || {};
             if (userConfig.showTopMenus || userConfig.showTopMenus == false) {
-                return userConfig.showTopMenus
+                return userConfig.showTopMenus;
             }
 
             return this.sysConfig.showTopMenus;
         },
 
         tagTabsVisible() {
-            let userConfig = this.userInfo.metadata || {}
+            let userConfig = this.userInfo.metadata || {};
             if (userConfig.showTagTabs || userConfig.showTagTabs == false) {
-                return userConfig.showTagTabs
+                return userConfig.showTagTabs;
             }
 
             return this.sysConfig.showTagTabs;
@@ -54,14 +54,14 @@ export const useSysStore = defineStore("sysStore", {
             this.userInfo = resp.userInfo || {};
             this.sysConfig = resp.configInfo || {};
             this.topMenus = resp.menuTree || [];
-
-            let showTopMenus = this.userInfo.metadata?.showTopMenus 
+            this.dictInfo = resp.dictInfo || {};
+            let showTopMenus = this.userInfo.metadata?.showTopMenus;
 
             // 不展示顶部菜单时，需要设置右侧菜单；否则，在顶部菜单中设置右侧菜单
             if (showTopMenus == false) {
-                this.menuTree = resp.menuTree || []
+                this.menuTree = resp.menuTree || [];
             } else if (showTopMenus == true) {
-                return  
+                return;
             } else if (!this.sysConfig.showTopMenus) {
                 this.menuTree = resp.menuTree || [];
             }
@@ -129,18 +129,26 @@ export const useSysStore = defineStore("sysStore", {
         },
 
         addRoute(name) {
-            this.cacheRoutes.push(name)
-    },
+            this.cacheRoutes.push(name);
+        },
 
         removeRoute(name) {
-            let idx = this.cacheRoutes.indexOf(name)
+            let idx = this.cacheRoutes.indexOf(name);
             if (idx != -1) {
-                this.cacheRoutes.splice(idx, 1)
+                this.cacheRoutes.splice(idx, 1);
             }
         },
 
         getCachedRoutes() {
-            return this.cacheRoutes
-        }
-    }
-})
+            return this.cacheRoutes;
+        },
+
+        getDictInfo() {
+            return this.dictInfo;
+        },
+
+        setDictInfo(dictInfo) {
+            this.dictInfo = dictInfo;
+        },
+    },
+});

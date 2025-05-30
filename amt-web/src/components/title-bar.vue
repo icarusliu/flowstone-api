@@ -3,7 +3,7 @@
     <div class="space-between v-center mb-2">
         <div class="page-title">
             <span>
-                <slot>{{ title }}</slot>                
+                <slot>{{ title }}</slot>
             </span>
             <span class="color-remark font-sm ml-4 font-normal">
                 <slot name="remark">
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-defineProps(["title", "remark"])
+defineProps(["title", "remark"]);
 </script>
 
 <style lang="scss" scoped>

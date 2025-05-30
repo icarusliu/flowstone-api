@@ -17,6 +17,7 @@ import * as sysApis from '@/apis/sys'
 import { directives } from './utils/directives';
 import * as utils from './utils/utils'
 import https from './utils/https'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const app = createApp(App)
 
@@ -36,10 +37,21 @@ app
     .use(pinia)
     .use(directives)
 
-window.app = {
+const apis = {
+    https,
     utils,
-    https
+    success: ElMessage.success,
+    error: ElMessage.error,
+    confirm: ElMessageBox.confirm,
+    prompt: ElMessageBox.prompt
 }
+
+window.app = apis
+
+app._context.components.ElDialog.props.closeOnClickModal.default = false
+app._context.components.ElDialog.props.destroyOnClose.default = true
+app._context.components.ElDrawer.props.closeOnClickModal.default = false
+app._context.components.ElDrawer.props.destroyOnClose.default = true
 
 // 获取初始化信息
 sysApis.getInitInfo().then(resp => {

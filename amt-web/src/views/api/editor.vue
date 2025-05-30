@@ -339,7 +339,7 @@ function showHistory() {
 
 .buttons {
     position: absolute;
-    top: 84px;
+    top: 74px;
     right: 32px;
 }
 

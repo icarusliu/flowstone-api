@@ -21,7 +21,7 @@
                 </template>
             </base-list>
 
-            <div class="flex-auto bg-white p-4 br-1" v-if="selectedRole">
+            <div class="right bg-white p-4 br-1" v-if="selectedRole">
                 <el-tabs>
                     <el-tab-pane label="角色用户">
                         <users :role="selectedRole" />
@@ -32,7 +32,7 @@
                 </el-tabs>
             </div>
 
-            <div v-else class="flex-auto bg-white p-4 br-1 color-remark text-center">请选择角色</div>
+            <div v-else class="right bg-white p-4 br-1 color-remark text-center">请选择角色</div>
         </div>
 
         <!-- 角色编辑 -->
@@ -97,10 +97,16 @@ function doDelete(row) {
 </script>
 
 <style lang="scss" scoped>
-.roles {
-    width: 260px;
-    min-width: 260px;
+.container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
 
+    .right {
+        overflow-x: auto;
+    }
+}
+
+.roles {
     .top-buttons {
         .top-icon {
             font-size: 16px;

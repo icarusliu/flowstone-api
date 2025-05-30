@@ -20,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -142,27 +139,26 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
      * @return QueryWrapper
      */
     private QueryWrapper<E> createQueryWrapper(Q q) {
-        QueryWrapper<E> queryWrapper = this.queryToWrapper(q);
-        if (null == queryWrapper) {
-            return null;
-        }
+        QueryWrapper<E> queryWrapper = Optional.ofNullable(this.queryToWrapper(q))
+                .orElseGet(this::createQueryWrapper);
+
+        queryWrapper.eq("deleted", false);
 
         if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
             List<String> fields = q.getExcludeFields().stream().map(StringUtils::camelToUnderline).toList();
             queryWrapper.select(field -> !fields.contains(field.getProperty()));
         }
-        
+
         if (!CollectionUtils.isEmpty(q.getOrderBys())) {
             q.getOrderBys().forEach(orderBy -> {
                 String column = orderBy.getColumn();
 
                 // 如果是驼峰需要转成下划线
                 column = StringUtils.camelToUnderline(column);
-
                 queryWrapper.orderBy(true, orderBy.isAsc(), column);
             });
         }
-        
+
         return queryWrapper;
     }
 
@@ -371,7 +367,7 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     }
 
     private <T> T createBean(int idx) {
-        Type[] types = ((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments();
+        Type[] types = ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments();
         Class<T> queryClass = (Class<T>) types[idx];
         try {
             return queryClass.getDeclaredConstructor().newInstance();

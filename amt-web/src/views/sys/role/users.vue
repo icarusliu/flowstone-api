@@ -67,6 +67,7 @@ const fields = ref([
         label: "操作",
         type: "operations",
         width: "200px",
+        fixed: "right",
         buttons: [{ label: "删除", type: "danger", action: doRemove, icon: "Delete" }],
     },
 ]);

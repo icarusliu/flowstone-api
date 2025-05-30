@@ -14,9 +14,9 @@ const routes = [
                 children: [
                     {
                         path: "/",
-                        redirect: "/apis/list",
+                        redirect: "/apis/stat",
                         meta: {
-                            title: "接口列表",
+                            title: "概览",
                         },
                     },
                     {
@@ -199,6 +199,13 @@ const routes = [
                     },
                 ],
             },
+            {
+                path: '/data/view',
+                component: () => import('../views/data-view/index.vue'),
+                meta: {
+                    title: '数据渲染'
+                }
+            }
         ],
     },
     {

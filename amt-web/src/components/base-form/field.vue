@@ -74,7 +74,7 @@
     <el-switch v-else-if="field.type == 'switch'" v-model="model" :disabled="disabled" @change="onFieldChange"></el-switch>
 
     <!-- 子表格 -->
-    <TableField v-else-if="field.type == 'table'" v-model="model" :field="field" :disabled="disabled" @change="onFieldChange" />
+    <TableField v-else-if="field.type == 'table'" v-model="model" :field="field" :disabled="disabled" @change="onFieldChange" class="table-field"/>
 
     <!-- 日期选择 -->
     <template v-else-if="field.type == 'datePicker'">
@@ -214,3 +214,4 @@ function onFieldChange(val, item) {
     }
 }
 </script>
+

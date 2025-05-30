@@ -6,6 +6,7 @@
                 :type="button.type"
                 v-if="!button.visible || button.visible(row)"
                 @click="button.action(row, index)"
+                :disabled="readonly"
                 :class="clazz"
                 :icon="button.icon"
                 v-perm="button.code"
@@ -16,7 +17,14 @@
         </template>
     </template>
 
-    <el-image v-else-if="type == 'image'" :src="value" />
+    <!-- 图片 -->
+    <template v-else-if="type == 'image' || type == 'imageUploader'">
+        <span v-if="!value"></span>
+        <template v-else-if="_.isArray(value)">
+            <el-image v-for="item in value" :src="item" class="img" />
+        </template>
+        <el-image v-else :src="value" class="img"></el-image>
+    </template>
 
     <!-- 可展开列，一般放第一列 -->
     <base-render v-else-if="type == 'expand'" :content="field.render(value, row)" :class="clazz" :key="row.id" />
@@ -33,6 +41,9 @@
     <!-- 复选 -->
     <el-checkbox v-else-if="type == 'checkbox'" :modelValue="value" @change="change" />
 
+    <!-- switch -->
+    <el-switch v-else-if="type == 'switch'" :modelValue="value" @change="change"/>
+
     <!-- 图标 -->
     <el-icon v-else-if="type == 'iconSelector' || type == 'icon'">
         <component :is="value" />
@@ -47,7 +58,7 @@ import * as _ from "lodash";
 import { useSysStore } from "@/store/index.js";
 
 const sysStore = useSysStore();
-const props = defineProps(["field", "row", "index"]);
+const props = defineProps(["field", "row", "index", "readonly"]);
 const value = computed(() => {
     let prop = props.field.prop;
     return _.get(props.row, prop);
@@ -119,3 +130,11 @@ function change(val) {
     change && change(val, props.row);
 }
 </script>
+
+<style lang="scss" scoped>
+.img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+</style>

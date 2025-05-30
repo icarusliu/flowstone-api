@@ -47,7 +47,7 @@ const sysStore = useSysStore();
 
 function reload() {
     entityManagerRef.value.reload();
-    hb.https.post("/sys/dict/query").then((resp) => {
+    app.https.post("/sys/dict/query").then((resp) => {
         let dictInfo = {};
         resp.forEach((item) => {
             dictInfo[item.code] = item;
@@ -88,15 +88,5 @@ function updateStatus(row, status) {
 <style lang="scss" scoped>
 .page-content {
     box-sizing: border-box;
-
-    .full-panel {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background: #fff;
-        z-index: 100;
-    }
 }
 </style>

@@ -16,7 +16,7 @@
                     <!-- 如果未展示左侧菜单，则需要展示LOGO -->
                     <div class="font-bold title text-center mx-4" v-if="!showLeftMenu">
                         <i class="iconfont icon-liushuixian-liushuixianx" />
-                        <span class="ml-2" v-if="!menuFolded">流石数据管理</span>
+                        <span class="ml-2" v-if="!menuFolded">{{ pageTitle }}</span>
                     </div>
 
                     <div
@@ -104,9 +104,10 @@ const userInfo = computed(sysStore.getUserInfo);
 const configInfo = computed(sysStore.getSysConfig);
 const menus = computed(() => sysStore.topMenus);
 const router = useRouter();
+const pageTitle = document.title;
 const title = computed(() => {
     let meta = router.currentRoute.value.meta;
-    return meta?.title || "流石数据管理";
+    return meta?.title || document.title;
 });
 const fields = [
     { label: "原密码", prop: "oldPassword", inputType: "password", required: true },

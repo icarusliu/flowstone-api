@@ -224,15 +224,5 @@ function offline(job) {
     .table-container {
         width: calc(100% - 350px);
     }
-
-    .full-panel {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background: #fff;
-        z-index: 100;
-    }
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
     <!-- 模型管理 -->
-    <div class="d-flex page-content">
+    <div class="page-content">
         <edit-tree v-model="currentType" class="tree" @select="selectType" apiPrefix="/base/model-type" title="任务分类" :newFields="typeFields" />
 
-        <div class="flex-auto">
+        <div class="right">
             <entity-manager
                 apiPrefix="/base/model"
                 :fields="fields"
@@ -141,23 +141,16 @@ function showData(row) {
 </script>
 
 <style lang="scss" scoped>
-.tree {
-    min-width: 300px;
-}
-
 .page-content {
     position: relative;
     height: 100%;
     box-sizing: border-box;
 
-    .full-panel {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background: #fff;
-        z-index: 100;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+
+    .right {
+        overflow-x: auto;
     }
 }
 </style>

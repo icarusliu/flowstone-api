@@ -36,7 +36,7 @@
             :min-width="field.minWidth"
         >
             <template v-if="field.type != 'selection'" #default="{ row, $index }">
-                <base-table-column :row="row" :field="field" :index="$index" />
+                <base-table-column :row="row" :field="field" :index="$index" :readonly="readonly" />
             </template>
         </el-table-column>
 
@@ -49,7 +49,7 @@ import { nextTick, onMounted, ref } from "vue";
 import baseTableColumn from "./base-table-column.vue";
 import * as utils from "@/utils/utils";
 
-const props = defineProps(["fields", "defaultExpandAll", "showIndex", "showSelection", "rowSelectable", "height", "maxHeight"]);
+const props = defineProps(["fields", "defaultExpandAll", "showIndex", "showSelection", "rowSelectable", "height", "maxHeight", "readonly"]);
 const emits = defineEmits(["rowClick", "selectionChange", "clearSelection"]);
 const tableRef = ref();
 const rows = defineModel();
@@ -76,15 +76,15 @@ const rowLength = computed(() => {
 });
 
 watch(rows, () => {
-    // 处理选中情况 
-    selection.value = []
+    // 处理选中情况
+    selection.value = [];
     utils.loop(rows.value, (item) => {
         if (item.checked) {
-            selection.value.push(item)
+            selection.value.push(item);
         }
-    })
+    });
 
-    reloadCheckedAll()
+    reloadCheckedAll();
 });
 
 function onRowClick(params) {
@@ -101,7 +101,7 @@ function selectAll() {
     utils.loop(rows.value, (row) => {
         row.checked = checkedAll.value;
         if (checkedAll.value) {
-            selection.value.push(row)
+            selection.value.push(row);
         }
     });
 
@@ -134,7 +134,7 @@ function rowSelected(row) {
         }
     });
 
-    console.log(selection.value)
+    console.log(selection.value);
 
     reloadCheckedAll();
     selectionChange(selection.value);
