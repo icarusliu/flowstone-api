@@ -7,34 +7,66 @@
     </div>
 
     <el-row :gutter="16">
-        <el-col class="mb-4">
+        <el-col :span="12" class="mb-4">
             <div class="content-panel">
                 <div class="page-title">月度调用次数</div>
                 <chart
                     class="chart"
                     xField="dataMonth"
+                    :colors="['#2FC25B', '#FF4D4F']"
                     :yFields="[
-                        { name: '总次数', prop: 'total', type: 'line', areaStyle: {}, smooth: true },
-                        { name: '失败次数', prop: 'failed', type: 'line', barWidth: '50px', smooth: true, areaStyle: {} },
+                        { name: '总次数', prop: 'total', type: 'line', areaStyle: { opacity: 0.3 }, smooth: true },
+                        { name: '失败次数', prop: 'failed', type: 'line', barWidth: '50px', smooth: true, areaStyle: { opacity: 0.3 } },
                     ]"
                     ref="chartRef"
                 />
             </div>
         </el-col>
 
-        <el-col :span="24" class="mb-4">
-            <div class="content-panel shadow">
+        <el-col :span="6">
+            <div class="content-panel shadow table">
+                <div class="page-title">接口失败率Top10</div>
+                <el-table :data="topFailed" stripe>
+                    <el-table-column label="名称" prop="name">
+                        <template #default="{ row }">
+                            <el-link :href="'/apis/editor?id=' + row.id">{{ row.name }}</el-link>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="路径" prop="path" />
+                    <el-table-column label="失败率" width="70px" prop="failRatio"> </el-table-column>
+                </el-table>
+            </div>
+        </el-col>
+
+        <el-col :span="6">
+            <div class="content-panel shadow table">
+                <div class="page-title">接口调用Top10</div>
+                <el-table :data="topCalled" stripe>
+                    <el-table-column label="名称" prop="name">
+                        <template #default="{ row }">
+                            <el-link :href="'/apis/editor?id=' + row.id">{{ row.name }}</el-link>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="路径" prop="path" />
+                    <el-table-column label="次数" width="60px">
+                        <template #default="{ row }"> {{ row.successCount + row.failedCount }}次 </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-col>
+
+        <el-col :span="16" class="mb-4">
+            <div class="content-panel shadow table">
                 <div class="page-title">最近失败接口</div>
                 <el-table :data="failedList" stripe>
-                    <el-table-column type="index" label="序号" width="60px"></el-table-column>
                     <el-table-column label="名称" prop="apiName" width="200px">
                         <template #default="{ row }">
                             <el-link :href="'/apis/editor?id=' + row.apiId">{{ row.apiName }}</el-link>
                         </template>
                     </el-table-column>
-                    <el-table-column label="路径" prop="apiPath" width="200px" />
+                    <el-table-column label="路径" prop="apiPath" width="140px" />
                     <el-table-column label="执行时间" prop="createTime" width="160px" />
-                    <el-table-column label="失败信息" width="220px" prop="errorMsg"> </el-table-column>
+                    <!-- <el-table-column label="失败信息" width="220px" prop="errorMsg"> </el-table-column> -->
                     <el-table-column label="异常详情" prop="result">
                         <template #default="{ row }">
                             <el-popover width="800px" effect="dark" trigger="click">
@@ -52,28 +84,9 @@
         </el-col>
 
         <el-col :span="8">
-            <div class="content-panel shadow">
-                <div class="page-title">接口调用Top10</div>
-                <el-table :data="topCalled" stripe>
-                    <el-table-column type="index" label="序号" width="60px"></el-table-column>
-                    <el-table-column label="名称" prop="name">
-                        <template #default="{ row }">
-                            <el-link :href="'/apis/editor?id=' + row.id">{{ row.name }}</el-link>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="路径" prop="path" />
-                    <el-table-column label="调用次数" width="100px">
-                        <template #default="{ row }"> {{ row.successCount + row.failedCount }}次 </template>
-                    </el-table-column>
-                </el-table>
-            </div>
-        </el-col>
-
-        <el-col :span="8">
-            <div class="content-panel shadow">
+            <div class="content-panel shadow table">
                 <div class="page-title">接口耗时Top10</div>
                 <el-table :data="topSpentTime" stripe>
-                    <el-table-column type="index" label="序号" width="60px"></el-table-column>
                     <el-table-column label="名称" prop="apiName">
                         <template #default="{ row }">
                             <el-link :href="'/apis/editor?id=' + row.apiId">{{ row.apiName }}</el-link>
@@ -83,22 +96,6 @@
                     <el-table-column label="耗时" width="120px">
                         <template #default="{ row }"> {{ row.spentTime }}ms </template>
                     </el-table-column>
-                </el-table>
-            </div>
-        </el-col>
-
-        <el-col :span="8">
-            <div class="content-panel shadow">
-                <div class="page-title">接口失败率Top10</div>
-                <el-table :data="topFailed" stripe>
-                    <el-table-column type="index" label="序号" width="60px"></el-table-column>
-                    <el-table-column label="名称" prop="name">
-                        <template #default="{ row }">
-                            <el-link :href="'/apis/editor?id=' + row.id">{{ row.name }}</el-link>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="路径" prop="path" />
-                    <el-table-column label="失败率" width="120px" prop="failRatio"> </el-table-column>
                 </el-table>
             </div>
         </el-col>
@@ -158,6 +155,15 @@ onMounted(() => {
     });
 
     app.https.get("/base/stat/month").then((resp) => {
+        resp = resp.sort((a, b) => {
+            if (a.dataMonth > b.dataMonth) {
+                return 1;
+            } else if (a.dataMonth < b.dataMonth) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
         chartRef.value.reload(resp);
     });
 });
@@ -229,6 +235,11 @@ function goList() {
 }
 
 .chart {
-    height: 400px;
+    height: 454px;
+}
+
+.table {
+    height: 520px;
+    overflow-y: auto;
 }
 </style>

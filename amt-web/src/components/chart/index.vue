@@ -21,7 +21,7 @@ const options = reactive({
     },
     grid: {
         left: "20px",
-        right: "40px",
+        right: "30px",
         bottom: "20px",
         containLabel: true,
     },
@@ -52,6 +52,7 @@ function reload(data) {
 
     let xarr = [];
     let yarr = [];
+    let legend = [];
     data.forEach((item) => {
         xarr.push(item[xField]);
     });
@@ -71,6 +72,7 @@ function reload(data) {
         if (yField.type == "bar") {
             allLine = false;
         }
+        legend.push(yField.name);
     });
 
     if (allLine) {
@@ -80,6 +82,7 @@ function reload(data) {
     options.xAxis.data = xarr;
     options.series = yarr;
     options.color = colors;
+    options.legend.data = legend;
 
     console.log(options);
 

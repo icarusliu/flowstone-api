@@ -184,6 +184,10 @@ public class QueryBuilder<D, E> {
     }
 
     public List<D> query() {
+        if (null != pageNo && null != pageSize) {
+            long start = (pageNo - 1) * pageSize;
+            this.queryWrapper.last("limit " + start + "," + pageSize);
+        }
         return queryFunc.apply(this.queryWrapper);
     }
 
