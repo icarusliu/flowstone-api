@@ -1,6 +1,15 @@
 <template>
     <!-- 密码输入框 -->
-    <el-input :type="showPassword ? 'input' : 'password'" placeholder="请输入密码" v-model="model" :class="{'line': line}" name="password" auto-complete>
+    <el-input
+        :type="showPassword ? 'input' : 'password'"
+        placeholder="请输入密码"
+        v-model="model"
+        :class="{ line: line }"
+        name="password"
+        auto-complete
+        prefix-icon="Lock"
+        @keyup.enter.native="enter"
+    >
         <template #suffix>
             <el-icon class="icon" v-if="!showPassword" @click="showPassword = true">
                 <View />
@@ -15,13 +24,16 @@
 </template>
 
 <script setup>
-import { Hide, View } from '@element-plus/icons-vue'
-import { ref } from 'vue'
-import passwordLevel from './password-level.vue';
+import { Hide, View } from "@element-plus/icons-vue";
+import { ref } from "vue";
+import passwordLevel from "./password-level.vue";
 
-const showPassword = ref(false)
-const model = defineModel()
-defineProps(["withLevel", "line"])
+const showPassword = ref(false);
+const model = defineModel();
+const emits = defineEmits(['enter'])
+defineProps(["withLevel", "line"]);
+
+const enter = () => emits('enter')
 </script>
 
 <style lang="scss" scoped>

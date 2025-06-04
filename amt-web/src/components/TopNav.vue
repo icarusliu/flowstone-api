@@ -15,8 +15,10 @@
 
                     <!-- 如果未展示左侧菜单，则需要展示LOGO -->
                     <div class="font-bold title text-center mx-4" v-if="!showLeftMenu">
-                        <i class="iconfont icon-liushuixian-liushuixianx" />
-                        <span class="ml-2" v-if="!menuFolded">{{ pageTitle }}</span>
+                        <slot name="logo">
+                            <i class="iconfont icon-liushuixian-liushuixianx" />
+                        </slot>
+                        <span class="ml-2" v-if="!menuFolded">{{ mainTitle }}</span>
                     </div>
 
                     <div
@@ -90,25 +92,25 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import { useSysStore } from "../store";
 import { useRouter } from "vue-router";
 import https from "@/utils/https";
 import { ElMessage } from "element-plus";
 import * as _ from "lodash";
 
+const props = defineProps({
+    menus: { type: Array, default: [] },
+    title: { type: String },
+    mainTitle: { type: String },
+});
 const sysStore = useSysStore();
 const userConfig = ref({});
-const menuFolded = computed(sysStore.getMenuFolded);
+const menuFolded = defineModel("menuFolded", { default: false });
+const currentTopMenu = defineModel("currentMenu", { default: {} });
 const userInfo = computed(sysStore.getUserInfo);
 const configInfo = computed(sysStore.getSysConfig);
-const menus = computed(() => sysStore.topMenus);
 const router = useRouter();
-const pageTitle = document.title;
-const title = computed(() => {
-    let meta = router.currentRoute.value.meta;
-    return meta?.title || document.title;
-});
 const fields = [
     { label: "原密码", prop: "oldPassword", inputType: "password", required: true },
     { label: "新密码", prop: "password", inputType: "password", required: true },
@@ -117,72 +119,66 @@ const fields = [
 const visible = ref(false);
 const form = ref({});
 const formRef = ref();
-const currentTopMenu = ref({});
+
 const configVisible = ref(false);
 const configFields = [
     { label: "显示顶部菜单", prop: "showTopMenus", type: "switch" },
-    { label: "多标签模式", prop: "showTagsTab", type: "switch" },
+    { label: "多标签模式", prop: "showTagTabs", type: "switch" },
 ];
 const configFormRef = ref();
-const showTopMenus = computed(() => {
-    let userShow = userInfo.value.metadata?.showTopMenus;
-    if (!userShow && userShow != false) {
-        return configInfo.value.showTopMenus;
-    }
-
-    return userShow;
-});
+const showTopMenus = computed(sysStore.topMenusVisible);
 const showLeftMenu = computed(() => {
     return currentTopMenu.value?.children?.length;
 });
 
-onMounted(() => {
-    if (!showTopMenus.value) {
-        return;
-    }
-
-    // 获取当前选中的顶部菜单
-    let path = router.currentRoute.value.path;
-
-    // 有可能是二级界面未配置到菜单中，因此，如果未找到对应的菜单配置，需要找到其上级路由
-    let backupMenu;
-
-    for (var i in menus.value) {
-        let menu = menus.value[i];
-        if (menu.path == path) {
-            currentTopMenu.value = menu;
-            sysStore.setMenuTree(menu.children);
+watch(
+    () => props.menus,
+    () => {
+        if (!showTopMenus.value) {
             return;
         }
 
-        if (menu.children) {
-            for (var j in menu.children) {
-                let subMenu = menu.children[j];
-                if (subMenu.path == path) {
-                    currentTopMenu.value = menu;
-                    sysStore.setMenuTree(menu.children);
-                    return;
+        // 获取当前选中的顶部菜单
+        let path = router.currentRoute.value.path;
+
+        // 有可能是二级界面未配置到菜单中，因此，如果未找到对应的菜单配置，需要找到其上级路由
+        let backupMenu;
+
+        let menus = props.menus;
+        for (var i in menus) {
+            let menu = menus[i];
+            if (menu.path == path) {
+                currentTopMenu.value = menu;
+                return;
+            }
+
+            if (menu.children) {
+                for (var j in menu.children) {
+                    let subMenu = menu.children[j];
+                    if (subMenu.path == path) {
+                        currentTopMenu.value = menu;
+                        return;
+                    }
                 }
+            }
+
+            if (path.startsWith(menu.path)) {
+                backupMenu = menu;
             }
         }
 
-        if (path.startsWith(menu.path)) {
-            backupMenu = menu;
+        if (backupMenu) {
+            currentTopMenu.value = backupMenu;
+        } else if (menus.length) {
+            // 没找到，选中第一个
+            currentTopMenu.value = menus[0];
         }
-    }
-
-    if (backupMenu) {
-        currentTopMenu.value = backupMenu;
-        sysStore.setMenuTree(backupMenu.children);
-    } else if (menus.value.length) {
-        // 没找到，选中第一个
-        currentTopMenu.value = menus.value[0];
-        sysStore.setMenuTree(menus.value[0].children);
-    }
-});
+    },
+    { deep: true, immediate: true }
+);
 
 function reverseMenuFold() {
-    useSysStore().reverseMenuFold();
+    menuFolded.value = !menuFolded.value;
 }
 
 function logout() {
@@ -208,7 +204,6 @@ function updatePassword() {
 
 function selectTopMenu(menu) {
     currentTopMenu.value = menu;
-    sysStore.setMenuTree(menu.children);
 
     if (!menu.children.length && menu.path) {
         router.push(menu.path);
@@ -223,8 +218,8 @@ function showConfigDialog() {
         userConfig.value.showTopMenus = configInfo.value.showTopMenus;
     }
 
-    if (!userConfig.value.showTagsTab && userConfig.value.showTagsTab != false) {
-        userConfig.value.showTagsTab = configInfo.value.showTagsTab;
+    if (!userConfig.value.showTagTabs && userConfig.value.showTagTabs != false) {
+        userConfig.value.showTagTabs = configInfo.value.showTagTabs;
     }
 
     configVisible.value = true;
@@ -240,14 +235,6 @@ function updateConfig() {
                 ...userInfo.value,
                 metadata: userConfig.value,
             });
-
-            // 要刷新右侧菜单
-            if (userConfig.value.showTopMenus) {
-                // 显示顶部菜单
-                sysStore.setMenuTree(currentTopMenu.value.children);
-            } else {
-                sysStore.setMenuTree(menus.value);
-            }
 
             configVisible.value = false;
         });
@@ -267,6 +254,7 @@ function updateConfig() {
 
     .content {
         box-shadow: 0 0 4px #ccc;
+        height: 100%;
     }
 
     .icon {

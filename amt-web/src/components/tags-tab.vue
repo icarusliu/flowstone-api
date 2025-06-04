@@ -1,23 +1,36 @@
 <template>
     <!-- 多标签导航 -->
     <el-scrollbar class="tags-tab">
-        <router-link v-for="(tab, index) in tabs" :to="tab.path" class="tab-item v-center" :class="{ active: tab.path == route.path }">
+        <router-link
+            v-for="(tab, index) in tabs"
+            :to="tab.path"
+            class="tab-item v-center"
+            :class="{ active: tab.path == route.path }"
+            @contextmenu.prevent="showMenu($event, tab, index)"
+        >
             <span>{{ tab.label }}</span>
             <el-icon class="ml-1 close" @click.prevent.stop="closeTab(tab, index)">
                 <Close />
             </el-icon>
         </router-link>
+
+        <contextMenu ref="menuRef" :menus="menus" />
     </el-scrollbar>
 </template>
 <script setup>
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useSysStore } from "../store";
+import contextMenu from "./base/context-menu.vue";
 
 const tabs = ref([]);
 const route = useRoute();
 const router = useRouter();
-const sysStore = useSysStore();
+const menus = [
+    { name: "关闭当前", icon: "Remove", action: closeTab },
+    { name: "关闭其它", icon: "Close", action: closeOtherTabs },
+];
+const menuRef = ref();
+const cachedRoutes = defineModel();
 
 watch(
     route,
@@ -31,7 +44,7 @@ watch(
                 name: route.name,
             });
 
-            sysStore.addRoute(route.name);
+            cachedRoutes.value.push(route.name);
         }
     },
     {
@@ -39,10 +52,36 @@ watch(
     }
 );
 
+function showMenu(e, tab, idx) {
+    e.stopPropagation();
+    menuRef.value.show(e, tab, idx);
+}
+
+// 关闭其它标签
+function closeOtherTabs(tab) {
+    tabs.value = tabs.value.filter((item) => {
+        if (item == tab) {
+            return true;
+        }
+
+        removeRoute(item.name);
+
+        return false;
+    });
+}
+
+// 删除缓存的route
+function removeRoute(name) {
+    let idx = cachedRoutes.value.indexOf(name);
+    if (-1 != idx) {
+        cachedRoutes.value.splice(idx, 1);
+    }
+}
+
 function closeTab(tab, idx) {
     // 如果是当前页签，需要切换到上一页签
     let item = tabs.value.splice(idx, 1);
-    sysStore.removeRoute(item.name);
+    removeRoute(item.name);
     if (tab.path == route.path) {
         if (tabs.value.length > 0) {
             const path = tabs.value[tabs.value.length - 1].fullPath;

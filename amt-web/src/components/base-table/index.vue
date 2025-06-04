@@ -117,8 +117,10 @@ function loadData() {
         }
     }
 
-    queryParams.pageNo = pageNo.value;
-    queryParams.pageSize = pageSize.value;
+    if (props.pageable != false) {
+        queryParams.pageNo = pageNo.value;
+        queryParams.pageSize = pageSize.value;
+    }
 
     let result = props.dataSupplier(queryParams);
     if (!result) {

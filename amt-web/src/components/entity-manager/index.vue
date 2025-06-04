@@ -3,7 +3,7 @@
     <div class="d-flex-col">
         <search-form class="bg-white mb-4 p-4 pb-0 br-1" v-if="showSearch" v-model="searchParams" :fields="queryFields" @query="reload" />
 
-        <div class="bg-white p-4 br-1 flex-auto">
+        <div class="bg-white br-1 flex-auto" :class="{'p-4': withPadding != false}">
             <!-- 按钮 -->
             <div class="mb-2">
                 <el-button type="primary" @click="newItem()" v-perm="'new'" icon="plus" v-if="withNew != false">新增</el-button>
@@ -106,6 +106,8 @@ const props = defineProps([
     "newMode",
     "dialogWidth",
     "formLabelWidth",
+    "beforeSave",
+    "withPadding",
 ]);
 const visible = ref(false);
 const newFields = reactive([]);
@@ -255,6 +257,8 @@ function doSave() {
         if (!result) {
             return;
         }
+
+        props.beforeSave && props.beforeSave(formModel.value)
 
         entityApis.save(props.apiPrefix, formModel.value).then(() => {
             ElMessage.success("操作成功");

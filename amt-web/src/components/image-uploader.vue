@@ -17,6 +17,9 @@
         <el-icon class="icon" v-if="images.length < limit">
             <Plus />
         </el-icon>
+        <template #tip v-if="tip"> 
+            <div class="remark">{{ tip }}</div>    
+        </template>
     </el-upload>
 </template>
 <script setup>
@@ -26,6 +29,7 @@ const props = defineProps({
     disabled: Boolean,
     multiple: { type: Boolean, default: false },
     limit: { type: Number, default: 1 },
+    tip: { type: String },
 });
 const model = defineModel({});
 const images = ref([]);
@@ -52,13 +56,13 @@ function beforeAvatarUpload(rawFile) {
     return true;
 }
 
-function remove({ response }) {
+function remove({ url }) {
     if (!props.multiple) {
         model.value = null;
         return;
     }
 
-    let idx = model.value.indexOf(response.visitUrl);
+    let idx = model.value.indexOf(url);
     model.value.splice(idx, 1);
 }
 
@@ -69,14 +73,14 @@ function uploadSuccess(res) {
     }
 
     if (!model.value) {
-        model.value = [res.visitUrl]
+        model.value = [res.visitUrl];
     } else {
         model.value.push(res.visitUrl);
     }
 }
 
 function onExceed(val) {
-    app.error("上传数量超出限制，最多只能上传" + props.limit + "张图片")
+    app.error("上传数量超出限制，最多只能上传" + props.limit + "张图片");
 }
 </script>
 

@@ -1,25 +1,20 @@
 <template>
-    <el-select v-model="model" @change="doChanged" :value-key="valueKey" clearable :multiple="multiple">
-        <el-option v-for="option in finalOptions" :value="parseValue(option)" :label="parseLabel(option)"></el-option>
-    </el-select>
+    <el-cascader v-model="model" @change="doChanged" clearable :options="finalOptions" />
 </template>
 
 <script setup>
 import { defineProps, defineEmits, ref, onMounted } from "vue";
 import * as _ from "lodash";
 
-const props = defineProps(["options", "valueKey", "multiple"]);
+const props = defineProps(["options"]);
 const model = defineModel();
-const emits = defineEmits(["change", "load"]);
+const emits = defineEmits(["change"]);
 const finalOptions = ref([]);
 const valueKey = ref(props.valueKey);
 
 onMounted(() => {
     loadOptions().then((resp) => {
         finalOptions.value = resp;
-
-        // 首次触发load事件
-        emits("load", model.value);
     });
 });
 
@@ -35,29 +30,6 @@ if (_.isArray(props.options)) {
             deep: true,
         }
     );
-}
-
-function parseLabel(option) {
-    if (option.label || option.label == 0) {
-        return option.label;
-    }
-    if (option.name || option.name == 0) {
-        return option.name;
-    }
-
-    return option;
-}
-
-function parseValue(option) {
-    if (option.value || option.value == 0) {
-        return option.value;
-    }
-
-    if (option.id || option.id == 0) {
-        return option.id;
-    }
-
-    return option;
 }
 
 function loadOptions() {
@@ -81,7 +53,7 @@ function loadOptions() {
         // 是对象
         valueKey.value = options.valueKey;
         if (options.type == "js" || options.type == "func") {
-            return app.callFunc(options.data);
+            return iv.callFunc(options.data);
         } else {
             return Promise.resolve(options.data || []);
         }
@@ -90,8 +62,24 @@ function loadOptions() {
 
 function doChanged(val) {
     // 需要匹配到整个对象，作为第二个参数
-    let item = _.find(finalOptions.value, (item) => item.value == val || item.id == val);
+    if (!val) {
+        emits('change', null, null);
+        return;
+    }
 
-    emits("change", val, item);
+    let items = []
+    _.find(finalOptions.value, (item) => {
+        if (val[0] == item.value) {
+            items.push(item)
+
+            item.children.forEach(subItem => {
+                if (subItem.value == val[1]) {
+                    items.push(subItem)
+                }
+            })
+        }
+    });
+
+    emits("change", val, items);
 }
 </script>

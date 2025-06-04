@@ -2,18 +2,14 @@
     <!-- 列表，与树形不一样的在于只有一级 -->
     <div class="base-list d-flex-col">
         <div class="top px-2 space-between v-center">
-            <label class="title">{{ title }}</label>
-            <slot name="topButtons">
-            </slot>
+            <label class="title text-bold">{{ title }}</label>
+            <slot name="topButtons"> </slot>
         </div>
-        <div class="flex-auto mt-2">
+        <div class="content flex-auto mt-2">
             <draggable :list="model" :itemKey="itemKey" @end="dragEnd">
-                <div class="list-item cursor-pointer" @click="selectItem()" :class="{ active: !current }" v-if="showAll">
-                    全部
-                </div>
+                <div class="list-item cursor-pointer" @click="selectItem()" :class="{ active: !current }" v-if="showAll">全部</div>
                 <template #item="{ element: item, index }">
-                    <div class="item cursor-pointer space-between mb-2" :class="{ active: current && current.id == item.id }"
-                        @click="selectItem(item)">
+                    <div class="item cursor-pointer space-between mb-2" :class="{ active: current && current.id == item.id }" @click="selectItem(item)">
                         <slot :item="item" :index="index">
                             <label class="cursor-pointer">{{ item[labelField] }}</label>
                         </slot>
@@ -28,58 +24,64 @@
 </template>
 
 <script setup>
-import draggable from 'vuedraggable';
+import draggable from "vuedraggable";
 
 const props = defineProps({
     labelField: {
         type: String,
-        default: 'label'
+        default: "label",
     },
     title: {
-        type: String
+        type: String,
     },
     itemKey: {
         type: String,
-        default: 'id'
+        default: "id",
     },
     showAll: {
         type: Boolean,
-        default: false
+        default: false,
     },
-})
+});
 
 const model = defineModel({
     default: () => {
-        return []
-    }
-})
+        return [];
+    },
+});
 
-const current = defineModel("current")
-const emits = defineEmits(['select'])
+const current = defineModel("current");
+const emits = defineEmits(["select"]);
 
 function selectItem(item) {
-    current.value = item
-    emits('select', item)
+    current.value = item;
+    emits("select", item);
 }
 
 function dragEnd() {
-    emits('sortChange')
+    emits("sortChange");
 }
 </script>
 
 <style lang="scss" scoped>
-.top {
-    border-bottom: 1px solid var(--sub_border_color);
-
-    .title {
-        font-size: 13px;
-        font-weight: bold;
-    }
-}
-
 .base-list {
-    line-height: 44px;
     border: 1px solid var(--follow_border_color);
+
+    .top {
+        border-bottom: 1px solid var(--sub_border_color);
+        padding: 12px 12px;
+
+        .title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    }
+
+    .content {
+        line-height: 44px;
+        height: calc(100% - 44px);
+        overflow-y: auto;
+    }
 
     .item {
         line-height: 34px;

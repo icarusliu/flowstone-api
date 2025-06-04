@@ -7,7 +7,7 @@
 
         <!-- 子表格新增的情况 -->
         <el-drawer v-model="newVisible" title="新增" width="300px" append-to-body destroy-on-close>
-            <base-form :fields="drawerField.fields" v-model="drawerModel" label-position="top" ref="tableBaseForm"></base-form>
+            <base-form :fields="drawerField.formFields || drawerField.fields" v-model="drawerModel" label-position="top" ref="tableBaseForm"></base-form>
             <template #footer>
                 <div class="buttons">
                     <el-button type="primary" @click="doSaveField">保存</el-button>
@@ -22,7 +22,7 @@
 import DataTable from "../base-table/data-table.vue";
 import * as _ from "lodash";
 
-const props = defineProps(["disabled", "fields", "field"]);
+const props = defineProps(["disabled", "field"]);
 const model = defineModel();
 const emits = defineEmits(["change"]);
 
@@ -108,7 +108,6 @@ function doSaveField() {
             return;
         }
 
-        const field = drawerField.value.prop;
         let rows = model.value;
         if (!rows) {
             rows = model.value = [];

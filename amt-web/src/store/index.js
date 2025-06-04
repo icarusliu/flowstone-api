@@ -18,16 +18,11 @@ export const useSysStore = defineStore("sysStore", {
             // 有权限的菜单路径列表
             menuPaths: [],
 
-            menuFolded: false,
-
             // 系统配置项
             sysConfig: {},
 
             // 字典信息
             dictInfo: {},
-
-            // keepAlive缓存的路由name
-            cacheRoutes: [],
         };
     },
 
@@ -53,18 +48,9 @@ export const useSysStore = defineStore("sysStore", {
         init(resp) {
             this.userInfo = resp.userInfo || {};
             this.sysConfig = resp.configInfo || {};
-            this.topMenus = resp.menuTree || [];
             this.dictInfo = resp.dictInfo || {};
             let showTopMenus = this.userInfo.metadata?.showTopMenus;
-
-            // 不展示顶部菜单时，需要设置右侧菜单；否则，在顶部菜单中设置右侧菜单
-            if (showTopMenus == false) {
-                this.menuTree = resp.menuTree || [];
-            } else if (showTopMenus == true) {
-                return;
-            } else if (!this.sysConfig.showTopMenus) {
-                this.menuTree = resp.menuTree || [];
-            }
+            this.setMenuTree(resp.menuTree);
         },
 
         setUserInfo(userInfo) {
@@ -77,15 +63,6 @@ export const useSysStore = defineStore("sysStore", {
 
         isSuperAdmin() {
             return this.getUserInfo().isSuperAdmin;
-        },
-
-        // 折叠菜单
-        reverseMenuFold() {
-            this.menuFolded = !this.menuFolded;
-        },
-
-        getMenuFolded() {
-            return this.menuFolded;
         },
 
         getMenuTree() {
@@ -126,21 +103,6 @@ export const useSysStore = defineStore("sysStore", {
 
         getSysConfig() {
             return this.sysConfig || {};
-        },
-
-        addRoute(name) {
-            this.cacheRoutes.push(name);
-        },
-
-        removeRoute(name) {
-            let idx = this.cacheRoutes.indexOf(name);
-            if (idx != -1) {
-                this.cacheRoutes.splice(idx, 1);
-            }
-        },
-
-        getCachedRoutes() {
-            return this.cacheRoutes;
         },
 
         getDictInfo() {

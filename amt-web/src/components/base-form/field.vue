@@ -1,151 +1,171 @@
 <template>
     <!-- 下拉 -->
-    <base-select
-        v-if="field.type == 'select'"
-        v-model="model"
-        :value-key="field.valueKey"
-        :disabled="disabled"
-        :multiple="field.multiple"
-        :filterable="field.filterable"
-        @change="onFieldChange"
-        :options="field.options"
-    >
-    </base-select>
-
-    <!-- 标签 -->
-    <el-input-tag v-else-if="field.type == 'inputTag'" v-model="model" @change="onFieldChange" :disabled="disabled"></el-input-tag>
-
-    <imageUploader
-        v-else-if="field.type == 'imageUploader'"
-        v-model="model"
-        @change="onFieldChange"
-        :disabled="disabled"
-        :multiple="field.multiple"
-        :limit="field.limit"
-    />
-
-    <fileUploader
-        v-else-if="field.type == 'fileUploader'"
-        v-model="model"
-        @change="onFieldChange"
-        :disabled="disabled"
-        :accept="field.accept"
-        :multiple="field.multiple"
-        :limit="field.limit"
-    />
-
-    <richText v-else-if="field.type == 'richText'" v-model="model" :disabled="disabled" :height="field.height" @change="onFieldChange"> </richText>
-
-    <dictSelect v-else-if="field.dict" :dict="field.dict" v-model="model" :disabled="disabled" @change="onFieldChange" :dataType="field.dataType"></dictSelect>
-
-    <!-- 树形下拉 -->
-    <base-tree-select
-        v-else-if="field.type == 'tree-select' || field.type == 'treeSelect'"
-        v-model="model"
-        :disabled="disabled"
-        @change="onFieldChange"
-        :options="field.options"
-    >
-    </base-tree-select>
-
-    <!-- 数字输入 -->
-    <template v-else-if="field.type == 'number'">
-        <el-input-number
+    <div class="container">
+        <base-select
+            v-if="field.type == 'select'"
             v-model="model"
-            :step="field.step || 1"
-            :precision="field.precision"
-            :max="field.max"
+            :value-key="field.valueKey"
             :disabled="disabled"
-            :min="field.min"
+            :multiple="field.multiple"
+            :filterable="field.filterable"
             @change="onFieldChange"
+            :options="field.options"
         >
-        </el-input-number>
-        <span class="ml-2">{{ field.unit }}</span>
-    </template>
+        </base-select>
 
-    <!-- 单选 -->
-    <el-radio-group v-else-if="field.type == 'radioGroup'" v-model="model" :disabled="disabled" @change="onFieldChange">
-        <el-radio-button v-for="option in field.options" :label="option.label" :value="option.value"></el-radio-button>
-    </el-radio-group>
-
-    <!-- 复选 -->
-    <base-checkbox v-else-if="field.type == 'checkbox'" v-model="model" :options="field.options" :disabled="disabled" @change="onFieldChange" />
-
-    <el-switch v-else-if="field.type == 'switch'" v-model="model" :disabled="disabled" @change="onFieldChange"></el-switch>
-
-    <!-- 子表格 -->
-    <TableField v-else-if="field.type == 'table'" v-model="model" :field="field" :disabled="disabled" @change="onFieldChange" class="table-field"/>
-
-    <!-- 日期选择 -->
-    <template v-else-if="field.type == 'datePicker'">
-        <BaseDatePicker
+        <base-cascader
+            v-else-if="field.type == 'cascader'"
             v-model="model"
-            v-model:endDate="form[field.prop1]"
-            :type="field.dateType"
-            :format="field.format"
+            :value-key="field.valueKey"
             :disabled="disabled"
             @change="onFieldChange"
-            :disabledDate="field.disabledDate"
+            :options="field.options"
         />
-    </template>
 
-    <template v-else-if="field.type == 'timePicker'">
-        <el-time-picker v-model="model" @change="onFieldChange" :format="field.format" :value-format="field.format" :type="field.dateType"></el-time-picker>
-    </template>
+        <!-- 标签 -->
+        <el-input-tag v-else-if="field.type == 'inputTag'" v-model="model" @change="onFieldChange" :disabled="disabled"></el-input-tag>
 
-    <!-- 图标选择 -->
-    <icon-selector v-else-if="field.type == 'iconSelector'" v-model="model"></icon-selector>
-
-    <!-- 子可编辑表格 -->
-    <template v-else-if="field.type == 'editTable'">
-        <edit-table
-            :fields="field.fields"
+        <imageUploader
+            v-else-if="field.type == 'imageUploader'"
             v-model="model"
-            :defRow="field.default"
-            :readonly="readonly"
-            :showIndex="field.showIndex"
-            :mode="field.mode"
-            :height="field.height"
-            :showNew="field.showNew"
-            :withDelete="field.withDelete"
+            @change="onFieldChange"
+            :disabled="disabled"
+            :multiple="field.multiple"
+            :limit="field.limit"
+            :tip="field.tip"
+        />
+
+        <fileUploader
+            v-else-if="field.type == 'fileUploader'"
+            v-model="model"
+            @change="onFieldChange"
+            :disabled="disabled"
+            :accept="field.accept"
+            :multiple="field.multiple"
+            :limit="field.limit"
+            :tip="field.tip"
+        />
+
+        <richText v-else-if="field.type == 'richText'" v-model="model" :disabled="disabled" :height="field.height" @change="onFieldChange"> </richText>
+
+        <dictSelect
+            v-else-if="field.dict"
+            :dict="field.dict"
+            v-model="model"
+            :disabled="disabled"
+            @change="onFieldChange"
+            :dataType="field.dataType"
+        ></dictSelect>
+
+        <!-- 树形下拉 -->
+        <base-tree-select
+            v-else-if="field.type == 'tree-select' || field.type == 'treeSelect'"
+            v-model="model"
+            :disabled="disabled"
+            @change="onFieldChange"
+            :options="field.options"
         >
-            <template #appendButtons>
-                <el-button v-for="button in field.buttons" @click="button.action()" :type="button.type" :disabled="disabled">{{ button.label }}</el-button>
-            </template>
-        </edit-table>
-    </template>
+        </base-tree-select>
 
-    <!-- testarea -->
-    <el-input
-        v-else-if="field.type == 'textarea'"
-        type="textarea"
-        v-model="model"
-        :disabled="disabled"
-        @change="onFieldChange"
-        :placeholder="placeholder"
-        :rows="field.rows"
-    >
-    </el-input>
-
-    <!-- Cron表达式编辑 -->
-    <cron-editor v-else-if="field.type == 'cron'" v-model="model" :disabled="disabled" @change="onFieldChange" />
-
-    <!-- 其它情况 -->
-    <el-input
-        v-else
-        v-model="model"
-        :disabled="disabled"
-        @change="onFieldChange"
-        ref="inputRef"
-        :placeholder="disabled ? '' : placeholder"
-        :type="field.inputType"
-        :showPassword="field.inputType == 'password'"
-    >
-        <template #prepend v-if="field.prepend">
-            {{ field.prepend }}
+        <!-- 数字输入 -->
+        <template v-else-if="field.type == 'number'">
+            <el-input-number
+                v-model="model"
+                :step="field.step || 1"
+                :precision="field.precision"
+                :max="field.max"
+                :disabled="disabled"
+                :min="field.min"
+                @change="onFieldChange"
+            >
+            </el-input-number>
+            <span class="ml-2">{{ field.unit }}</span>
         </template>
-        <template #append v-if="field.append">{{ field.append }}</template>
-    </el-input>
+
+        <!-- 单选 -->
+        <el-radio-group v-else-if="field.type == 'radioGroup'" v-model="model" :disabled="disabled" @change="onFieldChange">
+            <el-radio-button v-for="option in field.options" :label="option.label" :value="option.value"></el-radio-button>
+        </el-radio-group>
+
+        <!-- 复选 -->
+        <base-checkbox v-else-if="field.type == 'checkbox'" v-model="model" :options="field.options" :disabled="disabled" @change="onFieldChange" />
+
+        <el-switch v-else-if="field.type == 'switch'" v-model="model" :disabled="disabled" @change="onFieldChange"></el-switch>
+
+        <!-- 子表格 -->
+        <TableField v-else-if="field.type == 'table'" v-model="model" :field="field" :disabled="disabled" @change="onFieldChange" class="table-field" />
+
+        <!-- 日期选择 -->
+        <template v-else-if="field.type == 'datePicker'">
+            <BaseDatePicker
+                v-model="model"
+                v-model:endDate="form[field.prop1]"
+                :type="field.dateType"
+                :format="field.format"
+                :disabled="disabled"
+                @change="onFieldChange"
+                :disabledDate="field.disabledDate"
+            />
+        </template>
+
+        <template v-else-if="field.type == 'timePicker'">
+            <el-time-picker v-model="model" @change="onFieldChange" :format="field.format" :value-format="field.format" :type="field.dateType"></el-time-picker>
+        </template>
+
+        <!-- 图标选择 -->
+        <icon-selector v-else-if="field.type == 'iconSelector'" v-model="model"></icon-selector>
+
+        <!-- 子可编辑表格 -->
+        <template v-else-if="field.type == 'editTable'">
+            <edit-table
+                :fields="field.fields"
+                v-model="model"
+                :defRow="field.default"
+                :readonly="readonly"
+                :showIndex="field.showIndex"
+                :mode="field.mode"
+                :height="field.height"
+                :showNew="field.showNew"
+                :withDelete="field.withDelete"
+            >
+                <template #appendButtons>
+                    <el-button v-for="button in field.buttons" @click="button.action()" :type="button.type" :disabled="disabled">{{ button.label }}</el-button>
+                </template>
+            </edit-table>
+        </template>
+
+        <!-- testarea -->
+        <el-input
+            v-else-if="field.type == 'textarea'"
+            type="textarea"
+            v-model="model"
+            :disabled="disabled"
+            @change="onFieldChange"
+            :placeholder="placeholder"
+            :rows="field.rows"
+        >
+        </el-input>
+
+        <!-- Cron表达式编辑 -->
+        <cron-editor v-else-if="field.type == 'cron'" v-model="model" :disabled="disabled" @change="onFieldChange" />
+
+        <!-- 其它情况 -->
+        <el-input
+            v-else
+            v-model="model"
+            :disabled="disabled"
+            @change="onFieldChange"
+            ref="inputRef"
+            :placeholder="disabled ? '' : placeholder"
+            :type="field.inputType"
+            :showPassword="field.inputType == 'password'"
+        >
+            <template #prepend v-if="field.prepend">
+                {{ field.prepend }}
+            </template>
+            <template #append v-if="field.append">{{ field.append }}</template>
+        </el-input>
+    </div>
 </template>
 
 <script setup>
@@ -162,9 +182,10 @@ import richText from "../rich-text.vue";
 import BaseDatePicker from "../base-date-picker.vue";
 import * as _ from "lodash";
 import fileUploader from "../file-uploader.vue";
+import baseCascader from "../form/base-cascader.vue";
 
-const props = defineProps(["field", "fields", "form", "readonly", "showPlaceholder"]);
-
+const props = defineProps(["field", "fields", "readonly", "showPlaceholder"]);
+const form = defineModel();
 const disabled = computed(() => {
     let editable = props.field.editable;
     if (editable == false || props.readonly) {
@@ -172,7 +193,7 @@ const disabled = computed(() => {
     }
 
     if (_.isFunction(editable)) {
-        return editable(model.value, props.form);
+        return !editable(model.value, form.value);
     }
 
     return false;
@@ -187,10 +208,19 @@ const placeholder = computed(() => {
 
 const model = computed({
     get() {
-        return _.get(props.form, props.field.prop);
+        if (props.field.prop == "*") {
+            return form.value;
+        }
+
+        return _.get(form.value, props.field.prop);
     },
     set(val) {
-        _.set(props.form, props.field.prop, val);
+        if (props.field.prop == "*") {
+            form.value = val;
+            return;
+        }
+
+        _.set(form.value, props.field.prop, val);
     },
 });
 const inputRef = ref();
@@ -207,7 +237,7 @@ onMounted(() => {
 function onFieldChange(val, item) {
     let field = props.field;
     if (field.change) {
-        field.change(val, props.form, {
+        field.change(val, form.value, {
             fields: props.fields,
             item,
         });
@@ -215,3 +245,10 @@ function onFieldChange(val, item) {
 }
 </script>
 
+<style lang="scss" scoped>
+.container {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+</style>

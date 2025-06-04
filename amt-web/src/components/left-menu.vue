@@ -3,15 +3,17 @@
         router
         :default-openeds="opened"
         class="left-menu h-100"
-        :collapse="menuFolded"
+        :collapse="folded"
         :collapse-transition="false"
         :default-active="active"
         unique-opened
         v-if="menus.length"
     >
         <div class="p-4 font-bold title text-center">
-            <i class="iconfont icon-liushuixian-liushuixianx" />
-            <span class="ml-2" v-if="!menuFolded">{{ pageTitle }}</span>
+            <slot name="logo">
+                <i class="iconfont icon-liushuixian-liushuixianx" />
+            </slot>
+            <span class="ml-2" v-if="!folded">{{ title }}</span>
         </div>
         <template v-for="menu in menus">
             <el-menu-item v-if="!menu.children?.length" :key="menu.path" :index="menu.path">
@@ -25,7 +27,7 @@
                     <el-icon>
                         <component :is="menu.icon" />
                     </el-icon>
-                    <template v-if="!menuFolded">{{ menu.name }}</template>
+                    <template v-if="!folded">{{ menu.name }}</template>
                 </template>
                 <el-menu-item v-for="child in menu.children" :key="child.path" :index="child.path">
                     {{ child.name }}
@@ -37,11 +39,16 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useSysStore } from "../store";
 import { useRouter } from "vue-router";
 
-const menuFolded = computed(useSysStore().getMenuFolded);
+const props = defineProps({
+    menus: { type: Array, default: [] },
+    folded: { type: Boolean, default: false },
+    current: { type: Object },
+    title: { type: String },
+});
 const opened = computed(() => {
+    let menus = props.menus;
     if (!menus.value || !menus.value.length) {
         return [];
     }
@@ -49,13 +56,9 @@ const opened = computed(() => {
     return [menus.value[0].path];
 });
 const router = useRouter();
-const pageTitle = document.title;
-
 const active = computed(() => {
     return router.currentRoute.value.fullPath;
 });
-
-const menus = computed(useSysStore().getMenuTree);
 </script>
 
 <style lang="scss" scoped>

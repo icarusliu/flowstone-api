@@ -74,7 +74,7 @@
             // 是对象
             valueKey.value = options.valueKey
             if (options.type == 'js' || options.type == 'func') {
-                return iv.callFunc(options.data);
+                return app.callFunc(options.data);
             } else {
                 return Promise.resolve(options.data || [])
             }

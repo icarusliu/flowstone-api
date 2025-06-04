@@ -27,64 +27,69 @@
             </template>
         </base-tree>
 
-        <new-item v-model:visible="visible" v-model="editingRow" @change="reloadTree" :parent="currentNode" :apiPrefix="apiPrefix"
-            :fields="newFields"></new-item>
+        <new-item
+            v-model:visible="visible"
+            v-model="editingRow"
+            @change="reloadTree"
+            :parent="currentNode"
+            :apiPrefix="apiPrefix"
+            :fields="newFields"
+        ></new-item>
     </div>
 </template>
 <script setup>
-import BaseTree from '@/components/base-tree.vue'
-import newItem from './new.vue'
-import https from '@/utils/https'
-import * as _ from 'lodash'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import BaseTree from "@/components/base-tree.vue";
+import newItem from "./new.vue";
+import https from "@/utils/https";
+import * as _ from "lodash";
+import { ElMessageBox, ElMessage } from "element-plus";
 
 const props = defineProps({
     apiPrefix: { type: String, required: true },
     title: { type: String },
     showRoot: { type: Boolean, default: true },
-    newFields: { type: Array }
-})
-const currentNode = defineModel()
-const visible = ref(false)
-const emits = defineEmits(['select'])
-const editingRow = ref({})
-const treeRef = ref()
+    newFields: { type: Array },
+});
+const currentNode = defineModel();
+const visible = ref(false);
+const emits = defineEmits(["select"]);
+const editingRow = ref({});
+const treeRef = ref();
 
 function showNew() {
-    editingRow.value = {}
-    visible.value = true
+    editingRow.value = {};
+    visible.value = true;
 }
 
 function selectNode(type) {
-    currentNode.value = type
-    emits('select', type)
+    currentNode.value = type;
+    emits("select", type);
 }
 
 function reloadTree() {
-    treeRef.value.reload()
+    treeRef.value.reload();
 }
 
 function doDelete(row) {
-    ElMessageBox.confirm('确定删除当前记录？').then(() => {
-        https.del(props.apiPrefix + '/delete/' + row.id).then(() => {
-            ElMessage.success('删除成功')
-            reloadTree()
-        })
-    })
+    ElMessageBox.confirm("确定删除当前记录？").then(() => {
+        https.del(props.apiPrefix + "/delete/" + row.id).then(() => {
+            ElMessage.success("删除成功");
+            reloadTree();
+        });
+    });
 }
 
 function goEdit(row) {
-    editingRow.value = _.cloneDeep(row)
-    visible.value = true
+    editingRow.value = _.cloneDeep(row);
+    visible.value = true;
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .tree {
     background-color: #fefefe;
     border: 1px solid #f1f1f1;
     border-radius: 8px;
-    padding: 8px 16px;
 
     :deep() {
         .tree-panel {
