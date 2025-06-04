@@ -1,6 +1,7 @@
 package com.liuqi.dua.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiDraftDTO;
 import com.liuqi.dua.bean.dto.ApiHistoryDTO;
@@ -17,12 +18,14 @@ import com.liuqi.sys.bean.dto.DeptDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -122,5 +125,14 @@ public class ApiController {
         ApiHistoryQuery query = new ApiHistoryQuery();
         query.setApiId(id);
         return historyService.query(query);
+    }
+
+    /**
+     * 获取总调用次数
+     */
+    @GetMapping("total-called")
+    public Long totalCalled() {
+        List<Map<String, Object>> list = (List<Map<String, Object>>) DynamicSqlHelper.executeSql("total-called", "select sum(failed_count) + sum(success_count) as c from d_api_draft", new HashMap<>());
+        return MapUtils.getLongValue(list.get(0), "c");
     }
 }

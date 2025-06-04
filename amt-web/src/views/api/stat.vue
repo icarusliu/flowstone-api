@@ -1,12 +1,27 @@
 <template>
     <div class="stat-items mb-4 d-grid-col">
         <div class="stat-item shadow br-1 cursor-pointer" v-for="item in statInfo" :key="item.name" @click="goList">
+            <div>{{ item.value }}</div>
             <div>{{ item.name }}</div>
-            <div :style="{ color: item.color }">{{ item.value }}</div>
         </div>
     </div>
 
     <el-row :gutter="16">
+        <el-col class="mb-4">
+            <div class="content-panel">
+                <div class="page-title">月度调用次数</div>
+                <chart
+                    class="chart"
+                    xField="dataMonth"
+                    :yFields="[
+                        { name: '总次数', prop: 'total', type: 'line', areaStyle: {}, smooth: true },
+                        { name: '失败次数', prop: 'failed', type: 'line', barWidth: '50px', smooth: true, areaStyle: {} },
+                    ]"
+                    ref="chartRef"
+                />
+            </div>
+        </el-col>
+
         <el-col :span="24" class="mb-4">
             <div class="content-panel shadow">
                 <div class="page-title">最近失败接口</div>
@@ -92,18 +107,21 @@
 <script setup>
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import chart from "@/components/chart/index.vue";
 
 const topCalled = ref([]);
 const topSpentTime = ref([]);
 const topFailed = ref([]);
 const statInfo = reactive([
-    { name: "全部接口", value: 0 },
+    { name: "总调用", value: 0 },
+    { name: "接口数", value: 0 },
     { name: "草稿", value: 0, color: "red" },
     { name: "已发布", value: 0, color: "green" },
     { name: "修改中", value: 0, color: "#cdcd34" },
     { name: "已下线", value: 0, color: "#aaa" },
 ]);
 const failedList = ref([]);
+const chartRef = ref();
 
 onMounted(() => {
     app.https.get("/base/api-draft/top-called").then((resp) => {
@@ -134,11 +152,19 @@ onMounted(() => {
     app.https.post("/base/api-log/query", { pageNo: 1, pageSize: 10, orderBys: [{ asc: false, column: "createTime" }], status: 1 }).then((resp) => {
         failedList.value = resp;
     });
+
+    app.https.get("/base/api/total-called").then((resp) => {
+        statInfo[0].value = resp;
+    });
+
+    app.https.get("/base/stat/month").then((resp) => {
+        chartRef.value.reload(resp);
+    });
 });
 
-const router = useRouter()
+const router = useRouter();
 function goList() {
-    router.push('/apis/list')
+    router.push("/apis/list");
 }
 </script>
 
@@ -160,17 +186,49 @@ function goList() {
 }
 
 .stat-item {
-    background: #fff;
-    padding: 20px;
+    background: linear-gradient(135deg, #4a90e2, #61c4ea);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    font-family: "Segoe UI", sans-serif;
+    padding: 10px 20px;
     text-align: center;
 
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
     > div:first-child {
-        font-size: 20px;
-        line-height: 50px;
+        font-size: 40px;
     }
 
     > div:last-child {
-        font-size: 40px;
+        font-size: 20px;
+        line-height: 30px;
     }
+}
+
+.stat-item:nth-child(1) {
+    background: linear-gradient(135deg, #4a90e2, #61c4ea);
+}
+.stat-item:nth-child(2) {
+    background: linear-gradient(135deg, #50e3c2, #41b883);
+}
+.stat-item:nth-child(3) {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+.stat-item:nth-child(4) {
+    background: linear-gradient(135deg, #ffd166, #ffaa33);
+}
+.stat-item:nth-child(5) {
+    background: linear-gradient(135deg, #9d4edd, #7b2cbf);
+}
+.stat-item:nth-child(6) {
+    background: linear-gradient(135deg, #ff6b6b, #ffd166);
+}
+
+.chart {
+    height: 400px;
 }
 </style>

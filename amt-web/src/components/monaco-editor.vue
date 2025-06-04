@@ -15,9 +15,9 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import useMonaco from "./useMonaco";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { ElTooltip } from "element-plus";
 
 const props = defineProps({
@@ -44,11 +44,22 @@ const props = defineProps({
 });
 
 const { updateVal, createEditor, onFormatDoc } = useMonaco(props.language);
-let editor: any;
+let editor;
 const isFull = ref(false);
 const emits = defineEmits(["change", "blur"]);
 const domRef = ref();
 const model = defineModel();
+
+watch(
+    () => model.value,
+    (val) => {
+        let oldVal = editor.getValue();
+        if (val == oldVal) {
+            return;
+        }
+        updateVal(val);
+    }
+);
 
 watch(
     () => props.editorOptions,
@@ -71,9 +82,8 @@ onMounted(() => {
     updateVal(val);
 
     editor.onDidChangeModelContent(() => {
-        let val = editor.getValue()
+        let val = editor.getValue();
         model.value = val;
-        console.log(val, model.value)
     });
     editor.onDidBlurEditorText(() => {
         emits("blur");

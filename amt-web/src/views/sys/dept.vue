@@ -1,6 +1,6 @@
 <template>
     <entity-manager apiPrefix="/sys/dept" :fields="fields" ref="entityManagerRef" :tree="true"
-        operationsWidth="140px">
+        operationsWidth="200px">
     </entity-manager>
 </template>
 

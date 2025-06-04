@@ -66,6 +66,10 @@ logging:
   level:
     org.springframework.security: error
 
+mybatis-plus:
+  global-config:
+    enable-sql-runner: true
+
 api:
   # 白名单
   whiteIps: 127.0.0.1
