@@ -183,16 +183,9 @@ function goList() {
         text-align: right;
         display: inline-block;
     }
-
-    > span {
-    }
-}
-
-.stat-items {
 }
 
 .stat-item {
-    background: linear-gradient(135deg, #4a90e2, #61c4ea);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     color: white;

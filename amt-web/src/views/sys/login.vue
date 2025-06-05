@@ -8,10 +8,10 @@
                 </div>
                 <el-form class="form" :model="formData" :rules="rules" ref="formRef">
                     <el-form-item prop="username">
-                        <el-input placeholder="请输入用户名或手机号" v-model="formData.username" name="username" />
+                        <el-input placeholder="请输入用户名或手机号" v-model="formData.username" name="username" prefix-icon="User"/>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <password-input v-model="formData.password" />
+                        <password-input v-model="formData.password" @enter="doLogin"/>
                     </el-form-item>
                     <div class="buttons">
                         <el-button type="primary" class="button" @click="doLogin">登录</el-button>

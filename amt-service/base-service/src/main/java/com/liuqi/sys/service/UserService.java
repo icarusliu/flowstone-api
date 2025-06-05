@@ -1,6 +1,8 @@
 package com.liuqi.sys.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.liuqi.sys.bean.dto.UserDTO;
+import com.liuqi.sys.bean.dto.UserLoginDTO;
 import com.liuqi.sys.bean.query.UserQuery;
 import com.liuqi.common.base.service.BaseService;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,4 +43,12 @@ public interface UserService extends BaseService<UserDTO, UserQuery>, UserDetail
      * @return 用户资源权限id列表
      */
     List<String> getUserResourceIds(String userId);
+
+    /**
+     * 在线用户查询
+     *
+     * @param query 查询条件
+     * @return 查询结果
+     */
+    IPage<UserLoginDTO> queryOnlineUsers(UserQuery query);
 }

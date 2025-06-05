@@ -36,8 +36,6 @@ public class DeptUserController {
             return dto;
         }).collect(Collectors.toList());
         service.insert(dtos);
-
-       
     }
 
     @DeleteMapping("delete/{deptId}")

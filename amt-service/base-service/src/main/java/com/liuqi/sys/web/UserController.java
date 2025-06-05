@@ -1,8 +1,8 @@
 package com.liuqi.sys.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.liuqi.common.exception.AppException;
 import com.liuqi.sys.bean.dto.UserDTO;
+import com.liuqi.sys.bean.dto.UserLoginDTO;
 import com.liuqi.sys.bean.query.NoRoleUserQuery;
 import com.liuqi.sys.bean.query.UserQuery;
 import com.liuqi.sys.bean.req.PwdUpdateReq;
@@ -13,7 +13,6 @@ import com.liuqi.sys.service.UserService;
 import com.liuqi.common.bean.UserContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -110,5 +109,10 @@ public class UserController {
     @PostMapping("update-pwd")
     public void updatePwd(@RequestBody @Validated PwdUpdateReq req) {
         userManager.updatePwd(req);
+    }
+
+    @PostMapping("online/page-query")
+    public IPage<UserLoginDTO> getOnlineUsers(@RequestBody UserQuery query) {
+        return userService.queryOnlineUsers(query);
     }
 }

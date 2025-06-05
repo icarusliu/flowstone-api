@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuqi.sys.domain.mapper.UserLoginMapper">
+    <select id="query" parameterType="com.liuqi.sys.bean.query.UserLoginQuery" resultType="com.liuqi.sys.bean.dto.UserLoginDTO">
+        select
+        username
+        ,login_time
+        ,ip
+        ,os
+        ,browser
+        ,tenant_id
+        ,create_user
+        ,create_time
+        ,update_user
+        ,update_time
+        ,deleted
+        from sys_user_login
+        where deleted = 0
+        <if test="null != id and '' != id">
+            and id = #{id}
+        </if>
+        <if test="null != ids">
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="null != orderBy and '' != orderBy"> order by ${orderBy}</if>
+        <if test="null == orderBy or '' == orderBy"> order by create_time desc
+        </if>
+    </select>
+
+    <select id="userLastLog" parameterType="com.liuqi.sys.bean.query.UserLoginQuery" resultType="com.liuqi.sys.bean.dto.UserLoginDTO">
+        select * from (
+        select
+        username
+        ,login_time
+        ,ip
+        ,os
+        ,browser
+        ,tenant_id
+        ,create_user
+        ,create_time
+        ,update_user
+        ,update_time
+        ,deleted
+        ,row_number() over(partition by create_user order by create_time desc) as rn
+        from sys_user_login
+        where deleted = 0
+        <if test="null != userIds">
+            and create_user in
+            <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+        </if>
+        ) t
+        where rn = 1
+        order by create_time desc
+    </select>
+</mapper>

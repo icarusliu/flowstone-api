@@ -1,6 +1,8 @@
 package com.liuqi.dua.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.liuqi.common.annotations.Log;
+import com.liuqi.common.bean.LogType;
 import com.liuqi.dua.bean.dto.ApiDraftDTO;
 import com.liuqi.dua.bean.dto.ApiTypeDTO;
 import com.liuqi.dua.bean.query.ApiDraftQuery;
@@ -38,6 +40,7 @@ public class ApiDraftController {
 
     @PostMapping("add")
     @Operation(summary = "新增")
+    @Log(value = "接口", op = LogType.NEW)
     public ApiDraftDTO add(@RequestBody @Validated ApiDraftAddReq req) {
         ApiDraftDTO dto = new ApiDraftDTO();
         BeanUtils.copyProperties(req, dto);
@@ -47,6 +50,7 @@ public class ApiDraftController {
 
     @PutMapping("update")
     @Operation(summary = "更新")
+    @Log(value = "接口", op = LogType.EDIT)
     public void update(@RequestBody @Validated ApiDraftUpdateReq req) {
         ApiDraftDTO dto = new ApiDraftDTO();
         BeanUtils.copyProperties(req, dto);
@@ -60,6 +64,7 @@ public class ApiDraftController {
 
     @DeleteMapping("delete/{id}")
     @Operation(summary = "删除")
+    @Log(value = "接口", op = LogType.DELETE)
     public void delete(@PathVariable("id") String id) {
         service.delete(id);
     }
@@ -98,12 +103,14 @@ public class ApiDraftController {
 
     @GetMapping("publish/{id}")
     @Operation(summary = "发布接口")
+    @Log(value = "接口", op = LogType.OTHER)
     public void publish(@PathVariable String id) {
         service.publish(id);
     }
 
     @GetMapping("offline/{id}")
     @Operation(summary = "下线接口")
+    @Log(value = "接口", op = LogType.OTHER)
     public void offline(@PathVariable String id) {
         service.offline(id);
     }

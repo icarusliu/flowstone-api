@@ -155,6 +155,30 @@ const routes = [
                 ],
             },
             {
+                path: "/monitor",
+                children: [
+                    {
+                        path: "/monitor/online",
+                        component: () => import("../views/monitor/online.vue"),
+                        meta: {
+                            title: "在线用户",
+                        },
+                    },{
+                        path: "/monitor/login-log",
+                        component: () => import("../views/monitor/user-login.vue"),
+                        meta: {
+                            title: "登录日志",
+                        },
+                    },{
+                        path: "/monitor/operation",
+                        component: () => import("../views/monitor/user-log.vue"),
+                        meta: {
+                            title: "操作日志",
+                        },
+                    },
+                ],
+            },
+            {
                 path: "/etl-manager",
                 children: [
                     {

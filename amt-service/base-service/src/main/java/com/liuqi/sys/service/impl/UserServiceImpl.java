@@ -1,9 +1,13 @@
 package com.liuqi.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.liuqi.common.base.service.CacheService;
 import com.liuqi.sys.bean.dto.RoleResourceDTO;
 import com.liuqi.sys.bean.dto.UserDTO;
+import com.liuqi.sys.bean.dto.UserLoginDTO;
 import com.liuqi.sys.bean.dto.UserRoleDTO;
 import com.liuqi.sys.bean.enums.UserStatus;
 import com.liuqi.sys.bean.query.UserQuery;
@@ -45,6 +49,12 @@ public class UserServiceImpl extends AbstractBaseEntityService<UserEntity, UserD
 
     @Autowired
     private RoleResourceService roleResourceService;
+
+    @Autowired
+    private CacheService cacheService;
+
+    @Autowired
+    private UserLoginEntityService userLoginEntityService;
 
     @Override
     public UserDTO toDTO(UserEntity entity) {
@@ -171,17 +181,15 @@ public class UserServiceImpl extends AbstractBaseEntityService<UserEntity, UserD
 
     @Override
     public Optional<UserDTO> findByUsername(String username) {
-        UserQuery query = UserQuery.builder()
-                .username(username)
-                .build();
+        UserQuery query = new UserQuery();
+        query.setUsername(username);
         return this.query(query).stream().findAny();
     }
 
     @Override
     public Optional<UserDTO> findByPhone(String phone) {
-        UserQuery query = UserQuery.builder()
-                .phone(phone)
-                .build();
+        UserQuery query = new UserQuery();
+        query.setPhone(phone);
         return this.query(query).stream().findAny();
     }
 
@@ -226,6 +234,36 @@ public class UserServiceImpl extends AbstractBaseEntityService<UserEntity, UserD
                 .toList();
         List<RoleResourceDTO> roleResources = roleResourceService.findByRoles(roleIds);
         return roleResources.stream().map(RoleResourceDTO::getResourceId).toList();
+    }
+
+    /**
+     * 在线用户查询
+     *
+     * @param query 查询条件
+     * @return 查询结果
+     */
+    @Override
+    public IPage<UserLoginDTO> queryOnlineUsers(UserQuery query) {
+        Set<String> keys = cacheService.keys("user-*");
+        Long pageNo = query.getPageNo();
+        Long pageSize = query.getPageSize();
+        long start = (pageNo - 1) * pageSize, end = start + pageSize;
+        if (keys.size() <= start) {
+            return new Page<>();
+        }
+        end = Math.min(end, keys.size());
+        List<String> userIds = keys.stream()
+                .map(item -> item.replace("user-", ""))
+                .toList()
+                .subList((int) start, (int) end);
+
+        // 每个用户取最后一条
+        List<UserLoginDTO> userLoginList = userLoginEntityService.userLastLog(userIds);
+        IPage<UserLoginDTO> pageData = new Page<>();
+        pageData.setRecords(userLoginList);
+        pageData.setTotal(keys.size());
+
+        return pageData;
     }
 
     @Override

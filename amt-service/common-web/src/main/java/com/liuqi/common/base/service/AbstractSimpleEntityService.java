@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -121,10 +122,6 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
     public List<D> query(Q q) {
         QueryWrapper<E> queryWrapper = this.createQueryWrapper(q);
 
-        if (null == queryWrapper) {
-            return new ArrayList<>(0);
-        }
-
         if (null != q.getPageNo() && null != q.getPageSize()) {
             long start = (q.getPageNo() - 1) * q.getPageSize();
             queryWrapper.last(" limit " + start + "," + q.getPageSize());
@@ -142,7 +139,16 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
         QueryWrapper<E> queryWrapper = Optional.ofNullable(this.queryToWrapper(q))
                 .orElseGet(this::createQueryWrapper);
 
-        queryWrapper.eq("deleted", false);
+        boolean hasDeleted = false;
+
+        try {
+            this.getEntityClass().getDeclaredField("deleted");
+            hasDeleted = true;
+        } catch (NoSuchFieldException ignored) {
+        }
+        if (hasDeleted) {
+            queryWrapper.eq("deleted", false);
+        }
 
         if (!CollectionUtils.isEmpty(q.getExcludeFields())) {
             List<String> fields = q.getExcludeFields().stream().map(StringUtils::camelToUnderline).toList();
@@ -242,7 +248,9 @@ public abstract class AbstractSimpleEntityService<E, D, M extends BaseMapper<E>,
      * @return 创建好的QueryWrapper
      */
     protected QueryWrapper<E> createQueryWrapper() {
-        return new QueryWrapper<>();
+        QueryWrapper<E> queryWrapper = new QueryWrapper<>();
+        queryWrapper.setEntityClass(this.getEntityClass());
+        return queryWrapper;
     }
 
     /**

@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -97,5 +98,9 @@ public class CacheService {
 
     public void remove(String key) {
         redisTemplate.delete(key);
+    }
+
+    public Set<String> keys(String pattern) {
+        return redisTemplate.keys(pattern);
     }
 }

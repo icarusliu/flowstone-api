@@ -708,18 +708,18 @@
         <sql>
             create table if not exists sys_menu_button
             (
-            id          varchar(64)                           not null comment '主键'
+            id varchar(64) not null comment '主键'
             primary key,
-            name        varchar(255)                          null comment '按钮名称',
-            code        varchar(64)                          null comment '按钮编码',
-            menu_id     varchar(64)                          null comment '菜单id',
-            sort        int       default 0                   null comment '排序',
-            tenant_id   varchar(64)                          null comment '租户编号',
-            create_user varchar(255)                          null comment '创建用户',
+            name varchar(255) null comment '按钮名称',
+            code varchar(64) null comment '按钮编码',
+            menu_id varchar(64) null comment '菜单id',
+            sort int default 0 null comment '排序',
+            tenant_id varchar(64) null comment '租户编号',
+            create_user varchar(255) null comment '创建用户',
             create_time timestamp default current_timestamp() null comment '创建时间',
-            update_user varchar(255)                          null comment '更新用户',
-            update_time timestamp                             null on update current_timestamp() comment '更新时间',
-            deleted     int(1)    default 0                   null comment '是否删除'
+            update_user varchar(255) null comment '更新用户',
+            update_time timestamp null on update current_timestamp() comment '更新时间',
+            deleted int(1) default 0 null comment '是否删除'
             );
         </sql>
     </changeSet>
@@ -729,25 +729,25 @@
             truncate table sys_menu;
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
             values ('A01','数据接口管理', '/', 'path', 0, -1, 1, 'Switch'),
-            ('A0101',  '接口管理', '/apis/list', 'path', 0, 'A01', 0, 'Switch'),
-            ('A0102',  '接入方管理', '/apis/supplier', 'path', 0, 'A01', 1, 'MessageBox'),
-            ('A0103',  '定时任务', '/apis/schedule-task', 'path', 0, 'A01', 2, 'Operation'),
-            ('A0104',  '运行日志', '/apis/logs', 'path', 0, 'A01', 3, 'Document'),
+            ('A0101', '接口管理', '/apis/list', 'path', 0, 'A01', 0, 'Switch'),
+            ('A0102', '接入方管理', '/apis/supplier', 'path', 0, 'A01', 1, 'MessageBox'),
+            ('A0103', '定时任务', '/apis/schedule-task', 'path', 0, 'A01', 2, 'Operation'),
+            ('A0104', '运行日志', '/apis/logs', 'path', 0, 'A01', 3, 'Document'),
 
-            ('A02',  '数据集成加工', '/etl', 'path', 0, -1, 2, 'Operation'),
-            ('A0201',  '任务管理', '/etl/job', 'path', 0, 'A02', 0, 'Operation'),
-            ('A0202',  '执行日志', '/etl/logs', 'path', 0, 'A02', 1, 'Document'),
+            ('A02', '数据集成加工', '/etl', 'path', 0, -1, 2, 'Operation'),
+            ('A0201', '任务管理', '/etl/job', 'path', 0, 'A02', 0, 'Operation'),
+            ('A0202', '执行日志', '/etl/logs', 'path', 0, 'A02', 1, 'Document'),
 
-            ('A03',  '基础管理', '/base', 'path', 0, -1, 3, 'Guide'),
-            ('A0301',  '数据源管理', '/base/ds', 'path', 0, 'A03', 0, 'coin'),
-            ('A0302',  '数据模型管理', '/base/model', 'path', 0, 'A03', 1, 'Memo');
+            ('A03', '基础管理', '/base', 'path', 0, -1, 3, 'Guide'),
+            ('A0301', '数据源管理', '/base/ds', 'path', 0, 'A03', 0, 'coin'),
+            ('A0302', '数据模型管理', '/base/model', 'path', 0, 'A03', 1, 'Memo');
 
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
             values ('S01','系统配置', '/sys-manager', 'path', 0, -1, 9,
             'Setting');
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
-            values ('S0101',  '客户端管理', '/sys/client', 'path', 0, 'S01', 0, 'Monitor'),
-            ('S0102',  '组织管理', '/sys/dept', 'path', 0, 'S01', 1, 'Box');
+            values ('S0101', '客户端管理', '/sys/client', 'path', 0, 'S01', 0, 'Monitor'),
+            ('S0102', '组织管理', '/sys/dept', 'path', 0, 'S01', 1, 'Box');
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
             values ('S0103','用户管理', '/sys/user', 'path', 0, 'S01', 2, 'User');
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
@@ -765,49 +765,71 @@
         <sql>
             create table if not exists sys_role_resource
             (
-            id            varchar(64)                           not null comment '主键'
+            id varchar(64) not null comment '主键'
             primary key,
-            role_id       varchar(64)                          null,
-            resource_type varchar(255)                          null,
-            resource_id   varchar(64)                          null,
-            tenant_id     varchar(64)                          null comment '租户编号',
-            create_user   varchar(255)                          null comment '创建用户',
-            create_time   timestamp default current_timestamp() null comment '创建时间',
-            update_user   varchar(255)                          null comment '更新用户',
-            update_time   timestamp                             null on update current_timestamp() comment '更新时间',
-            deleted       int(1)    default 0                   null comment '是否删除'
+            role_id varchar(64) null,
+            resource_type varchar(255) null,
+            resource_id varchar(64) null,
+            tenant_id varchar(64) null comment '租户编号',
+            create_user varchar(255) null comment '创建用户',
+            create_time timestamp default current_timestamp() null comment '创建时间',
+            update_user varchar(255) null comment '更新用户',
+            update_time timestamp null on update current_timestamp() comment '更新时间',
+            deleted int(1) default 0 null comment '是否删除'
             );
         </sql>
     </changeSet>
 
     <changeSet id="init-sys-menu-buttons" author="liuqi">
         <sql>
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743680447553538', '新增', 'new', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743680447553539', '删除', 'delete', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743680447553540', '修改', 'update', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743771543642114', '新增', 'new', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743771543642115', '删除', 'delete', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743771610750977', '修改', 'update', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743799779696641', '新增', 'new', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743799779696642', '删除', 'delete', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743799779696643', '修改', 'update', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743814854025217', '新增', 'new', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743814854025218', '删除', 'delete', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743814854025219', '修改', 'update', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743824811302914', '新增', 'new', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743824811302915', '删除', 'delete', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743824811302916', '修改', 'update', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834340761601', '新增', 'new', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834340761602', '删除', 'delete', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
-            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924743834407870466', '修改', 'update', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743680447553538', '新增', 'new', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743680447553539', '删除', 'delete', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743680447553540', '修改', 'update', 'S0102', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:08', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743771543642114', '新增', 'new', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743771543642115', '删除', 'delete', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743771610750977', '修改', 'update', 'S0103', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:29', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743799779696641', '新增', 'new', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743799779696642', '删除', 'delete', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743799779696643', '修改', 'update', 'S0104', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:36', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743814854025217', '新增', 'new', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743814854025218', '删除', 'delete', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743814854025219', '修改', 'update', 'S0105', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:40', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743824811302914', '新增', 'new', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743824811302915', '删除', 'delete', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743824811302916', '修改', 'update', 'S0106', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:42', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743834340761601', '新增', 'new', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743834340761602', '删除', 'delete', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
+            INSERT INTO sys_menu_button (id, name, code, menu_id, sort, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924743834407870466', '修改', 'update', 'S0107', 0, 'sys', 'QIQINIUBI', '2025-05-20 16:27:44', null, null, 0);
         </sql>
     </changeSet>
 
     <changeSet id="init-sys-config-v1" author="liuqi">
         <sql>
             truncate table sys_config;
-            INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924987313239134209', 'showTopMenus', 'true', '是否展示顶部菜单', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28', 0);
-            INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES ('1924987313239134210', 'showTagsTab', 'false', '是否多标签展示', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28', 0);
+            INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924987313239134209', 'showTopMenus', 'true', '是否展示顶部菜单', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28',
+            0);
+            INSERT INTO sys_config (id, code, value, name, remark, enabled, tenant_id, create_user, create_time, update_user, update_time, deleted) VALUES
+            ('1924987313239134210', 'showTagsTab', 'false', '是否多标签展示', null, 1, 'sys', 'QIQINIUBI', '2025-05-21 08:35:14', null, '2025-05-21 09:43:28',
+            0);
         </sql>
     </changeSet>
 
@@ -822,7 +844,7 @@
         <sql>
             delete from sys_menu where id = 'A0105';
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
-            values ('A0105',  '接口概览', '/apis/stat', 'path', 0, 'A01', -1, 'Monitor')
+            values ('A0105', '接口概览', '/apis/stat', 'path', 0, 'A01', -1, 'Monitor')
         </sql>
     </changeSet>
 
@@ -830,6 +852,56 @@
         <sql>
             insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
             values ('A00','接口浏览', '/apis/browser', 'path', 0, -1, 0, 'Search')
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-sys_user_login-v1" author="codeGenerator">
+        <sql>
+            drop table if exists sys_user_login;
+            create table sys_user_login(
+            id varchar(64) not null primary key comment '主键',
+            username varchar(64) comment '用户名',
+            login_time datetime comment '登录时间',
+            ip varchar(32) comment 'ip',
+            os varchar(64) comment '操作系统',
+            browser varchar(64) comment '浏览器',
+            tenant_id varchar(64),
+            create_user varchar(255),
+            create_time datetime default current_timestamp,
+            update_user varchar(255),
+            update_time datetime on update current_timestamp,
+            deleted int(1) default 0
+            ) comment '用户登录日志'
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-menu-online-v1" author="liuqi">
+        <sql>
+            delete from sys_menu where id like 'S02%';
+            insert into sys_menu(id, name, path, type, hide, parent_id, sort, icon)
+            values ('S02','系统监控', '/monitor', 'path', 0, -1, 10, 'Monitor'),
+            ('S0201', '在线用户', '/monitor/online', 'path', 0, 'S02', 0, 'User'),
+            ('S0202', '登录日志', '/monitor/login-log', 'path', 0, 'S02', 1, 'Tickets'),
+            ('S0203', '操作日志', '/monitor/operation', 'path', 0, 'S02', 2, 'Operation');
+        </sql>
+    </changeSet>
+    <changeSet id="create-table-sys_user_log-v2" author="codeGenerator">
+        <sql>
+            drop table if exists sys_user_log;
+            create table sys_user_log(
+            id varchar(64) not null primary key comment '主键',
+            user_id varchar(64) comment '用户id',
+            username varchar(255) comment '用户名',
+            module varchar(255) comment '模块',
+            type varchar(64) comment '操作类型，CRUD',
+            path varchar(128) comment '请求路径',
+            method varchar(32) comment '请求方法',
+            params text comment '参数',
+            ip varchar(255) comment 'IP',
+            success int(1) default 0 comment '是否成功',
+            spent_time integer default 0 comment '耗时，ms',
+            result varchar(255) comment '结果',
+            create_time datetime default current_timestamp comment '记录创建时间'
+            ) comment '用户操作日志'
         </sql>
     </changeSet>
 </databaseChangeLog>

@@ -159,6 +159,7 @@
             :placeholder="disabled ? '' : placeholder"
             :type="field.inputType"
             :showPassword="field.inputType == 'password'"
+            :rows="field.rows || 5"
         >
             <template #prepend v-if="field.prepend">
                 {{ field.prepend }}

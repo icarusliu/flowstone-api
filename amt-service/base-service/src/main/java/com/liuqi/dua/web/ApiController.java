@@ -1,6 +1,7 @@
 package com.liuqi.dua.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.toolkit.SqlRunner;
 import com.liuqi.common.utils.DynamicSqlHelper;
 import com.liuqi.dua.bean.dto.ApiDTO;
 import com.liuqi.dua.bean.dto.ApiDraftDTO;
@@ -132,7 +133,7 @@ public class ApiController {
      */
     @GetMapping("total-called")
     public Long totalCalled() {
-        List<Map<String, Object>> list = (List<Map<String, Object>>) DynamicSqlHelper.executeSql("total-called", "select sum(failed_count) + sum(success_count) as c from d_api_draft", new HashMap<>());
+        List<Map<String, Object>> list = SqlRunner.db().selectList("select sum(failed_count) + sum(success_count) as c from d_api_draft");
         return MapUtils.getLongValue(list.get(0), "c");
     }
 }

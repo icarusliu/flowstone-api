@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuqi.sys.domain.mapper.UserLogMapper">
+    <select id="query" parameterType="com.liuqi.sys.bean.query.UserLogQuery" resultType="com.liuqi.sys.bean.dto.UserLogDTO">
+        select
+        user_id
+        ,username
+        ,module
+        ,type
+        ,params
+        ,ip
+        ,success
+        ,spent_time
+        ,result
+        ,create_time
+        from sys_user_log
+        where deleted = 0
+        <if test="null != id and '' != id">
+            and id = #{id}
+        </if>
+        <if test="null != ids">
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="null != orderBy and '' != orderBy"> order by ${orderBy}</if>
+        <if test="null == orderBy or '' == orderBy"> order by create_time desc
+        </if>
+    </select>
+</mapper>

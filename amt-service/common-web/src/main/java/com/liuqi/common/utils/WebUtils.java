@@ -1,5 +1,7 @@
 package com.liuqi.common.utils;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +43,16 @@ public class WebUtils {
                 });
 
         return Optional.ofNullable(token);
+    }
+
+    /**
+     * 解析UA
+     * @param request 请求
+     * @return 解析结果
+     */
+    public static UserAgent getUserAgent(HttpServletRequest request) {
+        String userAgent = request.getHeader("user-agent");
+        return UserAgentUtil.parse(userAgent);
     }
 
     /**

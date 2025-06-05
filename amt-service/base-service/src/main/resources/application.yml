@@ -41,6 +41,8 @@ spring:
   security:
     type: security
     domain: localhost
+#    token过期时间，默认30分钟
+    timeout: 30
   main:
     allow-circular-references: true
   data:

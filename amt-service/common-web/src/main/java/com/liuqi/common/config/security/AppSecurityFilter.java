@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 应用安全拦截器
@@ -31,6 +34,12 @@ public class AppSecurityFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Value("${spring.security.timeout:30}")
+    private Integer timeoutInMinute;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 提取token，存储用户信息
@@ -38,12 +47,22 @@ public class AppSecurityFilter extends OncePerRequestFilter {
                 .orElse(null);
 
         if (StringUtils.isBlank(token)) {
-            filterChain.doFilter(request, response);
             UserContextHolder.set(null);
+            filterChain.doFilter(request, response);
             return;
         }
 
         UserContext userContext = AuthUtils.parse(token);
+
+        // token延期
+        String val = redisTemplate.opsForValue().getAndExpire("user-" + userContext.getUserId(), timeoutInMinute, TimeUnit.MINUTES);
+        if (StringUtils.isBlank(val)) {
+            // 已过期
+            UserContextHolder.set(null);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         UserContextHolder.set(userContext);
 
         Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(userContext, null, userContext.getAuthorities());
