@@ -52,6 +52,15 @@ public class AppException extends RuntimeException{
      */
     @Override
     public String getMessage() {
-        return "[" + code.getCode() + "]" + code.getMsg();
+        String msg = code.getMsg();
+        if (null == this.fields || 0 == this.fields.length) {
+            return msg;
+        }
+        Map<String, Object> params = new HashMap<>(16);
+        for (int i = 0; i < this.fields.length; i++) {
+            params.put(String.valueOf(i), this.fields[i]);
+        }
+        StringSubstitutor sb = new StringSubstitutor(params, "(", ")");
+        return sb.replace(msg);
     }
 }

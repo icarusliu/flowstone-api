@@ -183,6 +183,10 @@ public class QueryBuilder<D, E> {
         return this;
     }
 
+    /**
+     * 执行查询操作
+     * @return 查询结果
+     */
     public List<D> query() {
         if (null != pageNo && null != pageSize) {
             long start = (pageNo - 1) * pageSize;
@@ -192,12 +196,25 @@ public class QueryBuilder<D, E> {
     }
 
     /**
+     * 执行查询操作并将查询后的列表数据进行转换
+     * @param func 转换函数
+     * @return 转换后的数据
+     * @param <V> 转换后的对象类型
+     */
+    public <V> List<V> queryAndConvert(Function<D, V> func) {
+        return this.query()
+                .stream()
+                .map(func)
+                .toList();
+    }
+
+    /**
      * 执行查询将将结果转换成map
      * @param keyFunc key的转换函数
      * @return 转换后的结果
      * @param <K> key类型
      */
-    public <K> Map<K, D> query(Function <D, K> keyFunc) {
+    public <K> Map<K, D> query(Function<D, K> keyFunc) {
         return this.query()
                 .stream()
                 .collect(Collectors.toMap(keyFunc, d -> d));
@@ -215,6 +232,16 @@ public class QueryBuilder<D, E> {
         return this.query()
                 .stream()
                 .collect(Collectors.toMap(keyFunc, valueFunc));
+    }
+
+    /**
+     * 查找单条记录
+     * @return 查找到的记录
+     */
+    public Optional<D> findOne() {
+        return this.query()
+                .stream()
+                .findAny();
     }
 
     public IPage<D> pageQuery() {

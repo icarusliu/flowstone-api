@@ -40,10 +40,19 @@ public class AppExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public String handlerException(Exception exception) {
+    public Map<String, Object> handlerException(Exception exception) {
+        Throwable cause = exception.getCause();
+        if (cause instanceof AppException appException) {
+            return this.handlerAppException(appException);
+        }
+
         log.error("系统异常", exception);
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return exception.getMessage();
+        return MapBuilder.<String, Object>create()
+                .put("code", "500")
+                .put("detail", exception.getMessage())
+                .put("msg", "系统内部异常")
+                .build();
     }
 
     @ExceptionHandler(MethodNotFoundException.class)

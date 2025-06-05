@@ -83,6 +83,19 @@ public interface BaseService<D, Q extends BaseQuery> {
     }
 
     /**
+     * 查找记录并将结果进行转换
+     * @param func 转换函数
+     * @return 转换后的数据
+     * @param <T> 转换后的对象类型
+     */
+    default <T> List<T> findAllAndConvert(Function<D, T> func) {
+        return this.findAll()
+                .stream()
+                .map(func)
+                .toList();
+    }
+
+    /**
      * 查找所有记录并转换成map返回
      * @param func key转换函数
      * @return 转换后的map

@@ -69,6 +69,7 @@ logging:
     org.springframework.security: error
 
 mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
   global-config:
     enable-sql-runner: true
 
